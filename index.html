@@ -42,7 +42,9 @@
             color-scheme: light only;
         }
         html {
-            font-size: 14px;
+            font-size: 13px;
+            height: 100%;
+            width: 100%;
         }
         @media (min-width: 640px) {
             html {
@@ -51,13 +53,16 @@
         }
         html, body {
             height: 100dvh;
-            min-height: 100dvh;
+            min-height: 100svh;
             max-height: 100dvh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
             background-color: #EBF5FD !important;
             color: #1B3A5C !important;
             font-family: 'Nunito', sans-serif;
             -webkit-tap-highlight-color: transparent;
-            overscroll-behavior-y: none;
+            overscroll-behavior: none;
         }
         ::-webkit-scrollbar {
             width: 5px;
@@ -95,13 +100,13 @@
 <body class="w-screen overflow-hidden flex items-center justify-center p-0 sm:p-4 select-none">
 
     <!-- Индикатор статуса облака -->
-    <div id="status-banner" class="fixed top-2.5 left-1/2 -translate-x-1/2 z-[70] px-3.5 py-1 rounded-full text-xs font-bold shadow-sm border border-pastel-200 bg-white/95 text-pastel-700 flex items-center gap-1.5 transition-all duration-300">
+    <div id="status-banner" class="fixed top-1.5 left-1/2 -translate-x-1/2 z-[70] px-2.5 py-0.5 rounded-full text-[11px] font-bold shadow-xs border border-pastel-200 bg-white/95 text-pastel-700 flex items-center gap-1 transition-all duration-300">
         <span id="status-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
         <span id="status-text">Подключение к облаку...</span>
     </div>
 
     <!-- ЭКРАН РЕГИСТРАЦИИ / ВХОДА -->
-    <div id="auth-screen" class="w-full h-full sm:h-auto sm:max-w-[400px] bg-white/95 backdrop-blur-xl sm:rounded-3xl shadow-xl shadow-pastel-900/10 border border-pastel-200/80 px-5 py-6 sm:p-8 flex flex-col justify-center items-center transition-all duration-300 z-30">
+    <div id="auth-screen" class="w-full h-full sm:h-auto sm:max-w-[400px] bg-white/95 backdrop-blur-xl sm:rounded-3xl shadow-xl shadow-pastel-900/10 border border-pastel-200/80 px-4 pt-9 pb-4 sm:p-8 flex flex-col justify-start sm:justify-center items-center overflow-y-auto transition-all duration-300 z-30">
         <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-pastel-500 to-pastel-300 flex items-center justify-center shadow-lg shadow-pastel-400/30 mb-3.5 text-white">
             <i data-lucide="send" class="w-8 h-8 -ml-0.5 mt-0.5"></i>
         </div>
@@ -144,12 +149,12 @@
     </div>
 
     <!-- ОСНОВНОЙ ИНТЕРФЕЙС МЕССЕНДЖЕРА -->
-    <div id="app-screen" class="hidden w-full h-full max-w-5xl sm:h-[90dvh] sm:max-h-[820px] bg-white sm:rounded-3xl shadow-xl shadow-pastel-900/10 border border-pastel-200/80 overflow-hidden flex relative">
+    <div id="app-screen" class="hidden w-full h-full max-w-5xl sm:h-[92dvh] sm:max-h-[840px] bg-white sm:rounded-3xl shadow-xl shadow-pastel-900/10 border border-pastel-200/80 overflow-hidden flex relative">
 
         <!-- ЛЕВАЯ КОЛОНКА: СПИСОК ЧАТОВ -->
         <aside id="sidebar-panel" class="w-full md:w-[350px] lg:w-[375px] h-full min-h-0 bg-pastel-50/70 border-r border-pastel-200/80 flex flex-col shrink-0 z-10">
             <!-- Шапка профиля -->
-            <div class="px-3.5 pt-3 sm:pt-4 pb-2.5 bg-white/95 border-b border-pastel-100 flex items-center justify-between gap-2 shrink-0">
+            <div class="px-3 pt-8 sm:pt-3.5 pb-2 bg-white/95 border-b border-pastel-100 flex items-center justify-between gap-2 shrink-0">
                 <button type="button" id="open-profile-edit-btn" title="Редактировать профиль" class="flex items-center gap-2.5 min-w-0 text-left group p-1 -ml-1 rounded-2xl hover:bg-pastel-50 transition-colors">
                     <div id="current-user-avatar" class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-pastel-400 to-pastel-300 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center shadow-sm shrink-0 overflow-hidden relative">
                         GS
@@ -164,6 +169,11 @@
                 </button>
 
                 <div class="flex items-center gap-1.5 shrink-0">
+                    <button type="button" id="verity-wallet-btn" title="Баланс верити"
+                        class="px-2 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200/80 flex items-center gap-1 text-xs font-extrabold transition-colors shrink-0">
+                        <span>😊</span>
+                        <span id="header-verity-balance">0</span>
+                    </button>
                     <button type="button" id="new-chat-btn" title="Новый чат или группа"
                         class="w-9 h-9 rounded-xl bg-pastel-100 hover:bg-pastel-200 text-pastel-700 flex items-center justify-center transition-colors">
                         <i data-lucide="plus" class="w-5 h-5"></i>
@@ -193,10 +203,109 @@
                 <div id="search-results-list" class="space-y-1"></div>
             </div>
 
-            <!-- Список чатов -->
-            <div id="chat-list-container" class="flex-1 min-h-0 overflow-y-auto px-2.5 py-2.5 space-y-1.5">
+            <!-- ВКЛАДКА 1: СПИСОК ЧАТОВ -->
+            <div id="tab-chats-view" class="flex-1 min-h-0 overflow-y-auto px-2.5 py-2.5 space-y-1.5">
                 <!-- Генерируется динамически -->
             </div>
+
+            <!-- ВКЛАДКА 2: НАСТРОЙКИ (В СТИЛЕ СКРИНШОТА, В ПАСТЕЛЬНОЙ ГАММЕ) -->
+            <div id="tab-settings-view" class="hidden flex-1 min-h-0 overflow-y-auto px-3 py-3 space-y-3">
+                <!-- Карточка профиля вверху настроек -->
+                <div class="bg-white rounded-3xl border border-pastel-200/80 p-4 flex flex-col items-center text-center shadow-2xs">
+                    <div id="settings-profile-avatar" class="w-20 h-20 rounded-3xl bg-gradient-to-br from-pastel-400 to-pastel-300 text-white font-extrabold text-2xl flex items-center justify-center shadow-md overflow-hidden mb-2.5">
+                        GS
+                    </div>
+                    <h3 id="settings-profile-nick" class="text-base font-extrabold text-pastel-900">Пользователь</h3>
+                    <p id="settings-profile-tag" class="text-xs font-bold text-pastel-500 mt-0.5">@user</p>
+                    <p id="settings-profile-bio" class="text-xs font-medium text-pastel-600 mt-1.5 line-clamp-2 max-w-[240px]">Описание профиля не задано</p>
+                    <button type="button" id="settings-verity-card-btn" class="mt-3 w-full py-2.5 px-3.5 rounded-2xl bg-gradient-to-r from-amber-50 to-pastel-50 hover:from-amber-100/70 hover:to-pastel-100 border border-amber-200/80 flex items-center justify-between transition-colors">
+                        <span class="flex items-center gap-2 text-xs font-extrabold text-pastel-900">
+                            <span class="text-base leading-none">😊</span>
+                            <span>Верити</span>
+                        </span>
+                        <span class="text-xs font-extrabold text-amber-700 bg-white px-2.5 py-0.5 rounded-full border border-amber-200/70">
+                            <span id="settings-verity-balance">0</span> 😊
+                        </span>
+                    </button>
+                    <button type="button" id="settings-open-gifts-btn" class="mt-2 w-full py-2.5 px-3.5 rounded-2xl bg-pastel-50 hover:bg-pastel-100 border border-pastel-200/80 flex items-center justify-between transition-colors">
+                        <span class="flex items-center gap-2 text-xs font-extrabold text-pastel-900">
+                            <i data-lucide="gift" class="w-4 h-4 text-pastel-500"></i>
+                            <span>Мои подарки и магазин</span>
+                        </span>
+                        <span class="text-[11px] font-extrabold text-pastel-600">
+                            <span id="settings-gifts-count">0</span> шт.
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Блок сохранённых аккаунтов (как "Аккаунты" на скриншоте) -->
+                <div class="bg-white rounded-3xl border border-pastel-200/80 p-3 shadow-2xs">
+                    <div class="flex items-center justify-between px-1 mb-2">
+                        <span class="text-[11px] font-extrabold uppercase tracking-wider text-pastel-600">Аккаунты</span>
+                        <button type="button" id="settings-add-account-btn" class="text-[11px] font-extrabold text-pastel-500 hover:text-pastel-700">+ Добавить</button>
+                    </div>
+                    <div id="settings-accounts-list" class="space-y-1.5"></div>
+                </div>
+
+                <!-- Список разделов настроек с цветными иконками и подзаголовками -->
+                <div class="bg-white rounded-3xl border border-pastel-200/80 overflow-hidden divide-y divide-pastel-100 shadow-2xs">
+                    <button type="button" id="setting-row-account" class="w-full px-3.5 py-3 text-left hover:bg-pastel-50 flex items-center gap-3 transition-colors">
+                        <div class="w-8 h-8 rounded-xl bg-sky-500 text-white flex items-center justify-center shrink-0">
+                            <i data-lucide="user" class="w-4 h-4"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-extrabold text-pastel-900">Аккаунт</div>
+                            <div class="text-[11px] font-semibold text-pastel-500 truncate">Никнейм, @юзернейм, «О себе»</div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-pastel-400 shrink-0"></i>
+                    </button>
+
+                    <button type="button" id="setting-row-chats" class="w-full px-3.5 py-3 text-left hover:bg-pastel-50 flex items-center gap-3 transition-colors">
+                        <div class="w-8 h-8 rounded-xl bg-amber-400 text-white flex items-center justify-center shrink-0">
+                            <i data-lucide="message-square" class="w-4 h-4"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-extrabold text-pastel-900">Настройки чатов</div>
+                            <div class="text-[11px] font-semibold text-pastel-500 truncate">Обои по умолчанию, размер текста, Enter</div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-pastel-400 shrink-0"></i>
+                    </button>
+
+                    <button type="button" id="setting-row-privacy" class="w-full px-3.5 py-3 text-left hover:bg-pastel-50 flex items-center gap-3 transition-colors">
+                        <div class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-extrabold text-pastel-900">Конфиденциальность</div>
+                            <div class="text-[11px] font-semibold text-pastel-500 truncate">Статус в сети, очистка кэша, сессия</div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-pastel-400 shrink-0"></i>
+                    </button>
+
+                    <button type="button" id="setting-row-notifications" class="w-full px-3.5 py-3 text-left hover:bg-pastel-50 flex items-center gap-3 transition-colors">
+                        <div class="w-8 h-8 rounded-xl bg-rose-500 text-white flex items-center justify-center shrink-0">
+                            <i data-lucide="bell" class="w-4 h-4"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="text-xs font-extrabold text-pastel-900">Уведомления и звуки</div>
+                            <div class="text-[11px] font-semibold text-pastel-500 truncate">Звуковой сигнал, счётчик, подсказки</div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-pastel-400 shrink-0"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- НИЖНЯЯ НАВИГАЦИЯ: ТОЛЬКО ЧАТЫ И НАСТРОЙКИ -->
+            <nav id="bottom-nav-bar" class="px-3 pt-1.5 pb-[max(0.45rem,env(safe-area-inset-bottom))] bg-white/95 backdrop-blur-md border-t border-pastel-200/80 grid grid-cols-2 gap-1.5 shrink-0 z-20">
+                <button type="button" id="nav-tab-chats" class="py-2 px-3 rounded-2xl bg-pastel-100 text-pastel-700 font-extrabold text-xs flex items-center justify-center gap-2 transition-all">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>Чаты</span>
+                </button>
+                <button type="button" id="nav-tab-settings" class="py-2 px-3 rounded-2xl text-pastel-500 hover:bg-pastel-50 font-bold text-xs flex items-center justify-center gap-2 transition-all">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    <span>Настройки</span>
+                </button>
+            </nav>
         </aside>
 
         <!-- ПРАВАЯ КОЛОНКА: ОКНО АКТИВНОГО ЧАТА -->
@@ -215,7 +324,7 @@
             <!-- Активный диалог -->
             <div id="active-chat-container" class="hidden flex-1 min-h-0 flex flex-col h-full w-full relative overflow-hidden">
                 <!-- Шапка чата -->
-                <header class="px-3 sm:px-4 pt-3 pb-2.5 bg-white/95 backdrop-blur-md border-b border-pastel-100 flex items-center justify-between gap-2 shrink-0 z-20">
+                <header class="px-2.5 sm:px-4 pt-8 sm:pt-2.5 pb-2 bg-white/95 backdrop-blur-md border-b border-pastel-100 flex items-center justify-between gap-2 shrink-0 z-20">
                     <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                         <!-- Кнопка Назад -->
                         <button type="button" id="back-to-chats-btn" title="Назад к списку чатов"
@@ -240,8 +349,13 @@
                         </button>
                     </div>
 
-                    <!-- Кнопка меню Три точки -->
-                    <div class="relative shrink-0">
+                    <!-- Кнопка подарков и меню Три точки -->
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" id="open-gifts-shop-btn" title="Подарки за верити 😊"
+                            class="w-9 h-9 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200/80 flex items-center justify-center transition-colors">
+                            <i data-lucide="gift" class="w-4 h-4"></i>
+                        </button>
+                        <div class="relative">
                         <button type="button" id="chat-more-btn" title="Меню чата"
                             class="w-9 h-9 rounded-xl bg-pastel-50 hover:bg-pastel-100 text-pastel-700 border border-pastel-200/70 flex items-center justify-center transition-colors">
                             <i data-lucide="more-vertical" class="w-5 h-5"></i>
@@ -265,6 +379,7 @@
                                 <i data-lucide="info" class="w-4 h-4 text-pastel-500"></i>
                                 <span id="menu-view-profile-label">О собеседнике</span>
                             </button>
+                        </div>
                         </div>
                     </div>
                 </header>
@@ -323,7 +438,7 @@
                 </div>
 
                 <!-- Поле ввода сообщения (всегда закреплено внизу) -->
-                <form id="message-form" onsubmit="return false;" class="p-2.5 sm:p-3 bg-white border-t border-pastel-200/80 flex items-center gap-2 shrink-0 z-20">
+                <form id="message-form" onsubmit="return false;" class="px-2.5 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:p-3 bg-white border-t border-pastel-200/80 flex items-center gap-1.5 shrink-0 z-20">
                     <button type="button" id="toggle-emoji-btn" class="w-10 h-10 rounded-xl bg-pastel-50 hover:bg-pastel-100 text-pastel-500 flex items-center justify-center shrink-0 transition-colors">
                         <i data-lucide="smile" class="w-5 h-5"></i>
                     </button>
@@ -369,6 +484,14 @@
                 <button type="button" id="ctx-pin-btn" class="w-full px-4 py-3 text-left text-sm font-bold text-pastel-900 hover:bg-pastel-50 flex items-center gap-3 transition-colors">
                     <i data-lucide="pin" class="w-4 h-4 text-pastel-500"></i>
                     <span>Закрепить</span>
+                </button>
+                <button type="button" id="ctx-send-gift-btn" class="w-full px-4 py-3 text-left text-sm font-bold text-pastel-700 hover:bg-pastel-50 flex items-center gap-3 transition-colors">
+                    <i data-lucide="gift" class="w-4 h-4 text-pastel-500"></i>
+                    <span>Подарить подарок 😊</span>
+                </button>
+                <button type="button" id="ctx-send-verity-btn" class="w-full px-4 py-3 text-left text-sm font-bold text-amber-700 hover:bg-amber-50 flex items-center gap-3 transition-colors">
+                    <span class="text-base leading-none">😊</span>
+                    <span>Отправить верити</span>
                 </button>
                 <button type="button" id="ctx-delete-btn" class="w-full px-4 py-3 text-left text-sm font-bold text-rose-500 hover:bg-rose-50 flex items-center gap-3 transition-colors">
                     <i data-lucide="trash-2" class="w-4 h-4 text-rose-500"></i>
@@ -576,6 +699,121 @@
 
             <div id="modal-users-list" class="p-3.5 overflow-y-auto space-y-1.5 flex-1">
                 <!-- Список пользователей или чатов -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- МОДАЛКА: ПОДМЕНЮ НАСТРОЕК -->
+    <div id="settings-detail-modal" class="hidden fixed inset-0 z-50 bg-pastel-900/30 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-pastel-200 overflow-hidden msg-pop">
+            <div class="px-4 py-3.5 bg-pastel-50 border-b border-pastel-100 flex items-center gap-2.5">
+                <button type="button" id="close-settings-detail-btn" class="w-8 h-8 rounded-xl bg-white hover:bg-pastel-100 text-pastel-700 border border-pastel-200/70 flex items-center justify-center">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                </button>
+                <h3 id="settings-detail-title" class="font-extrabold text-pastel-900 text-sm">Параметры</h3>
+            </div>
+            <div id="settings-detail-body" class="p-5 space-y-3.5"></div>
+        </div>
+    </div>
+
+
+    <!-- МОДАЛКА: ВАЛЮТА «ВЕРИТИ» (😊) -->
+    <div id="verity-modal" class="hidden fixed inset-0 z-50 bg-pastel-900/30 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-pastel-200 overflow-hidden msg-pop">
+            <div class="px-4 py-3.5 bg-pastel-50 border-b border-pastel-100 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <button type="button" id="close-verity-modal" class="w-8 h-8 rounded-xl bg-white hover:bg-pastel-100 text-pastel-700 border border-pastel-200/70 flex items-center justify-center">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    </button>
+                    <h3 class="font-extrabold text-pastel-900 text-sm flex items-center gap-1.5">
+                        <span>Верити</span>
+                        <span>😊</span>
+                    </h3>
+                </div>
+            </div>
+
+            <div class="p-5 space-y-4">
+                <div class="p-4 rounded-3xl bg-gradient-to-br from-amber-50 via-white to-pastel-50 border border-amber-200/80 text-center">
+                    <div class="text-3xl mb-1">😊</div>
+                    <div class="text-[11px] font-extrabold uppercase tracking-wider text-pastel-500">Ваш баланс</div>
+                    <div id="verity-modal-balance" class="text-2xl font-extrabold text-pastel-900 mt-0.5">0 верити</div>
+                    <p class="text-[11px] text-pastel-600 mt-1">Внутренняя валюта gsgram — как звёзды в Telegram, только верити с улыбкой.</p>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-extrabold uppercase tracking-wider text-pastel-600 mb-2">Получить / пополнить верити</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" data-add-verity="10" class="verity-topup-btn py-2.5 px-3 rounded-2xl bg-pastel-50 hover:bg-pastel-100 border border-pastel-200 text-xs font-extrabold text-pastel-900">+10 😊 </button>
+                        <button type="button" data-add-verity="50" class="verity-topup-btn py-2.5 px-3 rounded-2xl bg-pastel-50 hover:bg-pastel-100 border border-pastel-200 text-xs font-extrabold text-pastel-900">+50 😊 </button>
+                        <button type="button" data-add-verity="100" class="verity-topup-btn py-2.5 px-3 rounded-2xl bg-pastel-50 hover:bg-pastel-100 border border-pastel-200 text-xs font-extrabold text-pastel-900">+100 😊 </button>
+                    </div>
+                </div>
+
+                <div class="pt-2 border-t border-pastel-100 space-y-2.5">
+                    <label class="block text-[11px] font-extrabold uppercase tracking-wider text-pastel-600">Перевести верити участнику</label>
+                    <input type="text" id="verity-recipient-input" placeholder="@username получателя"
+                        class="w-full px-3.5 py-2.5 bg-pastel-50 border border-pastel-200 rounded-2xl text-xs font-bold text-pastel-900 focus:outline-none focus:border-pastel-500">
+                    <div class="flex gap-2">
+                        <input type="number" id="verity-amount-input" min="1" placeholder="Сумма"
+                            class="w-28 px-3.5 py-2.5 bg-pastel-50 border border-pastel-200 rounded-2xl text-xs font-bold text-pastel-900 focus:outline-none focus:border-pastel-500">
+                        <button type="button" id="verity-send-transfer-btn"
+                            class="flex-1 py-2.5 px-4 bg-gradient-to-r from-pastel-500 to-pastel-400 hover:from-pastel-600 hover:to-pastel-500 text-white font-extrabold text-xs rounded-2xl shadow-sm active:scale-[0.98] transition-all">
+                            Отправить 😊
+                        </button>
+                    </div>
+                    <p id="verity-status-msg" class="text-[11px] font-bold text-pastel-600 min-h-[16px]"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- МОДАЛКА: ПОДАРКИ КАК В TELEGRAM (ОБЛАЧНАЯ КОЛЛЕКЦИЯ ДЛЯ ВСЕХ ЗА ВЕРИТИ 😊) -->
+    <div id="gifts-modal" class="hidden fixed inset-0 z-50 bg-pastel-900/35 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-pastel-200 overflow-hidden msg-pop flex flex-col max-h-[88dvh]">
+            <div class="px-4 py-3.5 bg-pastel-50 border-b border-pastel-100 flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <button type="button" id="close-gifts-modal" class="w-8 h-8 rounded-xl bg-white hover:bg-pastel-100 text-pastel-700 border border-pastel-200/70 flex items-center justify-center">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    </button>
+                    <div>
+                        <h3 class="font-extrabold text-pastel-900 text-sm">Купить подарок</h3>
+                        <p class="text-[10px] font-semibold text-pastel-500">Подарки сохраняются в облаке для всех участников</p>
+                    </div>
+                </div>
+                <div class="px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-xs font-extrabold text-amber-700 flex items-center gap-1">
+                    <span id="gifts-modal-verity">0</span>
+                    <span>😊</span>
+                </div>
+            </div>
+
+            <div class="p-4 overflow-y-auto flex-1 space-y-4">
+                <div class="grid grid-cols-2 gap-1.5 p-1 bg-pastel-50 rounded-2xl border border-pastel-200/80">
+                    <button type="button" id="gifts-tab-shop" class="py-2 px-3 rounded-xl text-xs font-extrabold bg-white text-pastel-900 shadow-2xs transition-all">
+                        Все подарки
+                    </button>
+                    <button type="button" id="gifts-tab-collection" class="py-2 px-3 rounded-xl text-xs font-extrabold text-pastel-600 hover:text-pastel-900 transition-all">
+                        Коллекционные и мои
+                    </button>
+                </div>
+
+                <div id="gifts-recipient-box" class="bg-pastel-50/70 rounded-2xl p-3 border border-pastel-200/70 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="text-[11px] font-extrabold uppercase tracking-wider text-pastel-600">Получатель (пусто — в свой профиль)</label>
+                        <button type="button" id="gift-to-active-chat-btn" class="text-[11px] font-extrabold text-pastel-500 hover:text-pastel-700">В текущий чат</button>
+                    </div>
+                    <input type="text" id="gift-recipient-input" placeholder="@username или оставьте пустым для себя"
+                        class="w-full px-3 py-2 bg-white border border-pastel-200 rounded-xl text-xs font-bold text-pastel-900 focus:outline-none focus:border-pastel-500">
+                    <p id="gift-status-banner" class="text-[11px] font-bold text-pastel-600 min-h-[15px]"></p>
+                </div>
+
+                <div id="gifts-shop-grid" class="grid grid-cols-3 gap-2.5"></div>
+
+                <div id="gifts-collection-panel" class="hidden space-y-2.5">
+                    <div class="text-[11px] font-extrabold uppercase tracking-wider text-pastel-600">Облачная витрина подарков участников</div>
+                    <div id="gifts-collection-list" class="space-y-2"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -922,7 +1160,7 @@
         }
 
         function renderChatList() {
-            const container = document.getElementById('chat-list-container');
+            const container = document.getElementById('tab-chats-view');
             if (!container || !currentUser) return;
 
             const filter = document.getElementById('search-input').value.trim().toLowerCase();
@@ -1754,6 +1992,588 @@
             searchResultsBox.classList.add('hidden');
             renderChatList();
         });
+
+
+        // ЛОГИКА НИЖНЕГО МЕНЮ (ЧАТЫ / НАСТРОЙКИ) И РАЗДЕЛОВ НАСТРОЕК
+        const navTabChats = document.getElementById('nav-tab-chats');
+        const navTabSettings = document.getElementById('nav-tab-settings');
+        const tabChatsView = document.getElementById('tab-chats-view');
+        const tabSettingsView = document.getElementById('tab-settings-view');
+        const settingsDetailModal = document.getElementById('settings-detail-modal');
+        const settingsDetailTitle = document.getElementById('settings-detail-title');
+        const settingsDetailBody = document.getElementById('settings-detail-body');
+
+        let appPrefs = JSON.parse(localStorage.getItem('gsgram_prefs') || '{"enterToSend":true,"showOnlineStatus":true,"soundAlerts":true}');
+
+        function saveAppPrefs() {
+            localStorage.setItem('gsgram_prefs', JSON.stringify(appPrefs));
+        }
+
+        function saveKnownAccount(acc) {
+            if (!acc || !acc.username) return;
+            const list = JSON.parse(localStorage.getItem('gsgram_known_accounts') || '[]');
+            const filtered = list.filter(x => x.username !== acc.username);
+            filtered.unshift({
+                username: acc.username,
+                nickname: acc.nickname,
+                avatar: acc.avatar || '',
+                bio: acc.bio || ''
+            });
+            localStorage.setItem('gsgram_known_accounts', JSON.stringify(filtered.slice(0, 5)));
+        }
+
+        function renderSettingsTab() {
+            if (!currentUser) return;
+            saveKnownAccount(currentUser);
+
+            document.getElementById('settings-profile-avatar').innerHTML = renderAvatarHTML(currentUser.avatar, currentUser.nickname);
+            document.getElementById('settings-profile-nick').textContent = currentUser.nickname;
+            document.getElementById('settings-profile-tag').textContent = '@' + currentUser.username;
+            document.getElementById('settings-profile-bio').textContent = currentUser.bio || 'Нажмите «Аккаунт», чтобы добавить описание';
+
+            const accListEl = document.getElementById('settings-accounts-list');
+            const known = JSON.parse(localStorage.getItem('gsgram_known_accounts') || '[]');
+            accListEl.innerHTML = known.map(acc => {
+                const isCurr = acc.username === currentUser.username;
+                const live = allUsersMap[acc.username] || acc;
+                return `
+                    <button type="button" data-acc-user="${acc.username}" class="switch-acc-btn w-full flex items-center justify-between gap-2 p-2 rounded-2xl ${isCurr ? 'bg-pastel-100/80 border border-pastel-200' : 'hover:bg-pastel-50'} text-left transition-colors">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-pastel-400 to-pastel-300 text-white font-extrabold text-xs flex items-center justify-center overflow-hidden shrink-0">
+                                ${renderAvatarHTML(live.avatar, live.nickname)}
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-xs font-extrabold text-pastel-900 truncate">${escapeHtml(live.nickname)}</div>
+                                <div class="text-[11px] font-semibold text-pastel-500 truncate">@${escapeHtml(acc.username)}</div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full shrink-0 ${isCurr ? 'bg-pastel-500 text-white' : 'bg-pastel-100 text-pastel-600'}">
+                            ${isCurr ? 'Активен' : 'Войти'}
+                        </span>
+                    </button>
+                `;
+            }).join('');
+
+            accListEl.querySelectorAll('.switch-acc-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetTag = btn.dataset.accUser;
+                    if (!targetTag || targetTag === currentUser.username) return;
+                    const found = allUsersMap[targetTag] || known.find(x => x.username === targetTag);
+                    if (found) {
+                        currentUser = {
+                            ...found,
+                            username: targetTag,
+                            pinnedChats: found.pinnedChats || [GLOBAL_CHAT_ID]
+                        };
+                        localStorage.setItem('gsgram_user', JSON.stringify(currentUser));
+                        updateCurrentUserHeader();
+                        renderSettingsTab();
+                        renderChatList();
+                    }
+                });
+            });
+
+            lucide.createIcons();
+        }
+
+        function setSidebarTab(tabName) {
+            const isChats = tabName === 'chats';
+            tabChatsView.classList.toggle('hidden', !isChats);
+            tabSettingsView.classList.toggle('hidden', isChats);
+
+            navTabChats.className = isChats
+                ? "py-2 px-3 rounded-2xl bg-pastel-100 text-pastel-700 font-extrabold text-xs flex items-center justify-center gap-2 transition-all"
+                : "py-2 px-3 rounded-2xl text-pastel-500 hover:bg-pastel-50 font-bold text-xs flex items-center justify-center gap-2 transition-all";
+
+            navTabSettings.className = !isChats
+                ? "py-2 px-3 rounded-2xl bg-pastel-100 text-pastel-700 font-extrabold text-xs flex items-center justify-center gap-2 transition-all"
+                : "py-2 px-3 rounded-2xl text-pastel-500 hover:bg-pastel-50 font-bold text-xs flex items-center justify-center gap-2 transition-all";
+
+            if (!isChats) {
+                renderSettingsTab();
+            }
+        }
+
+        navTabChats.addEventListener('click', () => setSidebarTab('chats'));
+        navTabSettings.addEventListener('click', () => setSidebarTab('settings'));
+
+        document.getElementById('settings-add-account-btn').addEventListener('click', () => {
+            appScreen.classList.add('hidden');
+            authScreen.classList.remove('hidden');
+            document.getElementById('input-nickname').value = '';
+            document.getElementById('input-username').value = '';
+        });
+
+        document.getElementById('setting-row-account').addEventListener('click', () => {
+            document.getElementById('open-profile-edit-btn').click();
+        });
+
+        document.getElementById('close-settings-detail-btn').addEventListener('click', () => {
+            settingsDetailModal.classList.add('hidden');
+        });
+
+        document.getElementById('setting-row-chats').addEventListener('click', () => {
+            settingsDetailTitle.textContent = 'Настройки чатов';
+            settingsDetailBody.innerHTML = `
+                <label class="flex items-center justify-between p-3 rounded-2xl bg-pastel-50 border border-pastel-200/70 cursor-pointer">
+                    <div>
+                        <div class="text-xs font-extrabold text-pastel-900">Отправка по Enter</div>
+                        <div class="text-[11px] text-pastel-500">Нажмите Enter, чтобы быстро отправить сообщение</div>
+                    </div>
+                    <input type="checkbox" id="pref-enter-send" ${appPrefs.enterToSend ? 'checked' : ''} class="w-4 h-4 accent-pastel-500">
+                </label>
+                <button type="button" id="pref-reset-local-wp" class="w-full py-2.5 px-3.5 rounded-2xl bg-pastel-100 hover:bg-pastel-200 text-pastel-800 font-bold text-xs text-center transition-colors">
+                    Сбросить локальные обои чатов
+                </button>
+            `;
+            settingsDetailModal.classList.remove('hidden');
+            document.getElementById('pref-enter-send').addEventListener('change', (e) => {
+                appPrefs.enterToSend = e.target.checked;
+                saveAppPrefs();
+            });
+            document.getElementById('pref-reset-local-wp').addEventListener('click', () => {
+                localStorage.removeItem('gsgram_local_wps');
+                applyChatWallpaper();
+                settingsDetailModal.classList.add('hidden');
+            });
+        });
+
+        document.getElementById('setting-row-privacy').addEventListener('click', () => {
+            settingsDetailTitle.textContent = 'Конфиденциальность';
+            settingsDetailBody.innerHTML = `
+                <label class="flex items-center justify-between p-3 rounded-2xl bg-pastel-50 border border-pastel-200/70 cursor-pointer">
+                    <div>
+                        <div class="text-xs font-extrabold text-pastel-900">Показывать статус «в сети»</div>
+                        <div class="text-[11px] text-pastel-500">Собеседники видят ваш логин и активность</div>
+                    </div>
+                    <input type="checkbox" id="pref-online-status" ${appPrefs.showOnlineStatus ? 'checked' : ''} class="w-4 h-4 accent-pastel-500">
+                </label>
+                <button type="button" id="pref-clear-cache" class="w-full py-2.5 px-3.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs text-center border border-rose-200/70 transition-colors">
+                    Очистить локальный кэш браузера
+                </button>
+            `;
+            settingsDetailModal.classList.remove('hidden');
+            document.getElementById('pref-online-status').addEventListener('change', (e) => {
+                appPrefs.showOnlineStatus = e.target.checked;
+                saveAppPrefs();
+            });
+            document.getElementById('pref-clear-cache').addEventListener('click', () => {
+                localStorage.removeItem('gsgram_known_accounts');
+                localStorage.removeItem('gsgram_local_wps');
+                settingsDetailModal.classList.add('hidden');
+                renderSettingsTab();
+            });
+        });
+
+        document.getElementById('setting-row-notifications').addEventListener('click', () => {
+            settingsDetailTitle.textContent = 'Уведомления и звуки';
+            settingsDetailBody.innerHTML = `
+                <label class="flex items-center justify-between p-3 rounded-2xl bg-pastel-50 border border-pastel-200/70 cursor-pointer">
+                    <div>
+                        <div class="text-xs font-extrabold text-pastel-900">Звуковые подсказки интерфейса</div>
+                        <div class="text-[11px] text-pastel-500">Мягкий отклик при действиях в чате</div>
+                    </div>
+                    <input type="checkbox" id="pref-sound-alerts" ${appPrefs.soundAlerts ? 'checked' : ''} class="w-4 h-4 accent-pastel-500">
+                </label>
+                <p class="text-[11px] text-pastel-500 px-1">Push-уведомления работают, пока вкладка gsgram открыта в браузере.</p>
+            `;
+            settingsDetailModal.classList.remove('hidden');
+            document.getElementById('pref-sound-alerts').addEventListener('change', (e) => {
+                appPrefs.soundAlerts = e.target.checked;
+                saveAppPrefs();
+            });
+        });
+
+        const origEnterMessenger = enterMessenger;
+        enterMessenger = function() {
+            origEnterMessenger();
+            saveKnownAccount(currentUser);
+            renderSettingsTab();
+        };
+
+
+        // ЛОГИКА ВАЛЮТЫ «ВЕРИТИ» (😊)
+        const verityModal = document.getElementById('verity-modal');
+        const verityStatusMsg = document.getElementById('verity-status-msg');
+
+        function getVerityBalance() {
+            if (!currentUser) return 0;
+            const val = Number(currentUser.verityBalance);
+            return Number.isFinite(val) ? Math.max(0, Math.floor(val)) : 50;
+        }
+
+        function syncVerityUI() {
+            const bal = getVerityBalance();
+            const hEl = document.getElementById('header-verity-balance');
+            const sEl = document.getElementById('settings-verity-balance');
+            const mEl = document.getElementById('verity-modal-balance');
+            if (hEl) hEl.textContent = String(bal);
+            if (sEl) sEl.textContent = String(bal);
+            if (mEl) mEl.textContent = `${bal} верити`;
+        }
+
+        async function setVerityBalance(newBal) {
+            if (!currentUser) return;
+            const cleanBal = Math.max(0, Math.floor(Number(newBal) || 0));
+            currentUser.verityBalance = cleanBal;
+            if (allUsersMap[currentUser.username]) {
+                allUsersMap[currentUser.username].verityBalance = cleanBal;
+            }
+            localStorage.setItem('gsgram_user', JSON.stringify(currentUser));
+            syncVerityUI();
+            if (isCloudReady) {
+                await setDoc(doc(db, 'users', currentUser.username), {
+                    verityBalance: cleanBal
+                }, { merge: true });
+            }
+        }
+
+        function openVerityModal(prefillRecipient = '') {
+            if (!currentUser) return;
+            if (typeof currentUser.verityBalance !== 'number') {
+                currentUser.verityBalance = 50;
+            }
+            verityStatusMsg.textContent = '';
+            document.getElementById('verity-recipient-input').value = prefillRecipient ? '@' + prefillRecipient.replace(/^@+/, '') : '';
+            document.getElementById('verity-amount-input').value = '10';
+            syncVerityUI();
+            verityModal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        document.getElementById('verity-wallet-btn').addEventListener('click', () => openVerityModal(''));
+        document.getElementById('settings-verity-card-btn').addEventListener('click', () => openVerityModal(''));
+        document.getElementById('close-verity-modal').addEventListener('click', () => verityModal.classList.add('hidden'));
+
+        document.querySelectorAll('.verity-topup-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const addAmt = Number(btn.dataset.addVerity || 0);
+                if (!addAmt) return;
+                await setVerityBalance(getVerityBalance() + addAmt);
+                verityStatusMsg.textContent = `Начислено +${addAmt} верити 😊`;
+            });
+        });
+
+        document.getElementById('verity-send-transfer-btn').addEventListener('click', async () => {
+            const rawTag = document.getElementById('verity-recipient-input').value.trim().toLowerCase().replace(/^@+/, '');
+            const amount = Math.floor(Number(document.getElementById('verity-amount-input').value || 0));
+            const currentBal = getVerityBalance();
+
+            if (!rawTag) {
+                verityStatusMsg.textContent = 'Укажите @юзернейм получателя';
+                return;
+            }
+            if (!amount || amount < 1) {
+                verityStatusMsg.textContent = 'Введите сумму от 1 верити';
+                return;
+            }
+            if (amount > currentBal) {
+                verityStatusMsg.textContent = 'Недостаточно верити на балансе';
+                return;
+            }
+
+            await setVerityBalance(currentBal - amount);
+
+            if (isCloudReady) {
+                const targetUser = allUsersMap[rawTag];
+                const targetCurrentBal = Number(targetUser?.verityBalance || 0);
+                await setDoc(doc(db, 'users', rawTag), {
+                    verityBalance: targetCurrentBal + amount
+                }, { merge: true });
+
+                const dmId = getDmChatId(currentUser.username, rawTag);
+                const chatRef = doc(db, 'chats', dmId);
+                const chatSnap = await getDoc(chatRef);
+                if (!chatSnap.exists()) {
+                    await setDoc(chatRef, {
+                        id: dmId,
+                        type: 'dm',
+                        participants: [currentUser.username, rawTag],
+                        updatedAt: serverTimestamp()
+                    });
+                }
+                const giftText = `Отправил(а) ${amount} верити 😊`;
+                await addDoc(collection(db, 'chats', dmId, 'messages'), {
+                    text: giftText,
+                    senderUsername: currentUser.username,
+                    senderNickname: currentUser.nickname,
+                    createdAt: serverTimestamp(),
+                    reactions: {}
+                });
+                await setDoc(chatRef, {
+                    lastMessage: `${currentUser.nickname}: ${giftText}`,
+                    updatedAt: serverTimestamp()
+                }, { merge: true });
+            }
+
+            verityStatusMsg.textContent = `Отправлено ${amount} верити @${rawTag} 😊`;
+            setTimeout(() => {
+                verityModal.classList.add('hidden');
+            }, 700);
+        });
+
+        document.getElementById('ctx-send-verity-btn').addEventListener('click', () => {
+            if (!contextTargetMsg) return;
+            const authorTag = contextTargetMsg.senderUsername || '';
+            ctxOverlay.classList.add('hidden');
+            openVerityModal(authorTag);
+        });
+
+        const origUpdateHeader = updateCurrentUserHeader;
+        updateCurrentUserHeader = function() {
+            origUpdateHeader();
+            if (currentUser && typeof currentUser.verityBalance !== 'number') {
+                currentUser.verityBalance = 50;
+            }
+            syncVerityUI();
+        };
+
+
+        // ЛОГИКА ПОДАРКОВ КАК В TELEGRAM (ОБЛАЧНАЯ ДЛЯ ВСЕХ, ВАЛЮТА ВЕРИТИ 😊)
+        const TELEGRAM_GIFTS_CATALOG = [
+            { id: 'heart', name: 'Сердце с лентой', emoji: '💝', price: 15, rare: false },
+            { id: 'bear', name: 'Плюшевый мишка', emoji: '🧸', price: 15, rare: false },
+            { id: 'box', name: 'Праздничный подарок', emoji: '🎁', price: 25, rare: false },
+            { id: 'rose', name: 'Красная роза', emoji: '🌹', price: 25, rare: false },
+            { id: 'cake', name: 'Торт со свечами', emoji: '🎂', price: 50, rare: false },
+            { id: 'flowers', name: 'Букет цветов', emoji: '💐', price: 50, rare: false },
+            { id: 'rocket', name: 'Ракета', emoji: '🚀', price: 50, rare: true },
+            { id: 'trophy', name: 'Золотой кубок', emoji: '🏆', price: 100, rare: true },
+            { id: 'ring', name: 'Кольцо с бриллиантом', emoji: '💍', price: 100, rare: true }
+        ];
+
+        const giftsModal = document.getElementById('gifts-modal');
+        const giftStatusBanner = document.getElementById('gift-status-banner');
+        let cloudGiftsList = [];
+        let giftsMode = 'shop';
+
+        function startCloudGiftsListener() {
+            if (!isCloudReady) return;
+            const qGifts = query(collection(db, 'gifts'), orderBy('createdAt', 'desc'), limit(80));
+            onSnapshot(qGifts, (snap) => {
+                cloudGiftsList = [];
+                snap.forEach((d) => {
+                    cloudGiftsList.push({ id: d.id, ...d.data() });
+                });
+                syncGiftsCounters();
+                if (!giftsModal.classList.contains('hidden')) {
+                    renderGiftsCollection();
+                }
+            });
+        }
+
+        function syncGiftsCounters() {
+            const countEl = document.getElementById('settings-gifts-count');
+            const mVerityEl = document.getElementById('gifts-modal-verity');
+            if (mVerityEl) mVerityEl.textContent = String(getVerityBalance());
+            if (!countEl || !currentUser) return;
+            const mine = cloudGiftsList.filter(g => g.toUsername === currentUser.username || g.fromUsername === currentUser.username);
+            countEl.textContent = String(mine.length);
+        }
+
+        function renderGiftsCatalog() {
+            const grid = document.getElementById('gifts-shop-grid');
+            if (!grid) return;
+            grid.innerHTML = TELEGRAM_GIFTS_CATALOG.map(item => `
+                <button type="button" data-gift-id="${item.id}" class="buy-gift-btn group bg-pastel-50/70 hover:bg-pastel-100/90 border border-pastel-200/80 rounded-2xl p-3 flex flex-col items-center text-center transition-all active:scale-95 relative">
+                    ${item.rare ? '<span class="absolute top-1.5 right-1.5 text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800">редкий</span>' : ''}
+                    <div class="text-3xl mb-1.5 group-hover:scale-110 transition-transform">${item.emoji}</div>
+                    <div class="text-[11px] font-extrabold text-pastel-900 line-clamp-1">${escapeHtml(item.name)}</div>
+                    <div class="mt-1.5 px-2.5 py-0.5 rounded-full bg-white border border-amber-200 text-[11px] font-extrabold text-amber-700">
+                        ${item.price} 😊
+                    </div>
+                </button>
+            `).join('');
+
+            grid.querySelectorAll('.buy-gift-btn').forEach(btn => {
+                btn.addEventListener('click', () => purchaseGift(btn.dataset.giftId));
+            });
+        }
+
+        function renderGiftsCollection() {
+            const listEl = document.getElementById('gifts-collection-list');
+            if (!listEl) return;
+            if (cloudGiftsList.length === 0) {
+                listEl.innerHTML = `<p class="text-xs font-semibold text-pastel-500 text-center py-6">Пока никто не подарил подарок в облаке. Станьте первым!</p>`;
+                return;
+            }
+            listEl.innerHTML = cloudGiftsList.map(g => {
+                const isCollectible = Boolean(g.collectible);
+                const canUpgrade = g.rare && !isCollectible && g.toUsername === currentUser?.username;
+                return `
+                    <div class="p-3 rounded-2xl bg-pastel-50/80 border border-pastel-200/80 flex items-center justify-between gap-2.5">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="text-2xl shrink-0">${g.emoji || '🎁'}</div>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs font-extrabold text-pastel-900 truncate">${escapeHtml(g.giftName || 'Подарок')}</span>
+                                    ${isCollectible ? '<span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-pastel-500 text-white shrink-0">коллекционный</span>' : ''}
+                                </div>
+                                <div class="text-[11px] font-semibold text-pastel-500 truncate">
+                                    От @${escapeHtml(g.fromUsername)} → @${escapeHtml(g.toUsername)}
+                                </div>
+                            </div>
+                        </div>
+                        ${canUpgrade ? `
+                            <button type="button" data-gift-doc-id="${g.id}" class="upgrade-collectible-btn px-2.5 py-1 rounded-xl bg-pastel-500 hover:bg-pastel-600 text-white text-[10px] font-extrabold shrink-0">
+                                В коллекцию
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            listEl.querySelectorAll('.upgrade-collectible-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    if (!isCloudReady) return;
+                    await updateDoc(doc(db, 'gifts', btn.dataset.giftDocId), { collectible: true });
+                });
+            });
+        }
+
+        async function purchaseGift(giftId) {
+            if (!currentUser) return;
+            const catalogItem = TELEGRAM_GIFTS_CATALOG.find(x => x.id === giftId);
+            if (!catalogItem) return;
+
+            const currentBal = getVerityBalance();
+            if (currentBal < catalogItem.price) {
+                giftStatusBanner.textContent = `Не хватает верити 😊 (нужно ${catalogItem.price}, у вас ${currentBal})`;
+                return;
+            }
+
+            const rawRecipient = document.getElementById('gift-recipient-input').value.trim().toLowerCase().replace(/^@+/, '');
+            const toUsername = rawRecipient || currentUser.username;
+
+            await setVerityBalance(currentBal - catalogItem.price);
+            syncGiftsCounters();
+
+            const giftRecord = {
+                giftId: catalogItem.id,
+                giftName: catalogItem.name,
+                emoji: catalogItem.emoji,
+                price: catalogItem.price,
+                rare: catalogItem.rare,
+                collectible: false,
+                fromUsername: currentUser.username,
+                fromNickname: currentUser.nickname,
+                toUsername,
+                chatId: activeChatId || null,
+                createdAt: serverTimestamp()
+            };
+
+            if (isCloudReady) {
+                await addDoc(collection(db, 'gifts'), giftRecord);
+
+                const targetChatId = activeChatId || (toUsername !== currentUser.username ? getDmChatId(currentUser.username, toUsername) : GLOBAL_CHAT_ID);
+                if (targetChatId) {
+                    const chatRef = doc(db, 'chats', targetChatId);
+                    const snap = await getDoc(chatRef);
+                    if (!snap.exists() && targetChatId.startsWith('dm_')) {
+                        const parts = targetChatId.replace(/^dm_/, '').split('__');
+                        await setDoc(chatRef, {
+                            id: targetChatId,
+                            type: 'dm',
+                            participants: parts,
+                            updatedAt: serverTimestamp()
+                        });
+                    }
+                    const giftMsgText = toUsername === currentUser.username
+                        ? `Добавил(а) в профиль подарок ${catalogItem.emoji} «${catalogItem.name}»`
+                        : `Подарил(а) @${toUsername} подарок ${catalogItem.emoji} «${catalogItem.name}»`;
+
+                    await addDoc(collection(db, 'chats', targetChatId, 'messages'), {
+                        text: giftMsgText,
+                        senderUsername: currentUser.username,
+                        senderNickname: currentUser.nickname,
+                        createdAt: serverTimestamp(),
+                        reactions: {}
+                    });
+                    await setDoc(chatRef, {
+                        lastMessage: `${currentUser.nickname}: ${giftMsgText}`,
+                        updatedAt: serverTimestamp()
+                    }, { merge: true });
+                }
+            }
+
+            giftStatusBanner.textContent = `Подарок ${catalogItem.emoji} отправлен для @${toUsername} и сохранён для всех!`;
+        }
+
+        function setGiftsTab(mode) {
+            giftsMode = mode;
+            const shopBtn = document.getElementById('gifts-tab-shop');
+            const colBtn = document.getElementById('gifts-tab-collection');
+            const shopGrid = document.getElementById('gifts-shop-grid');
+            const colPanel = document.getElementById('gifts-collection-panel');
+            const recBox = document.getElementById('gifts-recipient-box');
+
+            const isShop = mode === 'shop';
+            shopBtn.className = isShop
+                ? "py-2 px-3 rounded-xl text-xs font-extrabold bg-white text-pastel-900 shadow-2xs transition-all"
+                : "py-2 px-3 rounded-xl text-xs font-extrabold text-pastel-600 hover:text-pastel-900 transition-all";
+            colBtn.className = !isShop
+                ? "py-2 px-3 rounded-xl text-xs font-extrabold bg-white text-pastel-900 shadow-2xs transition-all"
+                : "py-2 px-3 rounded-xl text-xs font-extrabold text-pastel-600 hover:text-pastel-900 transition-all";
+
+            shopGrid.classList.toggle('hidden', !isShop);
+            colPanel.classList.toggle('hidden', isShop);
+            recBox.classList.toggle('hidden', !isShop);
+
+            if (!isShop) {
+                renderGiftsCollection();
+            }
+        }
+
+        function openGiftsModal(prefillRecipient = '') {
+            if (!currentUser) return;
+            if (typeof currentUser.verityBalance !== 'number') {
+                currentUser.verityBalance = 50;
+            }
+            giftStatusBanner.textContent = '';
+            let defaultTarget = prefillRecipient;
+            if (!defaultTarget && activeChatMeta?.type === 'dm' && activeChatMeta.partnerUsername) {
+                defaultTarget = activeChatMeta.partnerUsername;
+            }
+            document.getElementById('gift-recipient-input').value = defaultTarget ? '@' + defaultTarget.replace(/^@+/, '') : '';
+            syncGiftsCounters();
+            renderGiftsCatalog();
+            setGiftsTab('shop');
+            giftsModal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        document.getElementById('open-gifts-shop-btn').addEventListener('click', () => openGiftsModal(''));
+        document.getElementById('settings-open-gifts-btn').addEventListener('click', () => openGiftsModal(''));
+        document.getElementById('close-gifts-modal').addEventListener('click', () => giftsModal.classList.add('hidden'));
+        document.getElementById('gifts-tab-shop').addEventListener('click', () => setGiftsTab('shop'));
+        document.getElementById('gifts-tab-collection').addEventListener('click', () => setGiftsTab('collection'));
+
+        document.getElementById('gift-to-active-chat-btn').addEventListener('click', () => {
+            if (activeChatMeta?.type === 'dm' && activeChatMeta.partnerUsername) {
+                document.getElementById('gift-recipient-input').value = '@' + activeChatMeta.partnerUsername;
+            } else {
+                document.getElementById('gift-recipient-input').value = '';
+            }
+        });
+
+        document.getElementById('ctx-send-gift-btn').addEventListener('click', () => {
+            if (!contextTargetMsg) return;
+            const authorTag = contextTargetMsg.senderUsername || '';
+            ctxOverlay.classList.add('hidden');
+            openGiftsModal(authorTag);
+        });
+
+        const origStartCloudListeners = startCloudListeners;
+        startCloudListeners = function() {
+            origStartCloudListeners();
+            startCloudGiftsListener();
+        };
+
+        const origSyncVerityUI = syncVerityUI;
+        syncVerityUI = function() {
+            origSyncVerityUI();
+            syncGiftsCounters();
+        };
 
         initFirebase();
     </script>
