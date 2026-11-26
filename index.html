@@ -909,6 +909,40 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА: ПРОСМОТР ДЕТАЛЕЙ ПОДАРКА В СТИЛЕ 4-ГО ФОТО -->
+    <div id="gift-detail-modal" class="hidden fixed inset-0 z-[60] bg-pastel-900/40 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4">
+        <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl border border-pastel-200 overflow-hidden msg-pop">
+            <div class="p-5 flex flex-col items-center text-center space-y-3">
+                <div id="gift-detail-emoji" class="text-6xl leading-none py-1">💝</div>
+                <h3 class="text-base font-extrabold text-pastel-900">Подарок</h3>
+
+                <div class="w-full rounded-2xl bg-pastel-50/90 border border-pastel-200/80 divide-y divide-pastel-200/60 text-xs">
+                    <div class="px-3.5 py-2.5 flex items-center justify-between gap-2">
+                        <span class="font-bold text-pastel-500">От</span>
+                        <span id="gift-detail-from" class="font-extrabold text-pastel-900 truncate">@sender</span>
+                    </div>
+                    <div class="px-3.5 py-2.5 flex items-center justify-between gap-2">
+                        <span class="font-bold text-pastel-500">Дата</span>
+                        <span id="gift-detail-date" class="font-extrabold text-pastel-900">02 нояб. 2026 в 08:43</span>
+                    </div>
+                    <div class="px-3.5 py-2.5 flex items-center justify-between gap-2">
+                        <span class="font-bold text-pastel-500">Стоимость</span>
+                        <span id="gift-detail-price" class="font-extrabold text-amber-700 flex items-center gap-1">😊 <span>15</span></span>
+                    </div>
+                    <div id="gift-detail-note-row" class="px-3.5 py-2.5 text-left">
+                        <span class="block text-[10px] font-bold text-pastel-500 mb-0.5">Сообщение</span>
+                        <p id="gift-detail-note" class="font-semibold text-pastel-900 break-words"></p>
+                    </div>
+                </div>
+
+                <button type="button" id="close-gift-detail-btn"
+                    class="w-full py-3 rounded-2xl bg-gradient-to-r from-pastel-500 to-pastel-400 hover:from-pastel-600 hover:to-pastel-500 text-white font-extrabold text-xs shadow-sm transition-all active:scale-[0.98]">
+                    ОК
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- FIREBASE SDK И ЛОГИКА ПРИЛОЖЕНИЯ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -1465,7 +1499,20 @@
                             ${!isMine ? `<div class="text-[11px] font-extrabold text-pastel-600 mb-0.5">${escapeHtml(senderObj.nickname)}</div>` : ''}
                             ${forwardedTag}
                             ${replyBlock}
-                            <div class="text-sm font-medium leading-snug break-words whitespace-pre-wrap">${escapeHtml(m.text)}</div>
+                            ${m.giftCard ? `
+                                <div class="my-1 p-3 rounded-2xl ${isMine ? 'bg-white/15 border border-white/25' : 'bg-pastel-50 border border-pastel-200/80'} flex flex-col items-center text-center space-y-1.5 min-w-[170px]">
+                                    <div class="text-4xl leading-none py-0.5">${escapeHtml(m.giftCard.emoji || '💝')}</div>
+                                    <div class="text-[11px] font-extrabold ${isMine ? 'text-white' : 'text-pastel-900'}">
+                                        Подарок от ${escapeHtml(m.giftCard.fromLabel || 'Аноним')}
+                                    </div>
+                                    ${m.giftCard.note ? `<div class="text-[11px] font-medium italic ${isMine ? 'text-white/90' : 'text-pastel-700'}">«${escapeHtml(m.giftCard.note)}»</div>` : ''}
+                                    <button type="button" data-gift-msg-idx="${activeMessages.indexOf(m)}" class="open-gift-from-chat-btn mt-1 px-3 py-1 rounded-xl ${isMine ? 'bg-white text-pastel-700 hover:bg-pastel-50' : 'bg-pastel-500 text-white hover:bg-pastel-600'} text-[11px] font-extrabold transition-colors">
+                                        Посмотреть
+                                    </button>
+                                </div>
+                            ` : `
+                                <div class="text-sm font-medium leading-snug break-words whitespace-pre-wrap">${escapeHtml(m.text)}</div>
+                            `}
                             <div class="flex items-center justify-end gap-1 mt-1 text-[10px] font-bold ${isMine ? 'text-white/80' : 'text-pastel-400'}">
                                 <span>${formatTime(m.createdAt)}</span>
                                 ${isMine ? '<i data-lucide="check-check" class="w-3 h-3"></i>' : ''}
@@ -2595,20 +2642,28 @@
                 return;
             }
 
-            grid.innerHTML = userGifts.map(g => {
+            grid.innerHTML = userGifts.map((g, idx) => {
                 const senderTag = (g.fromUsername || '').toLowerCase();
                 const senderObj = getEnrichedUserProfile(senderTag);
                 const senderLabel = g.hideSender ? 'Аноним' : `@${senderTag}`;
                 return `
-                    <div class="relative rounded-2xl bg-pastel-50/90 hover:bg-pastel-100/80 border border-pastel-200/80 p-3 flex flex-col items-center justify-center aspect-square shadow-2xs transition-colors" title="От ${escapeHtml(senderLabel)}${g.note ? ': ' + escapeHtml(g.note) : ''}">
+                    <button type="button" data-gift-idx="${idx}" class="profile-gift-card-btn relative rounded-2xl bg-pastel-50/90 hover:bg-pastel-100/90 border border-pastel-200/80 p-3 flex flex-col items-center justify-center aspect-square shadow-2xs transition-all active:scale-95 cursor-pointer">
                         <div class="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-pastel-400 text-white text-[9px] font-extrabold flex items-center justify-center overflow-hidden border border-white shadow-2xs">
                             ${g.hideSender ? '?' : renderAvatarHTML(senderObj.avatar, senderObj.nickname)}
                         </div>
                         <div class="text-3xl sm:text-4xl leading-none">${g.emoji || '💝'}</div>
                         <span class="mt-1.5 text-[10px] font-extrabold text-pastel-700 truncate max-w-full">${escapeHtml(senderLabel)}</span>
-                    </div>
+                    </button>
                 `;
             }).join('');
+
+            grid.querySelectorAll('.profile-gift-card-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const gItem = userGifts[Number(btn.dataset.giftIdx)];
+                    if (gItem) openGiftDetailModal(gItem);
+                });
+            });
         }
 
         function setProfileSubTab(tab) {
@@ -2706,13 +2761,23 @@
                     }
                     const senderLabel = hideSender ? 'Аноним' : `@${currentUser.username}`;
                     const giftMsgText = toUsername === currentUser.username
-                        ? `${senderLabel} добавил(а) в профиль подарок ${catalogItem.emoji} «${catalogItem.name}»${note ? ` — «${note}»` : ''}`
-                        : `${senderLabel} подарил(а) @${toUsername} подарок ${catalogItem.emoji} «${catalogItem.name}»${note ? ` — «${note}»` : ''}`;
+                        ? `${senderLabel} добавил(а) в профиль подарок ${catalogItem.emoji} «${catalogItem.name}»`
+                        : `${senderLabel} подарил(а) @${toUsername} подарок ${catalogItem.emoji} «${catalogItem.name}»`;
 
                     await addDoc(collection(db, 'chats', targetChatId, 'messages'), {
                         text: giftMsgText,
                         senderUsername: currentUser.username,
                         senderNickname: hideSender ? 'Аноним' : currentUser.nickname,
+                        giftCard: {
+                            emoji: catalogItem.emoji,
+                            giftName: catalogItem.name,
+                            price: catalogItem.price,
+                            fromLabel: senderLabel,
+                            fromUsername: currentUser.username,
+                            hideSender,
+                            note,
+                            dateStr: new Date().toLocaleString('ru-RU', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                        },
                         createdAt: serverTimestamp(),
                         reactions: {}
                     });
@@ -2845,6 +2910,52 @@
             if (selectedGiftForCompose) openGiftComposePreview(selectedGiftForCompose.id);
         });
 
+
+        function formatGiftDate(g) {
+            if (g?.createdAt?.toDate) {
+                return g.createdAt.toDate().toLocaleString('ru-RU', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            }
+            if (g?.dateStr) return g.dateStr;
+            return new Date().toLocaleString('ru-RU', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function openGiftDetailModal(g) {
+            if (!g) return;
+            const senderTag = (g.fromUsername || '').toLowerCase();
+            const fromText = g.fromLabel || (g.hideSender ? 'Аноним' : `@${senderTag}`);
+            document.getElementById('gift-detail-emoji').textContent = g.emoji || '💝';
+            document.getElementById('gift-detail-from').textContent = fromText;
+            document.getElementById('gift-detail-date').textContent = formatGiftDate(g);
+            document.getElementById('gift-detail-price').innerHTML = `😊 <span>${escapeHtml(g.price || 15)}</span>`;
+            const noteRow = document.getElementById('gift-detail-note-row');
+            const noteEl = document.getElementById('gift-detail-note');
+            if (g.note && String(g.note).trim()) {
+                noteEl.textContent = String(g.note).trim();
+                noteRow.classList.remove('hidden');
+            } else {
+                noteEl.textContent = 'Без сообщения';
+                noteRow.classList.remove('hidden');
+            }
+            document.getElementById('gift-detail-modal').classList.remove('hidden');
+        }
+
+        document.getElementById('close-gift-detail-btn').addEventListener('click', () => {
+            document.getElementById('gift-detail-modal').classList.add('hidden');
+        });
+
+        document.getElementById('messages-area').addEventListener('click', (e) => {
+            const btn = e.target.closest('.open-gift-from-chat-btn');
+            if (!btn) return;
+            e.stopPropagation();
+            const msg = activeMessages[Number(btn.dataset.giftMsgIdx)];
+            if (msg?.giftCard) {
+                openGiftDetailModal({
+                    ...msg.giftCard,
+                    fromUsername: msg.giftCard.fromUsername || msg.senderUsername,
+                    createdAt: msg.createdAt
+                });
+            }
+        });
         initFirebase();
     </script>
 </body>
