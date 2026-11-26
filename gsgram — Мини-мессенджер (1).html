@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>gsgram — пастельный мини-мессенджер</title>
+    <!-- Принудительно светлая цветовая схема, чтобы браузер телефона не затемнял цвета -->
+    <meta name="color-scheme" content="light only">
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключение шрифта Inter и Nunito для мягкого современного вида -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+    <!-- Иконки Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        logo: ['Nunito', 'sans-serif'],
+                    },
+                    colors: {
+                        pastel: {
+                            50: '#F4F9FD',
+                            100: '#E8F3FC',
+                            200: '#D4E8F9',
+                            300: '#AED6F5',
+                            400: '#7BC0F2',
+                            500: '#5BB2F2',
+                            600: '#3898EC',
+                            700: '#2778C4',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            color-scheme: light only;
+        }
+        html, body {
+            background-color: #EEF6FC !important;
+            color: #334155 !important;
+        }
+        @keyframes floatBubble {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-2px); }
+        }
+        @keyframes pulseDot {
+            0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        .typing-dot:nth-child(1) { animation: pulseDot 1.4s infinite ease-in-out 0s; }
+        .typing-dot:nth-child(2) { animation: pulseDot 1.4s infinite ease-in-out 0.2s; }
+        .typing-dot:nth-child(3) { animation: pulseDot 1.4s infinite ease-in-out 0.4s; }
+    </style>
+</head>
+<body class="bg-[#EEF6FC] text-slate-700 antialiased selection:bg-pastel-200 selection:text-pastel-700 h-[100dvh] w-full overflow-hidden flex flex-col">
+
+    <!-- Уведомления (вместо alert/confirm) -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-[90vw] sm:max-w-sm"></div>
+
+    <!-- ЭКРАН РЕГИСТРАЦИИ / ВХОДА -->
+    <div id="auth-screen" class="fixed inset-0 z-40 bg-gradient-to-br from-[#E6F2FC] via-[#EEF6FC] to-[#DCEEFF] flex items-center justify-center p-3 sm:p-4 overflow-y-auto transition-opacity duration-300">
+        <!-- Декоративные мягкие круги на фоне -->
+        <div class="fixed top-[-10%] left-[-5%] w-72 h-72 bg-pastel-300/35 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="fixed bottom-[-10%] right-[-5%] w-80 h-80 bg-sky-300/30 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative w-full max-w-md bg-white rounded-3xl shadow-[0_20px_50px_rgba(91,178,242,0.18)] border border-[#D4E8F9] p-5 sm:p-7 my-auto">
+            <!-- Логотип -->
+            <div class="flex flex-col items-center text-center mb-4">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#3898EC] to-[#7BC0F2] flex items-center justify-center text-white shadow-lg shadow-pastel-400/30 mb-2.5">
+                    <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 2L11 13"></path>
+                        <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+                    </svg>
+                </div>
+                <h1 class="font-logo text-3xl font-extrabold tracking-tight text-slate-800">
+                    gs<span class="text-[#3898EC]">gram</span>
+                </h1>
+
+                <!-- ВИЗУАЛЬНЫЙ МИНИ-МЕССЕНДЖЕР ВМЕСТО ТЕКСТОВОГО ПОДЗАГОЛОВКА -->
+                <div class="w-full mt-3.5 bg-[#F4F9FD] border border-[#D4E8F9] rounded-2xl p-3 text-left shadow-inner overflow-hidden">
+                    <!-- Мини-шапка превью чата -->
+                    <div class="flex items-center justify-between pb-2 mb-2.5 border-b border-[#D4E8F9]/80">
+                        <div class="flex items-center gap-2">
+                            <div class="relative">
+                                <div class="w-7 h-7 rounded-xl bg-gradient-to-tr from-[#5BB2F2] to-[#98D2FA] text-white text-[10px] font-bold flex items-center justify-center shadow-xs">
+                                    АС
+                                </div>
+                                <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#F4F9FD]"></span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-slate-700 leading-none">Алина Скай</div>
+                                <div class="text-[10px] text-[#3898EC] font-medium mt-0.5">в сети • @alina_sky</div>
+                            </div>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full bg-[#E1F1FD] text-[#2778C4] text-[10px] font-semibold">
+                            live чат
+                        </span>
+                    </div>
+
+                    <!-- Мини-сообщения превью -->
+                    <div class="space-y-2 text-[11px]">
+                        <div class="flex items-end gap-1.5">
+                            <div class="bg-white border border-[#D4E8F9] text-slate-700 px-3 py-1.5 rounded-2xl rounded-bl-sm shadow-2xs max-w-[82%]">
+                                Привет! Ты уже зашел в <span class="font-semibold text-[#3898EC]">gsgram</span>? 🩵
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <div class="bg-gradient-to-r from-[#5BB2F2] to-[#3898EC] text-white px-3 py-1.5 rounded-2xl rounded-br-sm shadow-2xs max-w-[82%]">
+                                Да! Тут так уютно и всё летает ✨
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <div class="bg-white border border-[#D4E8F9] px-2.5 py-1.5 rounded-2xl rounded-bl-sm inline-flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#5BB2F2] typing-dot"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#5BB2F2] typing-dot"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#5BB2F2] typing-dot"></span>
+                            </div>
+                            <span class="text-[10px] text-slate-400">печатает...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Форма входа / регистрации -->
+            <form id="auth-form" class="space-y-3.5">
+                <div>
+                    <label for="input-nickname" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1 ml-1">
+                        Ваш никнейм
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-[#5BB2F2]">
+                            <i data-lucide="smile" class="w-5 h-5"></i>
+                        </span>
+                        <input type="text" id="input-nickname" required maxlength="28" placeholder="Например: Алина Небесная"
+                            class="w-full pl-11 pr-4 py-2.5 sm:py-3 bg-[#F4F9FD] border border-[#D4E8F9] rounded-2xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#5BB2F2] focus:bg-white transition-all text-sm sm:text-base">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="input-username" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1 ml-1">
+                        Юзернейм (уникальный логин)
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-[#5BB2F2] font-bold">
+                            @
+                        </span>
+                        <input type="text" id="input-username" required maxlength="24" placeholder="alina_sky"
+                            class="w-full pl-9 pr-4 py-2.5 sm:py-3 bg-[#F4F9FD] border border-[#D4E8F9] rounded-2xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#5BB2F2] focus:bg-white transition-all text-sm sm:text-base">
+                    </div>
+                    <p id="username-hint" class="text-[11px] text-slate-400 mt-1 ml-1">
+                        Латинские буквы, цифры и _. Если профиль уже есть — войдем в него.
+                    </p>
+                </div>
+
+                <button type="submit" id="auth-submit-btn"
+                    class="w-full py-3.5 px-6 mt-1 bg-gradient-to-r from-[#5BB2F2] to-[#3898EC] hover:from-[#49A5EB] hover:to-[#2B8AE0] active:scale-[0.99] text-white font-semibold rounded-2xl shadow-lg shadow-[#5BB2F2]/30 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <span>Войти в gsgram</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            </form>
+
+            <!-- Индикатор режима работы базы данных -->
+            <div class="mt-3.5 flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
+                <span id="db-status-dot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+                <span id="db-status-text">Подключение к облаку...</span>
+            </div>
+
+            <!-- Быстрый вход в сохраненный профиль (если был выход) -->
+            <div id="quick-restore-box" class="hidden mt-4 pt-3.5 border-t border-[#D4E8F9] text-center">
+                <p class="text-xs text-slate-400 mb-2">Найден ваш предыдущий профиль:</p>
+                <button type="button" id="quick-restore-btn"
+                    class="inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-[#E8F3FC] hover:bg-[#D4E8F9] text-[#2778C4] text-sm font-medium transition-colors cursor-pointer">
+                    <span id="quick-restore-name">Продолжить</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ГЛАВНОЕ ОКНО МЕССЕНДЖЕРА -->
+    <div id="app-screen" class="hidden flex-1 w-full h-full max-w-[1440px] mx-auto bg-white sm:my-3 sm:h-[calc(100dvh-1.5rem)] sm:rounded-3xl sm:shadow-[0_12px_40px_rgba(91,178,242,0.14)] sm:border sm:border-[#D4E8F9] overflow-hidden flex">
+
+        <!-- ЛЕВАЯ ПАНЕЛЬ: Список чатов, поиск и профиль -->
+        <aside id="sidebar-panel" class="w-full md:w-[360px] lg:w-[400px] flex-shrink-0 bg-[#F4F9FD] border-r border-[#D4E8F9] flex flex-col h-full transition-all">
+            
+            <!-- Шапка левой панели -->
+            <header class="px-4 py-3.5 bg-white border-b border-[#D4E8F9] flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                        <!-- Кнопка "Назад" для мобильных устройств -->
+                        <button id="btn-back-mobile" class="md:hidden p-2 -ml-1 rounded-xl hover:bg-pastel-100 text-pastel-700 transition-colors cursor-pointer" aria-label="Назад к чатам">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        </button>
+
+                        <div id="chat-header-avatar" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pastel-400 to-sky-300 text-white font-bold flex items-center justify-center text-sm flex-shrink-0 shadow-sm">
+                            #
+                        </div>
+
+                        <div class="min-w-0">
+                            <h2 id="chat-header-title" class="font-bold text-slate-800 text-sm sm:text-base truncate">
+                                gsgram Общий чат
+                            </h2>
+                            <p id="chat-header-subtitle" class="text-xs text-pastel-600 truncate">
+                                В сети • все участники
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-1.5">
+                        <span id="chat-badge" class="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-pastel-100 text-pastel-700 text-xs font-medium">
+                            <span class="w-1.5 h-1.5 rounded-full bg-pastel-500 animate-pulse"></span>
+                            Онлайн
+                        </span>
+                    </div>
+                </header>
+
+                <!-- Лента сообщений -->
+                <div id="messages-feed" class="flex-1 overflow-y-auto px-3 sm:px-6 py-4 space-y-3 scroll-smooth"
+                    style="background-image: radial-gradient(#CEE6F6 1px, transparent 1px); background-size: 22px 22px;">
+                    <!-- Сообщения рендерятся сюда -->
+                </div>
+
+                <!-- Поп-ап с эмодзи -->
+                <div id="emoji-popover" class="hidden absolute bottom-20 left-3 sm:left-6 z-20 bg-white/95 backdrop-blur-lg border border-pastel-200 rounded-2xl shadow-xl p-3 w-64">
+                    <div class="text-xs font-semibold text-slate-400 mb-2 px-1">Быстрые реакции</div>
+                    <div id="emoji-grid" class="grid grid-cols-6 gap-1.5 text-xl">
+                        <!-- Эмодзи добавляются скриптом -->
+                    </div>
+                </div>
+
+                <!-- Нижняя панель ввода сообщения -->
+                <footer class="p-3 sm:px-5 sm:py-3.5 bg-white/90 backdrop-blur-md border-t border-pastel-100">
+                    <form id="message-form" class="flex items-center gap-2 max-w-4xl mx-auto">
+                        <button type="button" id="btn-emoji-toggle" title="Эмодзи"
+                            class="p-2.5 rounded-2xl text-slate-400 hover:text-pastel-600 hover:bg-pastel-100/70 transition-colors flex-shrink-0 cursor-pointer">
+                            <i data-lucide="smile" class="w-5 h-5"></i>
+                        </button>
+
+                        <input type="text" id="message-input" autocomplete="off" maxlength="1000" placeholder="Напишите сообщение..."
+                            class="flex-1 px-4 py-2.5 sm:py-3 bg-pastel-50/80 border border-pastel-200/80 rounded-2xl text-sm sm:text-base text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-pastel-400 focus:bg-white transition-all">
+
+                        <button type="submit" id="btn-send-message" title="Отправить"
+                            class="p-3 rounded-2xl bg-gradient-to-r from-pastel-500 to-sky-400 hover:from-pastel-600 hover:to-sky-500 active:scale-95 text-white shadow-md shadow-pastel-400/25 transition-all flex-shrink-0 cursor-pointer">
+                            <i data-lucide="send" class="w-5 h-5"></i>
+                        </button>
+                    </form>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <!-- Логика приложения и интеграция с Firebase Firestore -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            addDoc,
+            updateDoc,
+            onSnapshot,
+            collection
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // ==========================================
+        // 1. ИНИЦИАЛИЗАЦИЯ FIREBASE И СОСТОЯНИЯ
+        // ==========================================
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'gsgram-messenger';
+        const firebaseConfig = typeof __firebase_config !== 'undefined'
+            ? JSON.parse(__firebase_config)
+            : { apiKey: "demo", authDomain: "demo.firebaseapp.com", projectId: "demo" };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Публичные коллекции в соответствии с правилами безопасности
+        const usersColRef = collection(db, 'artifacts', appId, 'public', 'data', 'gsgram_users');
+        const chatsColRef = collection(db, 'artifacts', appId, 'public', 'data', 'gsgram_chats');
+        const messagesColRef = collection(db, 'artifacts', appId, 'public', 'data', 'gsgram_messages');
+
+        // Глобальное состояние приложения
+        const state = {
+            firebaseUser: null,
+            currentProfile: null,      // { uid, nickname, username, colorIndex, updatedAt }
+            savedCloudProfile: null,   // Профиль, привязанный к текущему auth.uid в базе (если юзер нажал "Выйти")
+            allUsers: [],              // Все зарегистрированные пользователи gsgram
+            allChats: [],              // Все чаты из базы
+            allMessages: [],           // Все сообщения из базы (сортируются в памяти)
+            activeChatId: null,        // ID открытого чата ('global_chat' или 'dm_...')
+            searchQuery: '',
+            showAllUsersMode: false    // Режим обзора всех собеседников при нажатии кнопки "+"
+        };
+
+        const GLOBAL_CHAT_ID = 'global_chat';
+
+        // Палитра нежных пастельных градиентов для аватарок
+        const AVATAR_GRADIENTS = [
+            'from-sky-400 to-blue-500',
+            'from-cyan-400 to-sky-500',
+            'from-indigo-400 to-sky-400',
+            'from-teal-400 to-cyan-500',
+            'from-blue-400 to-indigo-400',
+            'from-sky-300 to-cyan-500'
+        ];
+
+        const POPULAR_EMOJIS = [
+            '😊', '😂', '🥰', '😍', '🤗', '👋',
+            '💙', '🩵', '✨', '🔥', '👍', '🎉',
+            '🤔', '😎', '🥺', '🙏', '🌸', '☁️'
+        ];
+
+        // ==========================================
+        // 2. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ UI
+        // ==========================================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colors = type === 'error'
+                ? 'bg-rose-500 text-white shadow-rose-500/20'
+                : 'bg-slate-800/90 text-white shadow-slate-900/15';
+
+            toast.className = `${colors} backdrop-blur-md px-4 py-3 rounded-2xl text-sm font-medium shadow-lg transition-all duration-300 transform translate-y-0 opacity-100 flex items-center gap-2`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        }
+
+        function getInitials(name) {
+            if (!name) return 'GS';
+            const parts = name.trim().split(/\s+/);
+            if (parts.length >= 2) {
+                return (parts[0][0] + parts[1][0]).toUpperCase();
+            }
+            return name.slice(0, 2).toUpperCase();
+        }
+
+        function getGradientByString(str) {
+            if (!str) return AVATAR_GRADIENTS[0];
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return AVATAR_GRADIENTS[Math.abs(hash) % AVATAR_GRADIENTS.length];
+        }
+
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            const now = new Date();
+            const isToday = date.toDateString() === now.toDateString();
+            const timeStr = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            if (isToday) return timeStr;
+            const dateStr = date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+            return `${dateStr} ${timeStr}`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function normalizeUsername(raw) {
+            return raw.trim().replace(/^@+/, '').toLowerCase().replace(/[^a-z0-9_]/g, '');
+        }
+
+        // Генерация детерминированного ID личного чата между двумя юзернеймами
+        function getDirectChatId(usernameA, usernameB) {
+            const sorted = [usernameA.toLowerCase(), usernameB.toLowerCase()].sort();
+            return `dm_${sorted[0]}__${sorted[1]}`;
+        }
+
+        // ==========================================
+        // 3. АВТОРИЗАЦИЯ И ПОДПИСКИ FIRESTORE
+        // ==========================================
+        async function initApp() {
+            lucide.createIcons();
+            renderEmojiGrid();
+            bindEvents();
+
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    const cred = await signInWithCustomToken(auth, __initial_auth_token);
+                    state.firebaseUser = cred.user;
+                } else {
+                    const cred = await signInAnonymously(auth);
+                    state.firebaseUser = cred.user;
+                }
+
+                // Инициализируем общий чат в базе, если его еще нет
+                await ensureGlobalChatExists();
+
+                // Проверяем, есть ли у этой сессии сохраненный профиль в базе
+                await checkExistingSessionProfile();
+
+                // Запускаем подписки в реальном времени
+                subscribeToRealtimeData();
+
+            } catch (err) {
+                console.error("Ошибка подключения к облаку:", err);
+                showToast("Не удалось подключиться к облачной базе", "error");
+            }
+        }
+
+        async function ensureGlobalChatExists() {
+            if (!state.firebaseUser) return;
+            const globalRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_chats', GLOBAL_CHAT_ID);
+            try {
+                const snap = await getDoc(globalRef);
+                if (!snap.exists()) {
+                    await setDoc(globalRef, {
+                        id: GLOBAL_CHAT_ID,
+                        type: 'global',
+                        title: 'gsgram Общий чат',
+                        lastMessage: 'Добро пожаловать в общий чат gsgram! 👋',
+                        lastMessageTime: Date.now(),
+                        lastSender: 'gsgram'
+                    });
+
+                    // Приветственное первое сообщение
+                    await addDoc(messagesColRef, {
+                        chatId: GLOBAL_CHAT_ID,
+                        senderUsername: 'gsgram_bot',
+                        senderNickname: 'gsgram Бот',
+                        text: 'Привет! Это общий чат gsgram. Пишите сюда или ищите друзей по @username 🩵',
+                        createdAt: Date.now()
+                    });
+                }
+            } catch (e) {
+                console.warn("Проверка общего чата:", e);
+            }
+        }
+
+        async function checkExistingSessionProfile() {
+            if (!state.firebaseUser) return;
+            // Ищем привязку сессии в коллекции gsgram_sessions
+            const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_sessions', state.firebaseUser.uid);
+            try {
+                const sessionSnap = await getDoc(sessionRef);
+                if (sessionSnap.exists() && sessionSnap.data().username) {
+                    const savedUsername = sessionSnap.data().username;
+                    const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_users', savedUsername);
+                    const userSnap = await getDoc(userRef);
+                    if (userSnap.exists()) {
+                        state.savedCloudProfile = userSnap.data();
+                        // Автоматически входим, если сессия активна
+                        if (sessionSnap.data().active !== false) {
+                            enterMessenger(state.savedCloudProfile);
+                        } else {
+                            // Показываем кнопку быстрого возврата на экране входа
+                            const restoreBox = document.getElementById('quick-restore-box');
+                            const restoreName = document.getElementById('quick-restore-name');
+                            restoreName.textContent = `${state.savedCloudProfile.nickname} (@${state.savedCloudProfile.username})`;
+                            restoreBox.classList.remove('hidden');
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn("Чтение сессии:", e);
+            }
+        }
+
+        function subscribeToRealtimeData() {
+            if (!state.firebaseUser) return;
+
+            // 1. Подписка на всех пользователей
+            onSnapshot(usersColRef, (snapshot) => {
+                const users = [];
+                snapshot.forEach((docSnap) => {
+                    users.push(docSnap.data());
+                });
+                state.allUsers = users;
+                renderSidebarList();
+                updateActiveChatHeader();
+            }, (error) => {
+                console.error("Ошибка подписки на пользователей:", error);
+            });
+
+            // 2. Подписка на все чаты
+            onSnapshot(chatsColRef, (snapshot) => {
+                const chats = [];
+                snapshot.forEach((docSnap) => {
+                    chats.push(docSnap.data());
+                });
+                state.allChats = chats;
+                renderSidebarList();
+            }, (error) => {
+                console.error("Ошибка подписки на чаты:", error);
+            });
+
+            // 3. Подписка на все сообщения
+            onSnapshot(messagesColRef, (snapshot) => {
+                const msgs = [];
+                snapshot.forEach((docSnap) => {
+                    msgs.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                // Сортируем сообщения по времени создания в памяти
+                msgs.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+                state.allMessages = msgs;
+
+                if (state.activeChatId) {
+                    renderMessagesFeed();
+                }
+                renderSidebarList();
+            }, (error) => {
+                console.error("Ошибка подписки на сообщения:", error);
+            });
+        }
+
+        // ==========================================
+        // 4. РЕГИСТРАЦИЯ / ВХОД / ВЫХОД
+        // ==========================================
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            if (!state.firebaseUser) {
+                showToast("Подождите, идет подключение к базе...", "error");
+                return;
+            }
+
+            const nicknameInput = document.getElementById('input-nickname');
+            const usernameInput = document.getElementById('input-username');
+            const submitBtn = document.getElementById('auth-submit-btn');
+
+            const nickname = nicknameInput.value.trim();
+            const username = normalizeUsername(usernameInput.value);
+
+            if (!nickname) {
+                showToast("Введите ваш никнейм", "error");
+                return;
+            }
+            if (username.length < 3) {
+                showToast("Юзернейм должен содержать минимум 3 латинских символа или цифры", "error");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-70');
+
+            try {
+                const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_users', username);
+                const existingSnap = await getDoc(userDocRef);
+
+                const profileData = {
+                    username: username,
+                    nickname: nickname,
+                    ownerUid: state.firebaseUser.uid,
+                    online: true,
+                    lastSeen: Date.now()
+                };
+
+                if (existingSnap.exists()) {
+                    // Обновляем никнейм и статус при входе в существующий юзернейм
+                    await updateDoc(userDocRef, {
+                        nickname: nickname,
+                        online: true,
+                        lastSeen: Date.now()
+                    });
+                    showToast(`С возвращением, ${nickname}!`);
+                } else {
+                    // Создаем нового пользователя в облачной базе
+                    await setDoc(userDocRef, {
+                        ...profileData,
+                        createdAt: Date.now()
+                    });
+                    showToast(`Добро пожаловать в gsgram, ${nickname}!`);
+                }
+
+                // Запоминаем активную сессию в облаке для текущего устройства
+                const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_sessions', state.firebaseUser.uid);
+                await setDoc(sessionRef, {
+                    username: username,
+                    active: true,
+                    updatedAt: Date.now()
+                });
+
+                enterMessenger(profileData);
+
+            } catch (err) {
+                console.error("Ошибка регистрации:", err);
+                showToast("Ошибка при сохранении профиля", "error");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-70');
+            }
+        }
+
+        function enterMessenger(profile) {
+            state.currentProfile = profile;
+            state.savedCloudProfile = profile;
+
+            // Обновляем шапку профиля
+            const avatarEl = document.getElementById('my-avatar');
+            avatarEl.textContent = getInitials(profile.nickname);
+            avatarEl.className = `w-10 h-10 rounded-2xl bg-gradient-to-tr ${getGradientByString(profile.username)} text-white font-bold flex items-center justify-center text-sm shadow-sm flex-shrink-0`;
+
+            document.getElementById('my-profile-label').textContent = `${profile.nickname} • @${profile.username}`;
+
+            // Переключаем экраны
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('app-screen').classList.remove('hidden');
+
+            // На десктопе сразу открываем общий чат для удобства
+            if (window.innerWidth >= 768 && !state.activeChatId) {
+                openChat(GLOBAL_CHAT_ID);
+            } else {
+                renderSidebarList();
+            }
+        }
+
+        async function handleLogout() {
+            if (!state.firebaseUser || !state.currentProfile) return;
+            try {
+                const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_sessions', state.firebaseUser.uid);
+                await setDoc(sessionRef, {
+                    username: state.currentProfile.username,
+                    active: false,
+                    updatedAt: Date.now()
+                });
+
+                const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_users', state.currentProfile.username);
+                await updateDoc(userRef, { online: false, lastSeen: Date.now() });
+            } catch (e) {
+                console.warn("Ошибка при выходе:", e);
+            }
+
+            // Показываем кнопку быстрого возврата
+            const restoreBox = document.getElementById('quick-restore-box');
+            const restoreName = document.getElementById('quick-restore-name');
+            restoreName.textContent = `${state.currentProfile.nickname} (@${state.currentProfile.username})`;
+            restoreBox.classList.remove('hidden');
+
+            state.currentProfile = null;
+            state.activeChatId = null;
+
+            document.getElementById('app-screen').classList.add('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('input-nickname').value = '';
+            document.getElementById('input-username').value = '';
+        }
+
+        // ==========================================
+        // 5. СПИСОК ЧАТОВ И ПОИСК ПОЛЬЗОВАТЕЛЕЙ
+        // ==========================================
+        function renderSidebarList() {
+            const listEl = document.getElementById('sidebar-list');
+            if (!state.currentProfile) return;
+
+            const myUsername = state.currentProfile.username;
+            const query = state.searchQuery.trim().toLowerCase().replace(/^@+/, '');
+
+            let html = '';
+
+            // 1. Всегда закрепленный сверху Общий чат gsgram (если подходит под поиск)
+            const globalChat = state.allChats.find(c => c.id === GLOBAL_CHAT_ID) || {
+                id: GLOBAL_CHAT_ID,
+                title: 'gsgram Общий чат',
+                lastMessage: 'Нажмите, чтобы написать всем...',
+                lastMessageTime: Date.now()
+            };
+
+            const matchesGlobal = !query || 'gsgram общий чат'.includes(query);
+            if (matchesGlobal && !state.showAllUsersMode) {
+                const isActive = state.activeChatId === GLOBAL_CHAT_ID;
+                html += `
+                    <div class="px-2 pt-1 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-pastel-600/80 flex items-center justify-between">
+                        <span>Закрепленный канал</span>
+                        <i data-lucide="pin" class="w-3 h-3"></i>
+                    </div>
+                    <button type="button" data-chat-id="${GLOBAL_CHAT_ID}"
+                        class="chat-item-btn w-full p-3 rounded-2xl flex items-center gap-3 text-left transition-all cursor-pointer ${isActive ? 'bg-pastel-200/80 shadow-sm' : 'bg-white/80 hover:bg-pastel-100/80'}">
+                        <div class="relative flex-shrink-0">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pastel-500 to-sky-300 text-white flex items-center justify-center shadow-sm">
+                                <i data-lucide="sparkles" class="w-6 h-6"></i>
+                            </div>
+                            <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-white"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-1">
+                                <span class="font-bold text-sm text-slate-800 truncate">${escapeHtml(globalChat.title)}</span>
+                                <span class="text-[11px] text-slate-400 flex-shrink-0">${formatTime(globalChat.lastMessageTime)}</span>
+                            </div>
+                            <p class="text-xs text-slate-500 truncate mt-0.5">
+                                ${globalChat.lastSender && globalChat.lastSender !== 'gsgram' ? `<span class="text-pastel-600 font-medium">${escapeHtml(globalChat.lastSender)}:</span> ` : ''}${escapeHtml(globalChat.lastMessage || '')}
+                            </p>
+                        </div>
+                    </button>
+                `;
+            }
+
+            // 2. Личные чаты пользователя (сортируем по времени последнего сообщения)
+            const myDmChats = state.allChats
+                .filter(c => c.type === 'dm' && Array.isArray(c.participants) && c.participants.includes(myUsername))
+                .sort((a, b) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0));
+
+            const filteredDmChats = myDmChats.filter(chat => {
+                const peerUsername = chat.participants.find(u => u !== myUsername) || myUsername;
+                const peerUser = state.allUsers.find(u => u.username === peerUsername);
+                const peerName = peerUser ? peerUser.nickname : peerUsername;
+                if (!query) return true;
+                return peerName.toLowerCase().includes(query) || peerUsername.toLowerCase().includes(query);
+            });
+
+            if (filteredDmChats.length > 0 && !state.showAllUsersMode) {
+                html += `
+                    <div class="px-2 pt-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        Личные сообщения
+                    </div>
+                `;
+
+                filteredDmChats.forEach(chat => {
+                    const peerUsername = chat.participants.find(u => u !== myUsername) || myUsername;
+                    const peerUser = state.allUsers.find(u => u.username === peerUsername);
+                    const peerNickname = peerUser ? peerUser.nickname : `@${peerUsername}`;
+                    const isOnline = peerUser ? peerUser.online : false;
+                    const isActive = state.activeChatId === chat.id;
+
+                    html += `
+                        <button type="button" data-chat-id="${chat.id}"
+                            class="chat-item-btn w-full p-3 rounded-2xl flex items-center gap-3 text-left transition-all cursor-pointer ${isActive ? 'bg-pastel-200/80 shadow-sm' : 'hover:bg-white/90'}">
+                            <div class="relative flex-shrink-0">
+                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${getGradientByString(peerUsername)} text-white font-bold flex items-center justify-center text-sm shadow-sm">
+                                    ${getInitials(peerNickname)}
+                                </div>
+                                ${isOnline ? '<span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-white"></span>' : ''}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between gap-1">
+                                    <span class="font-semibold text-sm text-slate-800 truncate">${escapeHtml(peerNickname)}</span>
+                                    <span class="text-[11px] text-slate-400 flex-shrink-0">${formatTime(chat.lastMessageTime)}</span>
+                                </div>
+                                <p class="text-xs text-slate-500 truncate mt-0.5">
+                                    ${escapeHtml(chat.lastMessage || 'Нет сообщений')}
+                                </p>
+                            </div>
+                        </button>
+                    `;
+                });
+            }
+
+            // 3. Поиск других зарегистрированных пользователей в базе Firebase
+            const otherUsers = state.allUsers.filter(u => u.username !== myUsername);
+            const matchingUsers = otherUsers.filter(u => {
+                if (!query && !state.showAllUsersMode) return false;
+                if (!query && state.showAllUsersMode) return true;
+                return u.username.toLowerCase().includes(query) || (u.nickname && u.nickname.toLowerCase().includes(query));
+            });
+
+            if (query || state.showAllUsersMode) {
+                html += `
+                    <div class="px-2 pt-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-pastel-600 flex items-center justify-between">
+                        <span>Пользователи gsgram (${matchingUsers.length})</span>
+                        ${state.showAllUsersMode ? '<button type="button" id="close-users-mode" class="text-xs underline lowercase cursor-pointer">скрыть</button>' : ''}
+                    </div>
+                `;
+
+                if (matchingUsers.length === 0) {
+                    html += `
+                        <div class="p-4 text-center bg-white/60 rounded-2xl text-xs text-slate-400">
+                            Пользователи по запросу «${escapeHtml(state.searchQuery)}» не найдены.
+                        </div>
+                    `;
+                } else {
+                    matchingUsers.forEach(user => {
+                        html += `
+                            <button type="button" data-start-dm-username="${escapeHtml(user.username)}"
+                                class="start-dm-btn w-full p-2.5 rounded-2xl bg-white/70 hover:bg-pastel-100 flex items-center justify-between gap-3 text-left transition-all cursor-pointer">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="relative flex-shrink-0">
+                                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr ${getGradientByString(user.username)} text-white font-bold flex items-center justify-center text-xs">
+                                            ${getInitials(user.nickname)}
+                                        </div>
+                                        ${user.online ? '<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white"></span>' : ''}
+                                    </div>
+                                    <div class="min-w-0">
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-logo font-extrabold text-base text-slate-800 tracking-tight">gs<span class="text-[#3898EC]">gram</span></span>
+                            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400" title="В сети"></span>
+                        </div>
+                        <p id="my-profile-label" class="text-xs text-slate-500 truncate">@username</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-1.5 flex-shrink-0">
+                    <!-- Кнопка нового чата / поиска людей -->
+                    <button id="btn-new-chat" title="Найти собеседника"
+                        class="p-2.5 rounded-xl bg-[#E8F3FC] hover:bg-[#D4E8F9] text-[#2778C4] transition-colors cursor-pointer">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i>
+                    </button>
+                    <!-- Кнопка смены профиля / выхода -->
+                    <button id="btn-logout" title="Сменить профиль"
+                        class="p-2.5 rounded-xl hover:bg-rose-50 text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Поиск по чатам и пользователям -->
+            <div class="p-3 bg-[#F4F9FD] border-b border-[#D4E8F9]">
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                    </span>
+                    <input type="text" id="search-input" placeholder="Поиск людей (@username) или чатов..."
+                        class="w-full pl-10 pr-8 py-2.5 bg-white border border-[#D4E8F9] rounded-2xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#5BB2F2] transition-all">
+                    <button id="clear-search-btn" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Контейнер списка чатов и результатов поиска пользователей -->
+            <div id="sidebar-list" class="flex-1 overflow-y-auto px-2.5 py-2 space-y-1">
+                <div class="py-10 text-center text-slate-400 text-sm">
+                    Загрузка чатов...
+                </div>
+            </div>
+        </aside>
+
+        <!-- ПРАВАЯ ПАНЕЛЬ: Окно переписки -->
+        <main id="chat-panel" class="hidden md:flex flex-1 flex-col bg-[#F7FBFE] h-full relative min-w-0">
+            
+            <!-- Пустое состояние (когда чат еще не выбран на десктопе) -->
+            <div id="empty-chat-state" class="flex-1 flex flex-col items-center justify-center p-6 text-center">
+                <div class="w-20 h-20 rounded-3xl bg-[#E8F3FC] text-[#3898EC] flex items-center justify-center mb-4 shadow-inner">
+                    <i data-lucide="message-circle-heart" class="w-10 h-10"></i>
+                </div>
+                <h2 class="text-lg font-bold text-slate-700">Добро пожаловать в gsgram</h2>
+                <p class="text-sm text-slate-500 max-w-xs mt-1">
+                    Выберите общий чат слева или найдите собеседника по <span class="text-[#3898EC] font-medium">@username</span>, чтобы начать переписку.
+                </p>
+            </div>
+
+            <!-- Активный чат -->
+            <div id="active-chat-container" class="hidden flex-1 flex flex-col h-full overflow-hidden">
+                
+                <!-- Шапка активного чата -->
+                <header class="px-3 sm:px-5 py-3 bg-white border-b border-[#D4E8F9] flex items-center justify-between gap-3 z-10">
+                    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                        <!-- Кнопка "Назад" для мобильных устройств -->
+                        <button id="btn-back-mobile" class="md:hidden p-2 -ml-1 rounded-xl hover:bg-[#E8F3FC] text-[#2778C4] transition-colors cursor-pointer" aria-label="Назад к чатам">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        </button>
+
+                        <div id="chat-header-avatar" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#5BB2F2] to-[#7BC0F2] text-white font-bold flex items-center justify-center text-sm flex-shrink-0 shadow-sm">
+                            #
+                        </div>
+
+                        <div class="min-w-0">
+                            <h2 id="chat-header-title" class="font-bold text-slate-800 text-sm sm:text-base truncate">
+                                gsgram Общий чат
+                            </h2>
+                            <p id="chat-header-subtitle" class="text-xs text-[#3898EC] truncate">
+                                В сети • все участники
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-1.5">
+                        <span id="chat-badge" class="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#E8F3FC] text-[#2778C4] text-xs font-medium">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#3898EC] animate-pulse"></span>
+                            Онлайн
+                        </span>
+                    </div>
+                </header>
+
+                <!-- Лента сообщений -->
+                <div id="messages-feed" class="flex-1 overflow-y-auto px-3 sm:px-6 py-4 space-y-3 scroll-smooth"
+                    style="background-image: radial-gradient(#D4E8F9 1.2px, transparent 1.2px); background-size: 22px 22px;">
+                    <!-- Сообщения рендерятся сюда -->
+                </div>
+
+                <!-- Поп-ап с эмодзи -->
+                <div id="emoji-popover" class="hidden absolute bottom-20 left-3 sm:left-6 z-20 bg-white border border-[#D4E8F9] rounded-2xl shadow-xl p-3 w-64">
+                    <div class="text-xs font-semibold text-slate-400 mb-2 px-1">Быстрые реакции</div>
+                    <div id="emoji-grid" class="grid grid-cols-6 gap-1.5 text-xl">
+                        <!-- Эмодзи добавляются скриптом -->
+                    </div>
+                </div>
+
+                <!-- Нижняя панель ввода сообщения -->
+                <footer class="p-3 sm:px-5 sm:py-3.5 bg-white border-t border-[#D4E8F9]">
+                    <form id="message-form" class="flex items-center gap-2 max-w-4xl mx-auto">
+                        <button type="button" id="btn-emoji-toggle" title="Эмодзи"
+                            class="p-2.5 rounded-2xl text-slate-400 hover:text-[#3898EC] hover:bg-[#E8F3FC] transition-colors flex-shrink-0 cursor-pointer">
+                            <i data-lucide="smile" class="w-5 h-5"></i>
+                        </button>
+
+                        <input type="text" id="message-input" autocomplete="off" maxlength="1000" placeholder="Напишите сообщение..."
+                            class="flex-1 px-4 py-2.5 sm:py-3 bg-[#F4F9FD] border border-[#D4E8F9] rounded-2xl text-sm sm:text-base text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#5BB2F2] focus:bg-white transition-all">
+
+                        <button type="submit" id="btn-send-message" title="Отправить"
+                            class="p-3 rounded-2xl bg-gradient-to-r from-[#5BB2F2] to-[#3898EC] hover:from-[#49A5EB] hover:to-[#2B8AE0] active:scale-95 text-white shadow-md shadow-[#5BB2F2]/25 transition-all flex-shrink-0 cursor-pointer">
+                            <i data-lucide="send" class="w-5 h-5"></i>
+                        </button>
+                    </form>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <!-- Логика приложения: Firebase Firestore (облако) + автоматический резервный режим для локального файла -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            addDoc,
+            updateDoc,
+            onSnapshot,
+            collection
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // =========================================================================
+        // 1. НАСТРОЙКА FIREBASE (ДЛЯ ПУБЛИКАЦИИ НА GITHUB PAGES)
+        // =========================================================================
+        // Когда вы создадите проект в Firebase Console (console.firebase.google.com),
+        // вставьте свои ключи вместо строк "ВСТАВЬТЕ_СЮДА_..." ниже:
+        const MANUAL_FIREBASE_CONFIG = {
+            apiKey: "ВСТАВЬТЕ_СЮДА_API_KEY",
+            authDomain: "ВСТАВЬТЕ_СЮДА_AUTH_DOMAIN",
+            projectId: "ВСТАВЬТЕ_СЮДА_PROJECT_ID",
+            storageBucket: "ВСТАВЬТЕ_СЮДА_STORAGE_BUCKET",
+            messagingSenderId: "ВСТАВЬТЕ_СЮДА_MESSAGING_SENDER_ID",
+            appId: "ВСТАВЬТЕ_СЮДА_APP_ID"
+        };
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'gsgram-messenger';
+
+        // Определяем, есть ли рабочий конфиг Firebase (из среды или вписанный вручную)
+        const hasEnvConfig = typeof __firebase_config !== 'undefined' && __firebase_config;
+        const hasManualConfig = MANUAL_FIREBASE_CONFIG.apiKey && !MANUAL_FIREBASE_CONFIG.apiKey.startsWith("ВСТАВЬТЕ_");
+
+        let app = null;
+        let auth = null;
+        let db = null;
+        let usersColRef = null;
+        let chatsColRef = null;
+        let messagesColRef = null;
+
+        // Глобальное состояние приложения
+        const state = {
+            storageMode: 'connecting', // 'firebase' | 'local'
+            firebaseUser: null,
+            currentProfile: null,
+            savedCloudProfile: null,
+            allUsers: [],
+            allChats: [],
+            allMessages: [],
+            activeChatId: null,
+            searchQuery: '',
+            showAllUsersMode: false
+        };
+
+        const GLOBAL_CHAT_ID = 'global_chat';
+
+        const AVATAR_GRADIENTS = [
+            'from-sky-400 to-blue-500',
+            'from-cyan-400 to-sky-500',
+            'from-indigo-400 to-sky-400',
+            'from-teal-400 to-cyan-500',
+            'from-blue-400 to-indigo-400',
+            'from-sky-300 to-cyan-500'
+        ];
+
+        const POPULAR_EMOJIS = [
+            '😊', '😂', '🥰', '😍', '🤗', '👋',
+            '💙', '🩵', '✨', '🔥', '👍', '🎉',
+            '🤔', '😎', '🥺', '🙏', '🌸', '☁️'
+        ];
+
+        // =========================================================================
+        // 2. УНИВЕРСАЛЬНЫЙ СЛОЙ ДАННЫХ (ОБЛАКО FIREBASE ИЛИ ЛОКАЛЬНЫЙ РЕЖИМ)
+        // =========================================================================
+        const LOCAL_KEYS = {
+            users: 'gsgram_local_users_v1',
+            chats: 'gsgram_local_chats_v1',
+            messages: 'gsgram_local_messages_v1',
+            session: 'gsgram_local_session_v1'
+        };
+
+        function readLocal(key, fallback) {
+            try {
+                const raw = window.localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : fallback;
+            } catch (e) {
+                return fallback;
+            }
+        }
+
+        function writeLocal(key, value) {
+            try {
+                window.localStorage.setItem(key, JSON.stringify(value));
+            } catch (e) {
+                console.warn("Не удалось записать в память браузера:", e);
+            }
+        }
+
+        function syncFromLocalStorage() {
+            state.allUsers = readLocal(LOCAL_KEYS.users, []);
+            state.allChats = readLocal(LOCAL_KEYS.chats, []);
+            const msgs = readLocal(LOCAL_KEYS.messages, []);
+            msgs.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+            state.allMessages = msgs;
+
+            if (state.currentProfile) {
+                renderSidebarList();
+                updateActiveChatHeader();
+                if (state.activeChatId) {
+                    renderMessagesFeed();
+                }
+            }
+        }
+
+        function updateDbStatusBadge(mode) {
+            const dot = document.getElementById('db-status-dot');
+            const text = document.getElementById('db-status-text');
+            if (!dot || !text) return;
+
+            if (mode === 'firebase') {
+                dot.className = 'w-2 h-2 rounded-full bg-emerald-400';
+                text.textContent = 'Облако Firebase подключено';
+            } else {
+                dot.className = 'w-2 h-2 rounded-full bg-[#5BB2F2]';
+                text.textContent = 'Локальный режим (готово к входу)';
+            }
+        }
+
+        // =========================================================================
+        // 3. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ UI
+        // =========================================================================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colors = type === 'error'
+                ? 'bg-rose-500 text-white shadow-rose-500/20'
+                : 'bg-[#2778C4] text-white shadow-[#3898EC]/25';
+
+            toast.className = `${colors} backdrop-blur-md px-4 py-3 rounded-2xl text-sm font-medium shadow-lg transition-all duration-300 transform translate-y-0 opacity-100 flex items-center gap-2`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        }
+
+        function getInitials(name) {
+            if (!name) return 'GS';
+            const parts = name.trim().split(/\s+/);
+            if (parts.length >= 2) {
+                return (parts[0][0] + parts[1][0]).toUpperCase();
+            }
+            return name.slice(0, 2).toUpperCase();
+        }
+
+        function getGradientByString(str) {
+            if (!str) return AVATAR_GRADIENTS[0];
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return AVATAR_GRADIENTS[Math.abs(hash) % AVATAR_GRADIENTS.length];
+        }
+
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            const now = new Date();
+            const isToday = date.toDateString() === now.toDateString();
+            const timeStr = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            if (isToday) return timeStr;
+            const dateStr = date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+            return `${dateStr} ${timeStr}`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function normalizeUsername(raw) {
+            return raw.trim().replace(/^@+/, '').toLowerCase().replace(/[^a-z0-9_]/g, '');
+        }
+
+        function getDirectChatId(usernameA, usernameB) {
+            const sorted = [usernameA.toLowerCase(), usernameB.toLowerCase()].sort();
+            return `dm_${sorted[0]}__${sorted[1]}`;
+        }
+
+        // =========================================================================
+        // 4. ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ (FIREBASE + FALLBACK)
+        // =========================================================================
+        async function initApp() {
+            lucide.createIcons();
+            renderEmojiGrid();
+            bindEvents();
+
+            // Если нет ни системного конфига, ни вписанного вручную — сразу включаем локальный режим без зависания!
+            if (!hasEnvConfig && !hasManualConfig) {
+                enableLocalFallbackMode();
+                return;
+            }
+
+            try {
+                const firebaseConfig = hasEnvConfig
+                    ? JSON.parse(__firebase_config)
+                    : MANUAL_FIREBASE_CONFIG;
+
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                usersColRef = collection(db, 'artifacts', appId, 'public', 'data', 'gsgram_users');
+                chatsColRef = collection(db, 'artifacts', appId, 'public', 'data', 'gsgram_chats');
+                messagesColRef = collection(db, 'artifacts', appId, 'public', 'data', 'gsgram_messages');
+
+                // Таймаут 4 секунды на случай, если файл открыт офлайн с телефона
+                const authPromise = (typeof __initial_auth_token !== 'undefined' && __initial_auth_token)
+                    ? signInWithCustomToken(auth, __initial_auth_token)
+                    : signInAnonymously(auth);
+
+                const timeoutPromise = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Firebase timeout')), 4500)
+                );
+
+                const cred = await Promise.race([authPromise, timeoutPromise]);
+                state.firebaseUser = cred.user;
+                state.storageMode = 'firebase';
+                updateDbStatusBadge('firebase');
+
+                await ensureGlobalChatExists();
+                await checkExistingSessionProfile();
+                subscribeToRealtimeData();
+
+            } catch (err) {
+                console.warn("Переключение на локальный режим хранения:", err);
+                enableLocalFallbackMode();
+            }
+        }
+
+        function enableLocalFallbackMode() {
+            state.storageMode = 'local';
+            updateDbStatusBadge('local');
+
+            // Инициализируем общий чат локально, если его еще нет
+            const chats = readLocal(LOCAL_KEYS.chats, []);
+            if (!chats.some(c => c.id === GLOBAL_CHAT_ID)) {
+                chats.push({
+                    id: GLOBAL_CHAT_ID,
+                    type: 'global',
+                    title: 'gsgram Общий чат',
+                    lastMessage: 'Добро пожаловать в общий чат gsgram! 👋',
+                    lastMessageTime: Date.now(),
+                    lastSender: 'gsgram'
+                });
+                writeLocal(LOCAL_KEYS.chats, chats);
+
+                const msgs = readLocal(LOCAL_KEYS.messages, []);
+                msgs.push({
+                    id: 'welcome_msg_1',
+                    chatId: GLOBAL_CHAT_ID,
+                    senderUsername: 'gsgram_bot',
+                    senderNickname: 'gsgram Бот',
+                    text: 'Привет! Это общий чат gsgram. Пишите сюда или ищите друзей по @username 🩵',
+                    createdAt: Date.now()
+                });
+                writeLocal(LOCAL_KEYS.messages, msgs);
+            }
+
+            syncFromLocalStorage();
+
+            // Проверяем сохраненную локальную сессию
+            const session = readLocal(LOCAL_KEYS.session, null);
+            if (session && session.username) {
+                const users = readLocal(LOCAL_KEYS.users, []);
+                const found = users.find(u => u.username === session.username);
+                if (found) {
+                    state.savedCloudProfile = found;
+                    if (session.active !== false) {
+                        enterMessenger(found);
+                    } else {
+                        const restoreBox = document.getElementById('quick-restore-box');
+                        const restoreName = document.getElementById('quick-restore-name');
+                        restoreName.textContent = `${found.nickname} (@${found.username})`;
+                        restoreBox.classList.remove('hidden');
+                    }
+                }
+            }
+
+            // Слушаем изменения между вкладками браузера в реальном времени
+            window.addEventListener('storage', () => {
+                if (state.storageMode === 'local') {
+                    syncFromLocalStorage();
+                }
+            });
+        }
+
+        async function ensureGlobalChatExists() {
+            if (state.storageMode !== 'firebase' || !state.firebaseUser) return;
+            const globalRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_chats', GLOBAL_CHAT_ID);
+            try {
+                const snap = await getDoc(globalRef);
+                if (!snap.exists()) {
+                    await setDoc(globalRef, {
+                        id: GLOBAL_CHAT_ID,
+                        type: 'global',
+                        title: 'gsgram Общий чат',
+                        lastMessage: 'Добро пожаловать в общий чат gsgram! 👋',
+                        lastMessageTime: Date.now(),
+                        lastSender: 'gsgram'
+                    });
+
+                    await addDoc(messagesColRef, {
+                        chatId: GLOBAL_CHAT_ID,
+                        senderUsername: 'gsgram_bot',
+                        senderNickname: 'gsgram Бот',
+                        text: 'Привет! Это общий чат gsgram. Пишите сюда или ищите друзей по @username 🩵',
+                        createdAt: Date.now()
+                    });
+                }
+            } catch (e) {
+                console.warn("Проверка общего чата:", e);
+            }
+        }
+
+        async function checkExistingSessionProfile() {
+            if (state.storageMode !== 'firebase' || !state.firebaseUser) return;
+            const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_sessions', state.firebaseUser.uid);
+            try {
+                const sessionSnap = await getDoc(sessionRef);
+                if (sessionSnap.exists() && sessionSnap.data().username) {
+                    const savedUsername = sessionSnap.data().username;
+                    const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_users', savedUsername);
+                    const userSnap = await getDoc(userRef);
+                    if (userSnap.exists()) {
+                        state.savedCloudProfile = userSnap.data();
+                        if (sessionSnap.data().active !== false) {
+                            enterMessenger(state.savedCloudProfile);
+                        } else {
+                            const restoreBox = document.getElementById('quick-restore-box');
+                            const restoreName = document.getElementById('quick-restore-name');
+                            restoreName.textContent = `${state.savedCloudProfile.nickname} (@${state.savedCloudProfile.username})`;
+                            restoreBox.classList.remove('hidden');
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn("Чтение сессии:", e);
+            }
+        }
+
+        function subscribeToRealtimeData() {
+            if (state.storageMode !== 'firebase' || !state.firebaseUser) return;
+
+            onSnapshot(usersColRef, (snapshot) => {
+                const users = [];
+                snapshot.forEach((docSnap) => users.push(docSnap.data()));
+                state.allUsers = users;
+                renderSidebarList();
+                updateActiveChatHeader();
+            }, (error) => console.error("Ошибка подписки на пользователей:", error));
+
+            onSnapshot(chatsColRef, (snapshot) => {
+                const chats = [];
+                snapshot.forEach((docSnap) => chats.push(docSnap.data()));
+                state.allChats = chats;
+                renderSidebarList();
+            }, (error) => console.error("Ошибка подписки на чаты:", error));
+
+            onSnapshot(messagesColRef, (snapshot) => {
+                const msgs = [];
+                snapshot.forEach((docSnap) => msgs.push({ id: docSnap.id, ...docSnap.data() }));
+                msgs.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+                state.allMessages = msgs;
+
+                if (state.activeChatId) {
+                    renderMessagesFeed();
+                }
+                renderSidebarList();
+            }, (error) => console.error("Ошибка подписки на сообщения:", error));
+        }
+
+        // =========================================================================
+        // 5. РЕГИСТРАЦИЯ / ВХОД / ВЫХОД
+        // =========================================================================
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+
+            const nicknameInput = document.getElementById('input-nickname');
+            const usernameInput = document.getElementById('input-username');
+            const submitBtn = document.getElementById('auth-submit-btn');
+
+            const nickname = nicknameInput.value.trim();
+            const username = normalizeUsername(usernameInput.value);
+
+            if (!nickname) {
+                showToast("Введите ваш никнейм", "error");
+                return;
+            }
+            if (username.length < 3) {
+                showToast("Юзернейм должен содержать минимум 3 латинских символа или цифры", "error");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-70');
+
+            try {
+                const profileData = {
+                    username: username,
+                    nickname: nickname,
+                    ownerUid: state.firebaseUser ? state.firebaseUser.uid : 'local_device',
+                    online: true,
+                    lastSeen: Date.now()
+                };
+
+                if (state.storageMode === 'firebase' && state.firebaseUser) {
+                    const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_users', username);
+                    const existingSnap = await getDoc(userDocRef);
+
+                    if (existingSnap.exists()) {
+                        await updateDoc(userDocRef, {
+                            nickname: nickname,
+                            online: true,
+                            lastSeen: Date.now()
+                        });
+                        showToast(`С возвращением, ${nickname}!`);
+                    } else {
+                        await setDoc(userDocRef, {
+                            ...profileData,
+                            createdAt: Date.now()
+                        });
+                        showToast(`Добро пожаловать в gsgram, ${nickname}!`);
+                    }
+
+                    const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_sessions', state.firebaseUser.uid);
+                    await setDoc(sessionRef, {
+                        username: username,
+                        active: true,
+                        updatedAt: Date.now()
+                    });
+                } else {
+                    // Локальный режим хранения (если открыт файл без Firebase)
+                    const users = readLocal(LOCAL_KEYS.users, []);
+                    const idx = users.findIndex(u => u.username === username);
+                    if (idx !== -1) {
+                        users[idx] = { ...users[idx], nickname, online: true, lastSeen: Date.now() };
+                        showToast(`С возвращением, ${nickname}!`);
+                    } else {
+                        users.push({ ...profileData, createdAt: Date.now() });
+                        showToast(`Добро пожаловать в gsgram, ${nickname}!`);
+                    }
+                    writeLocal(LOCAL_KEYS.users, users);
+                    writeLocal(LOCAL_KEYS.session, { username, active: true, updatedAt: Date.now() });
+                    syncFromLocalStorage();
+                }
+
+                enterMessenger(profileData);
+
+            } catch (err) {
+                console.error("Ошибка регистрации:", err);
+                showToast("Ошибка при сохранении профиля", "error");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-70');
+            }
+        }
+
+        function enterMessenger(profile) {
+            state.currentProfile = profile;
+            state.savedCloudProfile = profile;
+
+            const avatarEl = document.getElementById('my-avatar');
+            avatarEl.textContent = getInitials(profile.nickname);
+            avatarEl.className = `w-10 h-10 rounded-2xl bg-gradient-to-tr ${getGradientByString(profile.username)} text-white font-bold flex items-center justify-center text-sm shadow-sm flex-shrink-0`;
+
+            document.getElementById('my-profile-label').textContent = `${profile.nickname} • @${profile.username}`;
+
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('app-screen').classList.remove('hidden');
+
+            if (window.innerWidth >= 768 && !state.activeChatId) {
+                openChat(GLOBAL_CHAT_ID);
+            } else {
+                renderSidebarList();
+            }
+        }
+
+        async function handleLogout() {
+            if (!state.currentProfile) return;
+            try {
+                if (state.storageMode === 'firebase' && state.firebaseUser) {
+                    const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_sessions', state.firebaseUser.uid);
+                    await setDoc(sessionRef, {
+                        username: state.currentProfile.username,
+                        active: false,
+                        updatedAt: Date.now()
+                    });
+
+                    const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_users', state.currentProfile.username);
+                    await updateDoc(userRef, { online: false, lastSeen: Date.now() });
+                } else {
+                    writeLocal(LOCAL_KEYS.session, {
+                        username: state.currentProfile.username,
+                        active: false,
+                        updatedAt: Date.now()
+                    });
+                }
+            } catch (e) {
+                console.warn("Ошибка при выходе:", e);
+            }
+
+            const restoreBox = document.getElementById('quick-restore-box');
+            const restoreName = document.getElementById('quick-restore-name');
+            restoreName.textContent = `${state.currentProfile.nickname} (@${state.currentProfile.username})`;
+            restoreBox.classList.remove('hidden');
+
+            state.currentProfile = null;
+            state.activeChatId = null;
+
+            document.getElementById('app-screen').classList.add('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('input-nickname').value = '';
+            document.getElementById('input-username').value = '';
+        }
+
+        // =========================================================================
+        // 6. СПИСОК ЧАТОВ И ПОИСК ПОЛЬЗОВАТЕЛЕЙ
+        // =========================================================================
+        function renderSidebarList() {
+            const listEl = document.getElementById('sidebar-list');
+            if (!state.currentProfile) return;
+
+            const myUsername = state.currentProfile.username;
+            const query = state.searchQuery.trim().toLowerCase().replace(/^@+/, '');
+
+            let html = '';
+
+            const globalChat = state.allChats.find(c => c.id === GLOBAL_CHAT_ID) || {
+                id: GLOBAL_CHAT_ID,
+                title: 'gsgram Общий чат',
+                lastMessage: 'Нажмите, чтобы написать всем...',
+                lastMessageTime: Date.now()
+            };
+
+            const matchesGlobal = !query || 'gsgram общий чат'.includes(query);
+            if (matchesGlobal && !state.showAllUsersMode) {
+                const isActive = state.activeChatId === GLOBAL_CHAT_ID;
+                html += `
+                    <div class="px-2 pt-1 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-[#3898EC] flex items-center justify-between">
+                        <span>Закрепленный канал</span>
+                        <i data-lucide="pin" class="w-3 h-3"></i>
+                    </div>
+                    <button type="button" data-chat-id="${GLOBAL_CHAT_ID}"
+                        class="chat-item-btn w-full p-3 rounded-2xl flex items-center gap-3 text-left transition-all cursor-pointer ${isActive ? 'bg-[#D4E8F9] shadow-xs' : 'bg-white hover:bg-[#E8F3FC]'}">
+                        <div class="relative flex-shrink-0">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#5BB2F2] to-[#3898EC] text-white flex items-center justify-center shadow-sm">
+                                <i data-lucide="sparkles" class="w-6 h-6"></i>
+                            </div>
+                            <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-white"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-1">
+                                <span class="font-bold text-sm text-slate-800 truncate">${escapeHtml(globalChat.title)}</span>
+                                <span class="text-[11px] text-slate-400 flex-shrink-0">${formatTime(globalChat.lastMessageTime)}</span>
+                            </div>
+                            <p class="text-xs text-slate-500 truncate mt-0.5">
+                                ${globalChat.lastSender && globalChat.lastSender !== 'gsgram' ? `<span class="text-[#3898EC] font-medium">${escapeHtml(globalChat.lastSender)}:</span> ` : ''}${escapeHtml(globalChat.lastMessage || '')}
+                            </p>
+                        </div>
+                    </button>
+                `;
+            }
+
+            const myDmChats = state.allChats
+                .filter(c => c.type === 'dm' && Array.isArray(c.participants) && c.participants.includes(myUsername))
+                .sort((a, b) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0));
+
+            const filteredDmChats = myDmChats.filter(chat => {
+                const peerUsername = chat.participants.find(u => u !== myUsername) || myUsername;
+                const peerUser = state.allUsers.find(u => u.username === peerUsername);
+                const peerName = peerUser ? peerUser.nickname : peerUsername;
+                if (!query) return true;
+                return peerName.toLowerCase().includes(query) || peerUsername.toLowerCase().includes(query);
+            });
+
+            if (filteredDmChats.length > 0 && !state.showAllUsersMode) {
+                html += `
+                    <div class="px-2 pt-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        Личные сообщения
+                    </div>
+                `;
+
+                filteredDmChats.forEach(chat => {
+                    const peerUsername = chat.participants.find(u => u !== myUsername) || myUsername;
+                    const peerUser = state.allUsers.find(u => u.username === peerUsername);
+                    const peerNickname = peerUser ? peerUser.nickname : `@${peerUsername}`;
+                    const isOnline = peerUser ? peerUser.online : false;
+                    const isActive = state.activeChatId === chat.id;
+
+                    html += `
+                        <button type="button" data-chat-id="${chat.id}"
+                            class="chat-item-btn w-full p-3 rounded-2xl flex items-center gap-3 text-left transition-all cursor-pointer ${isActive ? 'bg-[#D4E8F9] shadow-xs' : 'bg-white/70 hover:bg-white'}">
+                            <div class="relative flex-shrink-0">
+                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${getGradientByString(peerUsername)} text-white font-bold flex items-center justify-center text-sm shadow-sm">
+                                    ${getInitials(peerNickname)}
+                                </div>
+                                ${isOnline ? '<span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-white"></span>' : ''}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between gap-1">
+                                    <span class="font-semibold text-sm text-slate-800 truncate">${escapeHtml(peerNickname)}</span>
+                                    <span class="text-[11px] text-slate-400 flex-shrink-0">${formatTime(chat.lastMessageTime)}</span>
+                                </div>
+                                <p class="text-xs text-slate-500 truncate mt-0.5">
+                                    ${escapeHtml(chat.lastMessage || 'Нет сообщений')}
+                                </p>
+                            </div>
+                        </button>
+                    `;
+                });
+            }
+
+            const otherUsers = state.allUsers.filter(u => u.username !== myUsername);
+            const matchingUsers = otherUsers.filter(u => {
+                if (!query && !state.showAllUsersMode) return false;
+                if (!query && state.showAllUsersMode) return true;
+                return u.username.toLowerCase().includes(query) || (u.nickname && u.nickname.toLowerCase().includes(query));
+            });
+
+            if (query || state.showAllUsersMode) {
+                html += `
+                    <div class="px-2 pt-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-[#3898EC] flex items-center justify-between">
+                        <span>Пользователи gsgram (${matchingUsers.length})</span>
+                        ${state.showAllUsersMode ? '<button type="button" id="close-users-mode" class="text-xs underline lowercase cursor-pointer">скрыть</button>' : ''}
+                    </div>
+                `;
+
+                if (matchingUsers.length === 0) {
+                    html += `
+                        <div class="p-4 text-center bg-white rounded-2xl border border-[#D4E8F9] text-xs text-slate-400">
+                            Пользователи по запросу «${escapeHtml(state.searchQuery)}» не найдены.
+                        </div>
+                    `;
+                } else {
+                    matchingUsers.forEach(user => {
+                        html += `
+                            <button type="button" data-start-dm-username="${escapeHtml(user.username)}"
+                                class="start-dm-btn w-full p-2.5 rounded-2xl bg-white hover:bg-[#E8F3FC] border border-[#D4E8F9]/60 flex items-center justify-between gap-3 text-left transition-all cursor-pointer">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="relative flex-shrink-0">
+                                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr ${getGradientByString(user.username)} text-white font-bold flex items-center justify-center text-xs">
+                                            ${getInitials(user.nickname)}
+                                        </div>
+                                        ${user.online ? '<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white"></span>' : ''}
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="font-semibold text-sm text-slate-800 truncate">${escapeHtml(user.nickname)}</div>
+                                        <div class="text-xs text-[#3898EC] truncate">@${escapeHtml(user.username)}</div>
+                                    </div>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-xl bg-[#E8F3FC] text-[#2778C4] text-xs font-medium flex-shrink-0">
+                                    Написать
+                                </span>
+                            </button>
+                        `;
+                    });
+                }
+            } else if (filteredDmChats.length === 0) {
+                html += `
+                    <div class="mt-4 p-4 rounded-2xl bg-white border border-[#D4E8F9] text-center">
+                        <p class="text-xs text-slate-500">
+                            У вас пока нет личных диалогов. Нажмите кнопку <span class="font-semibold text-[#3898EC]">+</span> вверху или введите <span class="font-semibold text-[#3898EC]">@username</span> в поиске!
+                        </p>
+                    </div>
+                `;
+            }
+
+            listEl.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // =========================================================================
+        // 7. ОТКРЫТИЕ ЧАТА И ОТПРАВКА СООБЩЕНИЙ
+        // =========================================================================
+        async function startDirectChatWith(targetUsername) {
+            if (!state.currentProfile) return;
+            const myUsername = state.currentProfile.username;
+            if (targetUsername === myUsername) {
+                showToast("Нельзя создать чат с самим собой");
+                return;
+            }
+
+            const chatId = getDirectChatId(myUsername, targetUsername);
+
+            try {
+                if (state.storageMode === 'firebase' && state.firebaseUser) {
+                    const chatRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_chats', chatId);
+                    const snap = await getDoc(chatRef);
+                    if (!snap.exists()) {
+                        await setDoc(chatRef, {
+                            id: chatId,
+                            type: 'dm',
+                            participants: [myUsername, targetUsername],
+                            lastMessage: 'Чат создан',
+                            lastMessageTime: Date.now(),
+                            lastSender: myUsername
+                        });
+                    }
+                } else {
+                    const chats = readLocal(LOCAL_KEYS.chats, []);
+                    if (!chats.some(c => c.id === chatId)) {
+                        chats.push({
+                            id: chatId,
+                            type: 'dm',
+                            participants: [myUsername, targetUsername],
+                            lastMessage: 'Чат создан',
+                            lastMessageTime: Date.now(),
+                            lastSender: myUsername
+                        });
+                        writeLocal(LOCAL_KEYS.chats, chats);
+                        syncFromLocalStorage();
+                    }
+                }
+
+                state.showAllUsersMode = false;
+                state.searchQuery = '';
+                document.getElementById('search-input').value = '';
+                document.getElementById('clear-search-btn').classList.add('hidden');
+
+                openChat(chatId);
+            } catch (e) {
+                console.error("Ошибка создания чата:", e);
+                showToast("Не удалось открыть диалог", "error");
+            }
+        }
+
+        function openChat(chatId) {
+            state.activeChatId = chatId;
+
+            const sidebar = document.getElementById('sidebar-panel');
+            const chatPanel = document.getElementById('chat-panel');
+            if (window.innerWidth < 768) {
+                sidebar.classList.add('hidden');
+                chatPanel.classList.remove('hidden');
+                chatPanel.classList.add('flex');
+            }
+
+            document.getElementById('empty-chat-state').classList.add('hidden');
+            document.getElementById('active-chat-container').classList.remove('hidden');
+
+            updateActiveChatHeader();
+            renderSidebarList();
+            renderMessagesFeed(true);
+
+            if (window.innerWidth >= 768) {
+                document.getElementById('message-input').focus();
+            }
+        }
+
+        function closeChatMobile() {
+            state.activeChatId = null;
+            const sidebar = document.getElementById('sidebar-panel');
+            const chatPanel = document.getElementById('chat-panel');
+
+            chatPanel.classList.add('hidden');
+            chatPanel.classList.remove('flex');
+            sidebar.classList.remove('hidden');
+            renderSidebarList();
+        }
+
+        function updateActiveChatHeader() {
+            if (!state.activeChatId || !state.currentProfile) return;
+
+            const avatarEl = document.getElementById('chat-header-avatar');
+            const titleEl = document.getElementById('chat-header-title');
+            const subtitleEl = document.getElementById('chat-header-subtitle');
+
+            if (state.activeChatId === GLOBAL_CHAT_ID) {
+                avatarEl.innerHTML = '<i data-lucide="sparkles" class="w-5 h-5"></i>';
+                avatarEl.className = 'w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#5BB2F2] to-[#3898EC] text-white font-bold flex items-center justify-center text-sm flex-shrink-0 shadow-sm';
+                titleEl.textContent = 'gsgram Общий чат';
+                const totalUsers = state.allUsers.length;
+                subtitleEl.textContent = `Общая комната • участников: ${totalUsers || 1}`;
+                lucide.createIcons();
+                return;
+            }
+
+            const chat = state.allChats.find(c => c.id === state.activeChatId);
+            const myUsername = state.currentProfile.username;
+            let peerUsername = '';
+
+            if (chat && Array.isArray(chat.participants)) {
+                peerUsername = chat.participants.find(u => u !== myUsername) || '';
+            } else if (state.activeChatId.startsWith('dm_')) {
+                const parts = state.activeChatId.replace('dm_', '').split('__');
+                peerUsername = parts.find(u => u !== myUsername) || parts[0];
+            }
+
+            const peerUser = state.allUsers.find(u => u.username === peerUsername);
+            const peerNickname = peerUser ? peerUser.nickname : `@${peerUsername}`;
+            const isOnline = peerUser ? peerUser.online : false;
+
+            avatarEl.textContent = getInitials(peerNickname);
+            avatarEl.className = `w-10 h-10 rounded-2xl bg-gradient-to-tr ${getGradientByString(peerUsername)} text-white font-bold flex items-center justify-center text-sm flex-shrink-0 shadow-sm`;
+            titleEl.textContent = peerNickname;
+            subtitleEl.textContent = `@${peerUsername} • ${isOnline ? 'в сети' : 'был(а) недавно'}`;
+        }
+
+        function renderMessagesFeed(forceScroll = false) {
+            const feedEl = document.getElementById('messages-feed');
+            if (!state.activeChatId || !state.currentProfile) return;
+
+            const wasAtBottom = feedEl.scrollHeight - feedEl.scrollTop - feedEl.clientHeight < 120;
+            const chatMessages = state.allMessages.filter(m => m.chatId === state.activeChatId);
+            const myUsername = state.currentProfile.username;
+
+            if (chatMessages.length === 0) {
+                feedEl.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-center py-10">
+                        <div class="px-4 py-2 rounded-2xl bg-white border border-[#D4E8F9] text-xs text-slate-500 shadow-xs">
+                            Сообщений пока нет. Напишите первым! ✨
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            chatMessages.forEach((msg) => {
+                const isMine = msg.senderUsername === myUsername;
+
+                if (isMine) {
+                    html += `
+                        <div class="flex justify-end items-end gap-2">
+                            <div class="max-w-[82%] sm:max-w-[68%] bg-gradient-to-br from-[#5BB2F2] to-[#3898EC] text-white px-4 py-2.5 rounded-2xl rounded-br-sm shadow-sm">
+                                <p class="text-sm sm:text-[15px] leading-relaxed break-words whitespace-pre-wrap">${escapeHtml(msg.text)}</p>
+                                <div class="flex items-center justify-end gap-1 mt-1 text-[10px] text-sky-100">
+                                    <span>${formatTime(msg.createdAt)}</span>
+                                    <i data-lucide="check-check" class="w-3 h-3"></i>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const showAuthor = state.activeChatId === GLOBAL_CHAT_ID;
+                    html += `
+                        <div class="flex justify-start items-end gap-2">
+                            <div class="w-7 h-7 rounded-xl bg-gradient-to-tr ${getGradientByString(msg.senderUsername)} text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mb-0.5 shadow-sm">
+                                ${getInitials(msg.senderNickname || msg.senderUsername)}
+                            </div>
+                            <div class="max-w-[82%] sm:max-w-[68%] bg-white border border-[#D4E8F9] text-slate-700 px-4 py-2.5 rounded-2xl rounded-bl-sm shadow-xs">
+                                ${showAuthor ? `
+                                    <div class="flex items-center gap-1.5 mb-0.5">
+                                        <span class="text-xs font-bold text-[#3898EC]">${escapeHtml(msg.senderNickname || msg.senderUsername)}</span>
+                                        <span class="text-[10px] text-slate-400">@${escapeHtml(msg.senderUsername)}</span>
+                                    </div>
+                                ` : ''}
+                                <p class="text-sm sm:text-[15px] leading-relaxed break-words whitespace-pre-wrap">${escapeHtml(msg.text)}</p>
+                                <div class="text-right mt-1 text-[10px] text-slate-400">
+                                    ${formatTime(msg.createdAt)}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            feedEl.innerHTML = html;
+            lucide.createIcons();
+
+            if (forceScroll || wasAtBottom) {
+                feedEl.scrollTop = feedEl.scrollHeight;
+            }
+        }
+
+        async function handleSendMessage(e) {
+            e.preventDefault();
+            if (!state.currentProfile || !state.activeChatId) return;
+
+            const inputEl = document.getElementById('message-input');
+            const text = inputEl.value.trim();
+            if (!text) return;
+
+            inputEl.value = '';
+            document.getElementById('emoji-popover').classList.add('hidden');
+
+            const now = Date.now();
+            const chatId = state.activeChatId;
+
+            try {
+                if (state.storageMode === 'firebase' && state.firebaseUser) {
+                    await addDoc(messagesColRef, {
+                        chatId: chatId,
+                        senderUsername: state.currentProfile.username,
+                        senderNickname: state.currentProfile.nickname,
+                        text: text,
+                        createdAt: now
+                    });
+
+                    const chatRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_chats', chatId);
+                    await updateDoc(chatRef, {
+                        lastMessage: text,
+                        lastMessageTime: now,
+                        lastSender: state.currentProfile.nickname
+                    });
+                } else {
+                    const msgs = readLocal(LOCAL_KEYS.messages, []);
+                    msgs.push({
+                        id: 'msg_' + now + '_' + Math.random().toString(36).slice(2, 6),
+                        chatId: chatId,
+                        senderUsername: state.currentProfile.username,
+                        senderNickname: state.currentProfile.nickname,
+                        text: text,
+                        createdAt: now
+                    });
+                    writeLocal(LOCAL_KEYS.messages, msgs);
+
+                    const chats = readLocal(LOCAL_KEYS.chats, []);
+                    const cIdx = chats.findIndex(c => c.id === chatId);
+                    if (cIdx !== -1) {
+                        chats[cIdx].lastMessage = text;
+                        chats[cIdx].lastMessageTime = now;
+                        chats[cIdx].lastSender = state.currentProfile.nickname;
+                        writeLocal(LOCAL_KEYS.chats, chats);
+                    }
+                    syncFromLocalStorage();
+                }
+
+                const feedEl = document.getElementById('messages-feed');
+                feedEl.scrollTop = feedEl.scrollHeight;
+
+            } catch (err) {
+                console.error("Ошибка отправки сообщения:", err);
+                showToast("Не удалось отправить сообщение", "error");
+            }
+        }
+
+        // =========================================================================
+        // 8. ОБРАБОТЧИКИ СОБЫТИЙ И ЭМОДЗИ
+        // =========================================================================
+        function renderEmojiGrid() {
+            const grid = document.getElementById('emoji-grid');
+            grid.innerHTML = POPULAR_EMOJIS.map(emoji => `
+                <button type="button" class="emoji-btn p-1.5 rounded-xl hover:bg-[#E8F3FC] transition-colors cursor-pointer text-center">
+                    ${emoji}
+                </button>
+            `).join('');
+        }
+
+        function bindEvents() {
+            const usernameInput = document.getElementById('input-username');
+            usernameInput.addEventListener('input', (e) => {
+                const cleaned = normalizeUsername(e.target.value);
+                if (e.target.value !== cleaned) {
+                    e.target.value = cleaned;
+                }
+            });
+
+            document.getElementById('auth-form').addEventListener('submit', handleAuthSubmit);
+
+            document.getElementById('quick-restore-btn').addEventListener('click', async () => {
+                if (!state.savedCloudProfile) return;
+                if (state.storageMode === 'firebase' && state.firebaseUser) {
+                    const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_sessions', state.firebaseUser.uid);
+                    await setDoc(sessionRef, {
+                        username: state.savedCloudProfile.username,
+                        active: true,
+                        updatedAt: Date.now()
+                    });
+                    const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'gsgram_users', state.savedCloudProfile.username);
+                    await updateDoc(userRef, { online: true, lastSeen: Date.now() });
+                } else {
+                    writeLocal(LOCAL_KEYS.session, {
+                        username: state.savedCloudProfile.username,
+                        active: true,
+                        updatedAt: Date.now()
+                    });
+                }
+                enterMessenger(state.savedCloudProfile);
+            });
+
+            document.getElementById('btn-logout').addEventListener('click', handleLogout);
+
+            document.getElementById('btn-new-chat').addEventListener('click', () => {
+                state.showAllUsersMode = !state.showAllUsersMode;
+                renderSidebarList();
+                if (state.showAllUsersMode) {
+                    document.getElementById('search-input').focus();
+                }
+            });
+
+            const searchInput = document.getElementById('search-input');
+            const clearSearchBtn = document.getElementById('clear-search-btn');
+
+            searchInput.addEventListener('input', (e) => {
+                state.searchQuery = e.target.value;
+                if (state.searchQuery.length > 0) {
+                    clearSearchBtn.classList.remove('hidden');
+                } else {
+                    clearSearchBtn.classList.add('hidden');
+                }
+                renderSidebarList();
+            });
+
+            clearSearchBtn.addEventListener('click', () => {
+                state.searchQuery = '';
+                searchInput.value = '';
+                clearSearchBtn.classList.add('hidden');
+                renderSidebarList();
+            });
+
+            document.getElementById('sidebar-list').addEventListener('click', (e) => {
+                const closeUsersBtn = e.target.closest('#close-users-mode');
+                if (closeUsersBtn) {
+                    state.showAllUsersMode = false;
+                    renderSidebarList();
+                    return;
+                }
+
+                const chatBtn = e.target.closest('.chat-item-btn');
+                if (chatBtn) {
+                    const chatId = chatBtn.getAttribute('data-chat-id');
+                    if (chatId) openChat(chatId);
+                    return;
+                }
+
+                const dmBtn = e.target.closest('.start-dm-btn');
+                if (dmBtn) {
+                    const targetUser = dmBtn.getAttribute('data-start-dm-username');
+                    if (targetUser) startDirectChatWith(targetUser);
+                }
+            });
+
+            document.getElementById('btn-back-mobile').addEventListener('click', closeChatMobile);
+            document.getElementById('message-form').addEventListener('submit', handleSendMessage);
+
+            const emojiToggle = document.getElementById('btn-emoji-toggle');
+            const emojiPopover = document.getElementById('emoji-popover');
+
+            emojiToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                emojiPopover.classList.toggle('hidden');
+            });
+
+            document.getElementById('emoji-grid').addEventListener('click', (e) => {
+                const btn = e.target.closest('.emoji-btn');
+                if (!btn) return;
+                const msgInput = document.getElementById('message-input');
+                msgInput.value += btn.textContent.trim();
+                msgInput.focus();
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!emojiPopover.contains(e.target) && !emojiToggle.contains(e.target)) {
+                    emojiPopover.classList.add('hidden');
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                const sidebar = document.getElementById('sidebar-panel');
+                const chatPanel = document.getElementById('chat-panel');
+                if (window.innerWidth >= 768) {
+                    sidebar.classList.remove('hidden');
+                    chatPanel.classList.remove('hidden');
+                    chatPanel.classList.add('flex');
+                } else if (state.activeChatId) {
+                    sidebar.classList.add('hidden');
+                    chatPanel.classList.remove('hidden');
+                } else {
+                    sidebar.classList.remove('hidden');
+                    chatPanel.classList.add('hidden');
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
