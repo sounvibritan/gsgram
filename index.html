@@ -96,9 +96,10 @@
             background-repeat: repeat;
         }
     </style>
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#4998DF">
-<link rel="apple-touch-icon" href="./icon-192.png"></head>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#4998DF">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+</head>
 <body class="w-screen overflow-hidden flex items-center justify-center p-0 sm:p-4 select-none">
 
     <!-- Индикатор статуса облака -->
@@ -137,6 +138,24 @@
                 </div>
                 <p class="text-[11px] text-pastel-500 mt-1.5 ml-1 leading-tight">
                     Латинские буквы, цифры и _. Если профиль уже есть — выполнится вход.
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-pastel-700 mb-1.5 ml-1">Пароль</label>
+                <div class="relative">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-pastel-400">
+                        <i data-lucide="lock" class="w-4 h-4"></i>
+                    </span>
+                    <input type="password" id="input-password" required minlength="4" maxlength="64" placeholder="Минимум 4 символа"
+                        class="w-full pl-10 pr-11 py-3 bg-pastel-50/90 border border-pastel-200 rounded-2xl text-sm font-semibold text-pastel-900 placeholder-pastel-400 focus:outline-none focus:border-pastel-500 focus:ring-4 focus:ring-pastel-400/15 transition-all">
+                    <button type="button" id="toggle-auth-password-btn" title="Показать или скрыть пароль"
+                        class="absolute right-3.5 top-1/2 -translate-y-1/2 text-pastel-400 hover:text-pastel-600 transition-colors">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <p id="auth-password-hint" class="text-[11px] text-pastel-500 mt-1.5 ml-1 leading-tight">
+                    Защищает аккаунт от входа посторонних. Для старого профиля задастся новый пароль.
                 </p>
             </div>
 
@@ -210,7 +229,7 @@
                 <!-- Генерируется динамически -->
             </div>
 
-            <!-- ВКЛАДКА 2: НАСТРОЙКИ (В СТИЛЕ СКРИНШОТА, В ПАСТЕЛЬНОЙ ГАММЕ) -->
+            <!-- ВКЛАДКА 2: НАСТРОЙКИ -->
             <div id="tab-settings-view" class="hidden flex-1 min-h-0 overflow-y-auto px-3 py-3 space-y-3">
                 <!-- Карточка профиля вверху настроек -->
                 <div class="bg-white rounded-3xl border border-pastel-200/80 p-4 flex flex-col items-center text-center shadow-2xs">
@@ -240,7 +259,7 @@
                     </button>
                 </div>
 
-                <!-- Блок сохранённых аккаунтов (как "Аккаунты" на скриншоте) -->
+                <!-- Блок сохранённых аккаунтов -->
                 <div class="bg-white rounded-3xl border border-pastel-200/80 p-3 shadow-2xs">
                     <div class="flex items-center justify-between px-1 mb-2">
                         <span class="text-[11px] font-extrabold uppercase tracking-wider text-pastel-600">Аккаунты</span>
@@ -249,15 +268,15 @@
                     <div id="settings-accounts-list" class="space-y-1.5"></div>
                 </div>
 
-                <!-- Список разделов настроек с цветными иконками и подзаголовками -->
+                <!-- Список разделов настроек -->
                 <div class="bg-white rounded-3xl border border-pastel-200/80 overflow-hidden divide-y divide-pastel-100 shadow-2xs">
                     <button type="button" id="setting-row-account" class="w-full px-3.5 py-3 text-left hover:bg-pastel-50 flex items-center gap-3 transition-colors">
                         <div class="w-8 h-8 rounded-xl bg-sky-500 text-white flex items-center justify-center shrink-0">
-                            <i data-lucide="user" class="w-4 h-4"></i>
+                            <i data-lucide="lock" class="w-4 h-4"></i>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <div class="text-xs font-extrabold text-pastel-900">Аккаунт</div>
-                            <div class="text-[11px] font-semibold text-pastel-500 truncate">Никнейм, @юзернейм, «О себе»</div>
+                            <div class="text-xs font-extrabold text-pastel-900">Аккаунт и пароль</div>
+                            <div class="text-[11px] font-semibold text-pastel-500 truncate">Пароль защиты, никнейм, «О себе»</div>
                         </div>
                         <i data-lucide="chevron-right" class="w-4 h-4 text-pastel-400 shrink-0"></i>
                     </button>
@@ -297,7 +316,7 @@
                 </div>
             </div>
 
-            <!-- НИЖНЯЯ НАВИГАЦИЯ: ТОЛЬКО ЧАТЫ И НАСТРОЙКИ -->
+            <!-- НИЖНЯЯ НАВИГАЦИЯ -->
             <nav id="bottom-nav-bar" class="px-3 pt-1.5 pb-[max(0.45rem,env(safe-area-inset-bottom))] bg-white/95 backdrop-blur-md border-t border-pastel-200/80 grid grid-cols-2 gap-1.5 shrink-0 z-20">
                 <button type="button" id="nav-tab-chats" class="py-2 px-3 rounded-2xl bg-pastel-100 text-pastel-700 font-extrabold text-xs flex items-center justify-center gap-2 transition-all">
                     <i data-lucide="message-circle" class="w-4 h-4"></i>
@@ -312,7 +331,7 @@
 
         <!-- ПРАВАЯ КОЛОНКА: ОКНО АКТИВНОГО ЧАТА -->
         <main id="chat-panel" class="hidden md:flex flex-1 h-full min-h-0 flex-col bg-white relative z-20 overflow-hidden">
-            <!-- Заглушка для ПК, если чат ещё не выбран -->
+            <!-- Заглушка для ПК -->
             <div id="empty-chat-placeholder" class="hidden md:flex flex-1 flex-col items-center justify-center p-8 text-center bg-pastel-50/40">
                 <div class="w-16 h-16 rounded-3xl bg-pastel-100 text-pastel-500 flex items-center justify-center mb-3 shadow-inner">
                     <i data-lucide="message-circle-heart" class="w-8 h-8"></i>
@@ -328,13 +347,11 @@
                 <!-- Шапка чата -->
                 <header class="px-2.5 sm:px-4 pt-8 sm:pt-2.5 pb-2 bg-white/95 backdrop-blur-md border-b border-pastel-100 flex items-center justify-between gap-2 shrink-0 z-20">
                     <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                        <!-- Кнопка Назад -->
                         <button type="button" id="back-to-chats-btn" title="Назад к списку чатов"
                             class="w-9 h-9 rounded-xl bg-pastel-100 hover:bg-pastel-200 text-pastel-700 flex items-center justify-center shrink-0 transition-colors active:scale-95">
                             <i data-lucide="arrow-left" class="w-5 h-5"></i>
                         </button>
 
-                        <!-- Информация о собеседнике / группе -->
                         <button type="button" id="chat-header-info-btn" class="flex items-center gap-2.5 min-w-0 text-left hover:bg-pastel-50 p-1 rounded-2xl transition-colors flex-1">
                             <div id="chat-header-avatar" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pastel-500 to-pastel-300 text-white font-extrabold text-sm flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
                                 <i data-lucide="globe" class="w-5 h-5"></i>
@@ -351,7 +368,6 @@
                         </button>
                     </div>
 
-                    <!-- Кнопка подарков и меню Три точки -->
                     <div class="flex items-center gap-1.5 shrink-0">
                         <button type="button" id="open-gifts-shop-btn" title="Подарки за верити 😊"
                             class="w-9 h-9 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200/80 flex items-center justify-center transition-colors">
@@ -363,7 +379,6 @@
                             <i data-lucide="more-vertical" class="w-5 h-5"></i>
                         </button>
 
-                        <!-- Выпадающее меню Трёх точек -->
                         <div id="chat-more-menu" class="hidden absolute right-0 top-11 w-56 bg-white rounded-2xl shadow-xl shadow-pastel-900/15 border border-pastel-200 py-1.5 z-40 msg-pop">
                             <button type="button" id="menu-wallpaper-btn" class="w-full px-3.5 py-2.5 text-left text-xs font-bold text-pastel-900 hover:bg-pastel-50 flex items-center gap-2.5 transition-colors">
                                 <i data-lucide="image" class="w-4 h-4 text-pastel-500"></i>
@@ -386,7 +401,7 @@
                     </div>
                 </header>
 
-                <!-- Плашка закреплённого сообщения (как в ТГ) -->
+                <!-- Плашка закреплённого сообщения -->
                 <div id="pinned-message-bar" class="hidden px-3.5 py-2 bg-white/95 backdrop-blur-md border-b border-pastel-200/80 flex items-center justify-between gap-2.5 z-10 cursor-pointer hover:bg-pastel-50 transition-colors shrink-0">
                     <div class="flex items-center gap-2.5 min-w-0 flex-1">
                         <div class="w-1 h-8 rounded-full bg-pastel-500 shrink-0"></div>
@@ -403,12 +418,11 @@
                     </button>
                 </div>
 
-                <!-- Лента сообщений с поддержкой обоев -->
+                <!-- Лента сообщений -->
                 <div id="messages-area" class="flex-1 min-h-0 overflow-y-auto px-3 sm:px-5 py-3 space-y-2 chat-wallpaper-layer default-dots relative">
-                    <!-- Сообщения рендерятся сюда -->
                 </div>
 
-                <!-- Плашка ответа на сообщение (Reply) над полем ввода -->
+                <!-- Плашка ответа -->
                 <div id="reply-preview-bar" class="hidden px-3.5 py-2 bg-pastel-50 border-t border-pastel-200 flex items-center justify-between gap-2 shrink-0">
                     <div class="flex items-center gap-2.5 min-w-0 flex-1">
                         <i data-lucide="reply" class="w-4 h-4 text-pastel-500 shrink-0"></i>
@@ -439,7 +453,7 @@
                     <button type="button" class="emoji-btn text-lg hover:scale-125 transition-transform p-1">😭</button>
                 </div>
 
-                <!-- Поле ввода сообщения (всегда закреплено внизу) -->
+                <!-- Поле ввода сообщения -->
                 <form id="message-form" onsubmit="return false;" class="px-2.5 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:p-3 bg-white border-t border-pastel-200/80 flex items-center gap-1.5 shrink-0 z-20">
                     <button type="button" id="toggle-emoji-btn" class="w-10 h-10 rounded-xl bg-pastel-50 hover:bg-pastel-100 text-pastel-500 flex items-center justify-center shrink-0 transition-colors">
                         <i data-lucide="smile" class="w-5 h-5"></i>
@@ -455,10 +469,9 @@
         </main>
     </div>
 
-    <!-- КОНТЕКСТНОЕ МЕНЮ СООБЩЕНИЯ (РЕАКЦИИ + ДЕЙСТВИЯ КАК В ТГ) -->
+    <!-- КОНТЕКСТНОЕ МЕНЮ СООБЩЕНИЯ -->
     <div id="msg-context-overlay" class="hidden fixed inset-0 z-50 bg-pastel-900/25 backdrop-blur-[2px] flex items-center justify-center p-4">
         <div id="msg-context-box" class="w-full max-w-[300px] space-y-2 msg-pop" onclick="event.stopPropagation()">
-            <!-- Полоска реакций -->
             <div class="bg-white/95 backdrop-blur-md rounded-full px-3 py-2 shadow-xl border border-pastel-200 flex items-center justify-between gap-1">
                 <button type="button" data-reaction="❤️" class="reaction-pick text-xl hover:scale-125 active:scale-95 transition-transform p-1">❤️</button>
                 <button type="button" data-reaction="🔥" class="reaction-pick text-xl hover:scale-125 active:scale-95 transition-transform p-1">🔥</button>
@@ -469,7 +482,6 @@
                 <button type="button" data-reaction="👀" class="reaction-pick text-xl hover:scale-125 active:scale-95 transition-transform p-1">👀</button>
             </div>
 
-            <!-- Карточка действий -->
             <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-pastel-200 overflow-hidden divide-y divide-pastel-100">
                 <button type="button" id="ctx-reply-btn" class="w-full px-4 py-3 text-left text-sm font-bold text-pastel-900 hover:bg-pastel-50 flex items-center gap-3 transition-colors">
                     <i data-lucide="reply" class="w-4 h-4 text-pastel-500"></i>
@@ -597,7 +609,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА: ПРОФИЛЬ СОБЕСЕДНИКА В СТИЛЕ 1-ГО И 2-ГО ФОТО -->
+    <!-- МОДАЛКА: ПРОФИЛЬ СОБЕСЕДНИКА -->
     <div id="user-view-modal" class="hidden fixed inset-0 z-50 bg-pastel-900/35 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
         <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-pastel-200 overflow-hidden msg-pop flex flex-col max-h-[90dvh]">
             <div class="px-4 py-3 bg-pastel-50 border-b border-pastel-100 flex items-center justify-between shrink-0">
@@ -609,7 +621,6 @@
             </div>
 
             <div class="p-4 overflow-y-auto flex-1 space-y-3.5">
-                <!-- Верхняя шапка профиля: аватар, ник, статус -->
                 <div class="flex flex-col items-center text-center">
                     <div id="view-user-avatar" class="w-24 h-24 rounded-full bg-gradient-to-br from-pastel-400 to-pastel-300 text-white font-extrabold text-3xl flex items-center justify-center shadow-md overflow-hidden mb-2.5 border-2 border-pastel-200">
                         U
@@ -618,7 +629,6 @@
                     <p id="view-user-status" class="text-xs font-semibold text-pastel-500 mt-0.5">был(а) недавно</p>
                 </div>
 
-                <!-- 4 кнопки быстрых действий: Чат, Звук, Звонок, Видео -->
                 <div class="grid grid-cols-4 gap-2">
                     <button type="button" id="view-user-message-btn" class="py-2.5 px-2 rounded-2xl bg-pastel-50 hover:bg-pastel-100 border border-pastel-200/80 flex flex-col items-center justify-center gap-1 text-pastel-900 transition-colors">
                         <i data-lucide="message-circle" class="w-4 h-4 text-pastel-600"></i>
@@ -638,7 +648,6 @@
                     </button>
                 </div>
 
-                <!-- Блок информации: О себе, @юзернейм, День рождения -->
                 <div class="rounded-2xl bg-pastel-50/80 border border-pastel-200/80 p-3.5 space-y-3">
                     <div>
                         <p id="view-user-bio" class="text-xs font-bold text-pastel-900 leading-snug">Описание пока не добавлено</p>
@@ -656,7 +665,6 @@
                     </div>
                 </div>
 
-                <!-- Переключатель вкладок профиля: Подарки / Публикации / Медиа -->
                 <div class="grid grid-cols-3 gap-1 p-1 rounded-2xl bg-pastel-50 border border-pastel-200/80">
                     <button type="button" id="profile-tab-gifts" class="py-1.5 px-2 rounded-xl text-[11px] font-extrabold bg-white text-pastel-900 shadow-2xs flex items-center justify-center gap-1 transition-all">
                         <span>Подарки</span>
@@ -670,10 +678,8 @@
                     </button>
                 </div>
 
-                <!-- Сетка подарков в стиле 2-го фото (3 в ряд + мини-аватар отправителя в углу) -->
                 <div id="profile-gifts-grid" class="grid grid-cols-3 gap-2"></div>
 
-                <!-- Контент вкладок Публикации и Медиа -->
                 <div id="profile-posts-panel" class="hidden p-4 rounded-2xl bg-pastel-50/70 border border-pastel-200/70 text-center text-xs font-semibold text-pastel-500">
                     Публикации пользователя появятся здесь
                 </div>
@@ -682,7 +688,6 @@
                 </div>
             </div>
 
-            <!-- Нижняя плашка "Отправить подарок [Имя]" как на 2-м фото -->
             <div class="p-3 bg-pastel-50 border-t border-pastel-200/80 shrink-0">
                 <button type="button" id="profile-send-gift-cta" class="w-full py-2.5 px-4 rounded-2xl bg-gradient-to-r from-pastel-500 to-pastel-400 hover:from-pastel-600 hover:to-pastel-500 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
                     <i data-lucide="gift" class="w-4 h-4"></i>
@@ -764,11 +769,9 @@
             </div>
 
             <div id="modal-users-list" class="p-3.5 overflow-y-auto space-y-1.5 flex-1">
-                <!-- Список пользователей или чатов -->
             </div>
         </div>
     </div>
-
 
     <!-- МОДАЛКА: ПОДМЕНЮ НАСТРОЕК -->
     <div id="settings-detail-modal" class="hidden fixed inset-0 z-50 bg-pastel-900/30 backdrop-blur-xs flex items-center justify-center p-4">
@@ -782,7 +785,6 @@
             <div id="settings-detail-body" class="p-5 space-y-3.5"></div>
         </div>
     </div>
-
 
     <!-- МОДАЛКА: ВАЛЮТА «ВЕРИТИ» (😊) -->
     <div id="verity-modal" class="hidden fixed inset-0 z-50 bg-pastel-900/30 backdrop-blur-xs flex items-center justify-center p-4">
@@ -834,8 +836,7 @@
         </div>
     </div>
 
-
-    <!-- МОДАЛКА: ПОДАРКИ КАК В TELEGRAM (ОБЛАЧНАЯ КОЛЛЕКЦИЯ ДЛЯ ВСЕХ ЗА ВЕРИТИ 😊) -->
+    <!-- МОДАЛКА: ПОДАРКИ КАК В TELEGRAM -->
     <div id="gifts-modal" class="hidden fixed inset-0 z-50 bg-pastel-900/35 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-pastel-200 overflow-hidden msg-pop flex flex-col max-h-[88dvh]">
             <div class="px-4 py-3.5 bg-pastel-50 border-b border-pastel-100 flex items-center justify-between shrink-0">
@@ -874,7 +875,6 @@
                     <p id="gift-status-banner" class="text-[11px] font-bold text-pastel-600 min-h-[15px]"></p>
                 </div>
 
-                <!-- Карточка-окно отправки подарка в стиле 3-го фото -->
                 <div id="gift-compose-preview" class="hidden rounded-2xl bg-gradient-to-br from-pastel-100/90 via-white to-amber-50/70 border border-pastel-200 p-3.5 space-y-3 shadow-xs">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-extrabold text-pastel-900">Отправить подарок</span>
@@ -911,7 +911,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА: ПРОСМОТР ДЕТАЛЕЙ ПОДАРКА В СТИЛЕ 4-ГО ФОТО -->
+    <!-- МОДАЛКА: ПРОСМОТР ДЕТАЛЕЙ ПОДАРКА -->
     <div id="gift-detail-modal" class="hidden fixed inset-0 z-[60] bg-pastel-900/40 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4">
         <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl border border-pastel-200 overflow-hidden msg-pop">
             <div class="p-5 flex flex-col items-center text-center space-y-3">
@@ -1060,6 +1060,23 @@
             return d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
         }
 
+        async function hashPasswordWithSalt(password, saltHex = null) {
+            const encoder = new TextEncoder();
+            let saltBytes;
+            if (saltHex) {
+                const matches = saltHex.match(/.{1,2}/g) || [];
+                saltBytes = new Uint8Array(matches.map(b => parseInt(b, 16)));
+            } else {
+                saltBytes = new Uint8Array(16);
+                crypto.getRandomValues(saltBytes);
+            }
+            const usedSaltHex = Array.from(saltBytes).map(b => b.toString(16).padStart(2, '0')).join('');
+            const payload = encoder.encode(`${usedSaltHex}:${password}`);
+            const digestBuffer = await crypto.subtle.digest('SHA-256', payload);
+            const hashHex = Array.from(new Uint8Array(digestBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+            return { salt: usedSaltHex, hash: hashHex };
+        }
+
         async function initFirebase() {
             const isLocalFile = window.location.protocol === 'file:' || window.location.protocol === 'content:';
             if (isLocalFile) {
@@ -1091,7 +1108,7 @@
                 }
 
                 startCloudListeners();
-                restoreLocalSession();
+                await restoreLocalSession();
             } catch (err) {
                 console.error("Firebase init error:", err);
                 setStatus('local', 'Автономный режим (проверьте сеть/домен)');
@@ -1111,7 +1128,16 @@
                     }
                 });
                 if (currentUser && allUsersMap[currentUser.username]) {
-                    currentUser = { ...currentUser, ...allUsersMap[currentUser.username] };
+                    const cloudUser = allUsersMap[currentUser.username];
+                    if (cloudUser.passwordHash && currentUser.passwordHash && cloudUser.passwordHash !== currentUser.passwordHash) {
+                        localStorage.removeItem('gsgram_user');
+                        currentUser = null;
+                        activeChatId = null;
+                        appScreen.classList.add('hidden');
+                        authScreen.classList.remove('hidden');
+                        return;
+                    }
+                    currentUser = { ...currentUser, ...cloudUser };
                     localStorage.setItem('gsgram_user', JSON.stringify(currentUser));
                     updateCurrentUserHeader();
                 }
@@ -1135,10 +1161,12 @@
         async function handleAuthSubmit() {
             const nickInput = document.getElementById('input-nickname');
             const userInput = document.getElementById('input-username');
+            const passInput = document.getElementById('input-password');
             const errorBox = document.getElementById('auth-error');
 
             const nickname = nickInput.value.trim();
             const username = userInput.value.trim().toLowerCase().replace(/^@+/, '');
+            const password = passInput ? passInput.value : '';
 
             if (!nickname || !username) {
                 errorBox.textContent = 'Введите никнейм и юзернейм';
@@ -1150,6 +1178,11 @@
                 errorBox.classList.remove('hidden');
                 return;
             }
+            if (!password || password.length < 4) {
+                errorBox.textContent = 'Введите пароль (минимум 4 символа)';
+                errorBox.classList.remove('hidden');
+                return;
+            }
             errorBox.classList.add('hidden');
 
             let userProfile = {
@@ -1157,7 +1190,8 @@
                 nickname,
                 bio: '',
                 avatar: '',
-                pinnedChats: [GLOBAL_CHAT_ID]
+                pinnedChats: [GLOBAL_CHAT_ID],
+                verityBalance: 50
             };
 
             if (isCloudReady) {
@@ -1165,32 +1199,85 @@
                 const snap = await getDoc(userRef);
                 if (snap.exists()) {
                     const existing = snap.data();
-                    userProfile = {
-                        ...existing,
-                        username,
-                        nickname,
-                        pinnedChats: existing.pinnedChats || [GLOBAL_CHAT_ID]
-                    };
-                    await updateDoc(userRef, { nickname, lastSeen: serverTimestamp() });
+                    if (existing.passwordHash && existing.passwordSalt) {
+                        const check = await hashPasswordWithSalt(password, existing.passwordSalt);
+                        if (check.hash !== existing.passwordHash) {
+                            errorBox.textContent = 'Неверный пароль для этого аккаунта';
+                            errorBox.classList.remove('hidden');
+                            return;
+                        }
+                        userProfile = {
+                            ...existing,
+                            username,
+                            nickname,
+                            pinnedChats: existing.pinnedChats || [GLOBAL_CHAT_ID]
+                        };
+                        await updateDoc(userRef, { nickname, lastSeen: serverTimestamp() });
+                    } else {
+                        const createdAuth = await hashPasswordWithSalt(password);
+                        userProfile = {
+                            ...existing,
+                            username,
+                            nickname,
+                            passwordSalt: createdAuth.salt,
+                            passwordHash: createdAuth.hash,
+                            pinnedChats: existing.pinnedChats || [GLOBAL_CHAT_ID]
+                        };
+                        await updateDoc(userRef, {
+                            nickname,
+                            passwordSalt: createdAuth.salt,
+                            passwordHash: createdAuth.hash,
+                            lastSeen: serverTimestamp()
+                        });
+                    }
                 } else {
+                    const createdAuth = await hashPasswordWithSalt(password);
+                    userProfile = {
+                        ...userProfile,
+                        passwordSalt: createdAuth.salt,
+                        passwordHash: createdAuth.hash
+                    };
                     await setDoc(userRef, { ...userProfile, createdAt: serverTimestamp(), lastSeen: serverTimestamp() });
                 }
+            } else {
+                const createdAuth = await hashPasswordWithSalt(password);
+                userProfile = {
+                    ...userProfile,
+                    passwordSalt: createdAuth.salt,
+                    passwordHash: createdAuth.hash
+                };
             }
 
             currentUser = userProfile;
             allUsersMap[username] = userProfile;
             localStorage.setItem('gsgram_user', JSON.stringify(currentUser));
+            if (passInput) passInput.value = '';
             enterMessenger();
         }
 
-        function restoreLocalSession() {
+        async function restoreLocalSession() {
             const saved = localStorage.getItem('gsgram_user');
             if (saved) {
                 try {
-                    currentUser = JSON.parse(saved);
-                    if (currentUser && currentUser.username) {
-                        currentUser.username = currentUser.username.toLowerCase();
-                        allUsersMap[currentUser.username] = currentUser;
+                    const parsed = JSON.parse(saved);
+                    if (parsed && parsed.username) {
+                        const uname = parsed.username.toLowerCase();
+                        if (isCloudReady) {
+                            const snap = await getDoc(doc(db, 'users', uname));
+                            if (snap.exists()) {
+                                const cloudData = snap.data();
+                                if (cloudData.passwordHash && cloudData.passwordHash !== parsed.passwordHash) {
+                                    localStorage.removeItem('gsgram_user');
+                                    return;
+                                }
+                                currentUser = { ...cloudData, ...parsed, username: uname };
+                            } else {
+                                currentUser = { ...parsed, username: uname };
+                            }
+                        } else {
+                            currentUser = { ...parsed, username: uname };
+                        }
+                        allUsersMap[uname] = currentUser;
                         enterMessenger();
                     }
                 } catch (_) {}
@@ -1217,6 +1304,19 @@
         document.getElementById('input-username').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') handleAuthSubmit();
         });
+        document.getElementById('input-password').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleAuthSubmit();
+        });
+
+        document.getElementById('toggle-auth-password-btn').addEventListener('click', () => {
+            const passInput = document.getElementById('input-password');
+            const isHidden = passInput.type === 'password';
+            passInput.type = isHidden ? 'text' : 'password';
+            document.getElementById('toggle-auth-password-btn').innerHTML = isHidden
+                ? '<i data-lucide="eye-off" class="w-4 h-4"></i>'
+                : '<i data-lucide="eye" class="w-4 h-4"></i>';
+            lucide.createIcons();
+        });
 
         document.getElementById('logout-btn').addEventListener('click', () => {
             localStorage.removeItem('gsgram_user');
@@ -1224,6 +1324,7 @@
             activeChatId = null;
             appScreen.classList.add('hidden');
             authScreen.classList.remove('hidden');
+            document.getElementById('input-password').value = '';
         });
 
         function getUserRelevantChats() {
@@ -2138,7 +2239,6 @@
             renderChatList();
         });
 
-
         // ЛОГИКА НИЖНЕГО МЕНЮ (ЧАТЫ / НАСТРОЙКИ) И РАЗДЕЛОВ НАСТРОЕК
         const navTabChats = document.getElementById('nav-tab-chats');
         const navTabSettings = document.getElementById('nav-tab-settings');
@@ -2162,7 +2262,8 @@
                 username: acc.username,
                 nickname: acc.nickname,
                 avatar: acc.avatar || '',
-                bio: acc.bio || ''
+                bio: acc.bio || '',
+                passwordHash: acc.passwordHash || ''
             });
             localStorage.setItem('gsgram_known_accounts', JSON.stringify(filtered.slice(0, 5)));
         }
@@ -2174,7 +2275,7 @@
             document.getElementById('settings-profile-avatar').innerHTML = renderAvatarHTML(currentUser.avatar, currentUser.nickname);
             document.getElementById('settings-profile-nick').textContent = currentUser.nickname;
             document.getElementById('settings-profile-tag').textContent = '@' + currentUser.username;
-            document.getElementById('settings-profile-bio').textContent = currentUser.bio || 'Нажмите «Аккаунт», чтобы добавить описание';
+            document.getElementById('settings-profile-bio').textContent = currentUser.bio || 'Нажмите «Аккаунт и пароль», чтобы добавить описание';
 
             const accListEl = document.getElementById('settings-accounts-list');
             const known = JSON.parse(localStorage.getItem('gsgram_known_accounts') || '[]');
@@ -2203,7 +2304,18 @@
                 btn.addEventListener('click', () => {
                     const targetTag = btn.dataset.accUser;
                     if (!targetTag || targetTag === currentUser.username) return;
-                    const found = allUsersMap[targetTag] || known.find(x => x.username === targetTag);
+                    const savedAcc = known.find(x => x.username === targetTag);
+                    const cloudAcc = allUsersMap[targetTag];
+                    if (cloudAcc && cloudAcc.passwordHash && savedAcc?.passwordHash !== cloudAcc.passwordHash) {
+                        appScreen.classList.add('hidden');
+                        authScreen.classList.remove('hidden');
+                        document.getElementById('input-nickname').value = cloudAcc.nickname || targetTag;
+                        document.getElementById('input-username').value = targetTag;
+                        document.getElementById('input-password').value = '';
+                        document.getElementById('input-password').focus();
+                        return;
+                    }
+                    const found = cloudAcc || savedAcc;
                     if (found) {
                         currentUser = {
                             ...found,
@@ -2247,10 +2359,63 @@
             authScreen.classList.remove('hidden');
             document.getElementById('input-nickname').value = '';
             document.getElementById('input-username').value = '';
+            document.getElementById('input-password').value = '';
         });
 
         document.getElementById('setting-row-account').addEventListener('click', () => {
-            document.getElementById('open-profile-edit-btn').click();
+            if (!currentUser) return;
+            settingsDetailTitle.textContent = 'Аккаунт и пароль';
+            settingsDetailBody.innerHTML = `
+                <button type="button" id="open-profile-from-acc-btn" class="w-full py-2.5 px-3.5 rounded-2xl bg-pastel-50 hover:bg-pastel-100 border border-pastel-200 text-xs font-extrabold text-pastel-900 flex items-center justify-between transition-colors">
+                    <span>Изменить никнейм, фото и «О себе»</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-pastel-500"></i>
+                </button>
+                <div class="p-3.5 rounded-2xl bg-pastel-50/80 border border-pastel-200/70 space-y-2.5">
+                    <div class="flex items-center gap-1.5 text-xs font-extrabold text-pastel-900">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500"></i>
+                        <span>${currentUser.passwordHash ? 'Сменить пароль аккаунта' : 'Задать пароль для защиты аккаунта'}</span>
+                    </div>
+                    <input type="password" id="new-account-password-input" minlength="4" maxlength="64" placeholder="Новый пароль (минимум 4 символа)"
+                        class="w-full px-3.5 py-2.5 bg-white border border-pastel-200 rounded-xl text-xs font-bold text-pastel-900 focus:outline-none focus:border-pastel-500">
+                    <button type="button" id="save-new-password-btn" class="w-full py-2.5 px-4 rounded-2xl bg-gradient-to-r from-pastel-500 to-pastel-400 hover:from-pastel-600 hover:to-pastel-500 text-white font-extrabold text-xs shadow-sm transition-all">
+                        Сохранить пароль
+                    </button>
+                    <p id="account-password-status" class="text-[11px] font-bold text-pastel-600 min-h-[16px]"></p>
+                </div>
+            `;
+            settingsDetailModal.classList.remove('hidden');
+            lucide.createIcons();
+
+            document.getElementById('open-profile-from-acc-btn').addEventListener('click', () => {
+                settingsDetailModal.classList.add('hidden');
+                document.getElementById('open-profile-edit-btn').click();
+            });
+
+            document.getElementById('save-new-password-btn').addEventListener('click', async () => {
+                const statusEl = document.getElementById('account-password-status');
+                const newPass = document.getElementById('new-account-password-input').value;
+                if (!newPass || newPass.length < 4) {
+                    statusEl.textContent = 'Пароль должен быть не короче 4 символов';
+                    return;
+                }
+                const hashed = await hashPasswordWithSalt(newPass);
+                currentUser.passwordSalt = hashed.salt;
+                currentUser.passwordHash = hashed.hash;
+                if (allUsersMap[currentUser.username]) {
+                    allUsersMap[currentUser.username].passwordSalt = hashed.salt;
+                    allUsersMap[currentUser.username].passwordHash = hashed.hash;
+                }
+                localStorage.setItem('gsgram_user', JSON.stringify(currentUser));
+                saveKnownAccount(currentUser);
+                if (isCloudReady) {
+                    await setDoc(doc(db, 'users', currentUser.username), {
+                        passwordSalt: hashed.salt,
+                        passwordHash: hashed.hash
+                    }, { merge: true });
+                }
+                document.getElementById('new-account-password-input').value = '';
+                statusEl.textContent = 'Пароль надёжно сохранён 🔒';
+            });
         });
 
         document.getElementById('close-settings-detail-btn').addEventListener('click', () => {
@@ -2335,7 +2500,6 @@
             saveKnownAccount(currentUser);
             renderSettingsTab();
         };
-
 
         // ЛОГИКА ВАЛЮТЫ «ВЕРИТИ» (😊)
         const verityModal = document.getElementById('verity-modal');
@@ -2473,8 +2637,7 @@
             syncVerityUI();
         };
 
-
-        // ЛОГИКА ПОДАРКОВ КАК В TELEGRAM (ОБЛАЧНАЯ ДЛЯ ВСЕХ, ВАЛЮТА ВЕРИТИ 😊)
+        // ЛОГИКА ПОДАРКОВ КАК В TELEGRAM
         const TELEGRAM_GIFTS_CATALOG = [
             { id: 'heart', name: 'Сердце с лентой', emoji: '💝', price: 15, rare: false },
             { id: 'bear', name: 'Плюшевый мишка', emoji: '🧸', price: 15, rare: false },
@@ -2576,7 +2739,6 @@
             });
         }
 
-        // Профили по умолчанию для других пользователей (без каналов, в стиле 1-го фото)
         const DEFAULT_OTHER_PROFILES = {
             soun: {
                 username: 'soun',
@@ -2871,7 +3033,6 @@
             syncGiftsCounters();
         };
 
-
         document.getElementById('profile-tab-gifts').addEventListener('click', () => {
             setProfileSubTab('gifts');
             if (viewedUsername) renderProfileGiftsGrid(viewedUsername);
@@ -2911,7 +3072,6 @@
         document.getElementById('gift-hide-sender-toggle').addEventListener('change', () => {
             if (selectedGiftForCompose) openGiftComposePreview(selectedGiftForCompose.id);
         });
-
 
         function formatGiftDate(g) {
             if (g?.createdAt?.toDate) {
@@ -2960,11 +3120,12 @@
         });
         initFirebase();
     </script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js');
-    });
-  }
-</script>ы</body>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js');
+        });
+      }
+    </script>
+</body>
 </html>
