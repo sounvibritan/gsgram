@@ -41,6 +41,14 @@
         :root {
             color-scheme: light only;
         }
+        html {
+            font-size: 14px;
+        }
+        @media (min-width: 640px) {
+            html {
+                font-size: 16px;
+            }
+        }
         html, body {
             height: 100dvh;
             min-height: 100dvh;
@@ -93,7 +101,7 @@
     </div>
 
     <!-- ЭКРАН РЕГИСТРАЦИИ / ВХОДА -->
-    <div id="auth-screen" class="w-full h-full sm:h-auto sm:max-w-[410px] bg-white/95 backdrop-blur-xl sm:rounded-3xl shadow-xl shadow-pastel-900/10 border border-pastel-200/80 p-7 sm:p-8 flex flex-col justify-center items-center transition-all duration-300 z-30">
+    <div id="auth-screen" class="w-full h-full sm:h-auto sm:max-w-[400px] bg-white/95 backdrop-blur-xl sm:rounded-3xl shadow-xl shadow-pastel-900/10 border border-pastel-200/80 px-5 py-6 sm:p-8 flex flex-col justify-center items-center transition-all duration-300 z-30">
         <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-pastel-500 to-pastel-300 flex items-center justify-center shadow-lg shadow-pastel-400/30 mb-3.5 text-white">
             <i data-lucide="send" class="w-8 h-8 -ml-0.5 mt-0.5"></i>
         </div>
@@ -141,14 +149,14 @@
         <!-- ЛЕВАЯ КОЛОНКА: СПИСОК ЧАТОВ -->
         <aside id="sidebar-panel" class="w-full md:w-[350px] lg:w-[375px] h-full min-h-0 bg-pastel-50/70 border-r border-pastel-200/80 flex flex-col shrink-0 z-10">
             <!-- Шапка профиля -->
-            <div class="px-4 pt-9 sm:pt-4 pb-3 bg-white/95 border-b border-pastel-100 flex items-center justify-between gap-2 shrink-0">
+            <div class="px-3.5 pt-3 sm:pt-4 pb-2.5 bg-white/95 border-b border-pastel-100 flex items-center justify-between gap-2 shrink-0">
                 <button type="button" id="open-profile-edit-btn" title="Редактировать профиль" class="flex items-center gap-2.5 min-w-0 text-left group p-1 -ml-1 rounded-2xl hover:bg-pastel-50 transition-colors">
-                    <div id="current-user-avatar" class="w-11 h-11 rounded-2xl bg-gradient-to-br from-pastel-400 to-pastel-300 text-white font-extrabold text-sm flex items-center justify-center shadow-sm shrink-0 overflow-hidden relative">
+                    <div id="current-user-avatar" class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-pastel-400 to-pastel-300 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center shadow-sm shrink-0 overflow-hidden relative">
                         GS
                     </div>
                     <div class="min-w-0">
                         <div class="flex items-center gap-1.5">
-                            <span class="font-extrabold text-pastel-900 text-base tracking-tight truncate group-hover:text-pastel-600 transition-colors" id="current-user-nick">Пользователь</span>
+                            <span class="font-extrabold text-pastel-900 text-sm sm:text-base tracking-tight truncate group-hover:text-pastel-600 transition-colors" id="current-user-nick">Пользователь</span>
                             <i data-lucide="pencil" class="w-3 h-3 text-pastel-400 group-hover:text-pastel-600 shrink-0"></i>
                         </div>
                         <p class="text-xs font-semibold text-pastel-500 truncate" id="current-user-tag">@user</p>
@@ -279,7 +287,7 @@
                 </div>
 
                 <!-- Лента сообщений с поддержкой обоев -->
-                <div id="messages-area" class="flex-1 min-h-0 overflow-y-auto px-3.5 sm:px-5 py-4 space-y-2.5 chat-wallpaper-layer default-dots relative">
+                <div id="messages-area" class="flex-1 min-h-0 overflow-y-auto px-3 sm:px-5 py-3 space-y-2 chat-wallpaper-layer default-dots relative">
                     <!-- Сообщения рендерятся сюда -->
                 </div>
 
@@ -1124,7 +1132,7 @@
                                 ${renderAvatarHTML(senderObj.avatar, senderObj.nickname)}
                             </button>
                         ` : ''}
-                        <div data-msg-id="${m.id}" class="msg-bubble max-w-[78%] sm:max-w-[68%] px-3.5 py-2.5 rounded-2xl shadow-xs cursor-pointer transition-transform active:scale-[0.99] ${isMine ? 'bg-gradient-to-br from-pastel-500 to-pastel-400 text-white rounded-br-sm' : 'bg-white/95 text-pastel-900 border border-pastel-200/80 rounded-bl-sm'}">
+                        <div data-msg-id="${m.id}" class="msg-bubble max-w-[82%] sm:max-w-[68%] px-3 py-2 rounded-2xl shadow-xs cursor-pointer transition-transform active:scale-[0.99] ${isMine ? 'bg-gradient-to-br from-pastel-500 to-pastel-400 text-white rounded-br-sm' : 'bg-white/95 text-pastel-900 border border-pastel-200/80 rounded-bl-sm'}">
                             ${!isMine ? `<div class="text-[11px] font-extrabold text-pastel-600 mb-0.5">${escapeHtml(senderObj.nickname)}</div>` : ''}
                             ${forwardedTag}
                             ${replyBlock}
@@ -1750,4 +1758,4 @@
         initFirebase();
     </script>
 </body>
-                                </html>
+</html>
