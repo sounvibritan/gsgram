@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -54,7 +53,7 @@
 <body class="bg-gradient-to-br from-[#EEF6FC] via-[#E5F2FC] to-[#DCEEFB] text-slate-700 antialiased selection:bg-[#D4E8F9] selection:text-[#2778C4] flex flex-col">
 
     <!-- Контейнер всплывающих уведомлений -->
-    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-[90vw] sm:max-w-sm"></div>
+    <div id="toast-container" class="fixed top-4 right-4 z-[60] flex flex-col gap-2 pointer-events-none max-w-[90vw] sm:max-w-sm"></div>
 
     <!-- ===================================================================== -->
     <!-- ЭКРАН 1: РЕГИСТРАЦИЯ И ВХОД                                           -->
@@ -120,8 +119,8 @@
                 </div>
             </div>
 
-            <!-- Форма входа -->
-            <form id="auth-form" class="space-y-3.5">
+            <!-- Форма входа с жёсткой защитой от перезагрузки страницы -->
+            <form id="auth-form" onsubmit="return false;" class="space-y-3.5">
                 <div>
                     <label for="input-nickname" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1 ml-1">
                         Ваш никнейм
@@ -185,12 +184,19 @@
         <aside id="sidebar-panel" class="w-full md:w-[360px] lg:w-[400px] flex-shrink-0 bg-[#F4F9FD] border-r border-[#D4E8F9] flex flex-col h-full">
             
             <!-- Верхняя шапка левой панели -->
-            <header class="px-4 py-3.5 bg-white border-b border-[#D4E8F9] flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2.5 min-w-0">
-                    <div id="my-avatar" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#5BB2F2] to-[#3898EC] text-white font-bold flex items-center justify-center text-sm shadow-sm flex-shrink-0">
-                        GS
+            <header class="px-3.5 py-3 bg-white border-b border-[#D4E8F9] flex items-center justify-between gap-2">
+                <!-- Кликабельный профиль пользователя (открывает редактирование) -->
+                <button type="button" id="btn-open-edit-profile-area" title="Нажмите, чтобы редактировать профиль"
+                    class="flex items-center gap-2.5 min-w-0 flex-1 text-left p-1 -ml-1 rounded-2xl hover:bg-[#F4F9FD] transition-colors cursor-pointer group">
+                    <div id="my-avatar-wrapper" class="relative flex-shrink-0">
+                        <div id="my-avatar" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#5BB2F2] to-[#3898EC] text-white font-bold flex items-center justify-center text-sm shadow-sm overflow-hidden">
+                            GS
+                        </div>
+                        <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white border border-[#D4E8F9] text-[#3898EC] flex items-center justify-center shadow-2xs group-hover:scale-110 transition-transform">
+                            <i data-lucide="pencil" class="w-2.5 h-2.5"></i>
+                        </span>
                     </div>
-                    <div class="min-w-0">
+                    <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-1.5">
                             <span class="font-logo font-extrabold text-base text-slate-800 tracking-tight">
                                 gs<span class="text-[#3898EC]">gram</span>
@@ -203,14 +209,18 @@
                         </div>
                         <p id="my-profile-label" class="text-xs text-slate-500 truncate mt-0.5">@username</p>
                     </div>
-                </div>
+                </button>
 
-                <div class="flex items-center gap-1.5 flex-shrink-0">
-                    <button id="btn-new-chat" title="Все пользователи gsgram"
+                <div class="flex items-center gap-1 flex-shrink-0">
+                    <button type="button" id="btn-edit-profile" title="Редактировать профиль"
+                        class="p-2.5 rounded-xl bg-[#F4F9FD] hover:bg-[#E8F3FC] text-[#2778C4] border border-[#D4E8F9]/60 transition-colors cursor-pointer">
+                        <i data-lucide="user-pen" class="w-4 h-4"></i>
+                    </button>
+                    <button type="button" id="btn-new-chat" title="Все пользователи gsgram"
                         class="p-2.5 rounded-xl bg-[#E8F3FC] hover:bg-[#D4E8F9] text-[#2778C4] transition-colors cursor-pointer">
                         <i data-lucide="plus" class="w-4 h-4"></i>
                     </button>
-                    <button id="btn-logout" title="Выйти из аккаунта"
+                    <button type="button" id="btn-logout" title="Выйти из аккаунта"
                         class="p-2.5 rounded-xl hover:bg-rose-50 text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
                         <i data-lucide="log-out" class="w-4 h-4"></i>
                     </button>
@@ -231,7 +241,7 @@
                     </span>
                     <input type="text" id="search-input" placeholder="Поиск по никнейму или @username..."
                         class="w-full pl-10 pr-8 py-2.5 bg-white border border-[#D4E8F9] rounded-2xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#5BB2F2] transition-all">
-                    <button id="clear-search-btn" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer">
+                    <button type="button" id="clear-search-btn" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer">
                         <i data-lucide="x" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -262,26 +272,33 @@
                 
                 <!-- Шапка открытого чата -->
                 <header class="px-3 sm:px-5 py-3 bg-white border-b border-[#D4E8F9] flex items-center justify-between gap-3 z-10">
-                    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                        <button id="btn-back-mobile" class="md:hidden p-2 -ml-1 rounded-xl hover:bg-[#E8F3FC] text-[#2778C4] transition-colors cursor-pointer" aria-label="Назад к чатам">
+                    <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                        <button type="button" id="btn-back-mobile" class="md:hidden p-2 -ml-1 rounded-xl hover:bg-[#E8F3FC] text-[#2778C4] transition-colors cursor-pointer" aria-label="Назад к чатам">
                             <i data-lucide="arrow-left" class="w-5 h-5"></i>
                         </button>
 
-                        <div id="chat-header-avatar" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#5BB2F2] to-[#3898EC] text-white font-bold flex items-center justify-center text-sm flex-shrink-0 shadow-sm">
-                            #
-                        </div>
+                        <!-- Кликабельная зона информации о собеседнике / канале -->
+                        <div id="chat-header-info-trigger" class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1 rounded-2xl p-1 -ml-1 transition-colors">
+                            <div id="chat-header-avatar" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#5BB2F2] to-[#3898EC] text-white font-bold flex items-center justify-center text-sm flex-shrink-0 shadow-sm overflow-hidden">
+                                #
+                            </div>
 
-                        <div class="min-w-0">
-                            <h2 id="chat-header-title" class="font-bold text-slate-800 text-sm sm:text-base truncate">
-                                gsgram Общий чат
-                            </h2>
-                            <p id="chat-header-subtitle" class="text-xs text-[#3898EC] truncate">
-                                В сети • все участники
-                            </p>
+                            <div class="min-w-0 flex-1">
+                                <h2 id="chat-header-title" class="font-bold text-slate-800 text-sm sm:text-base truncate">
+                                    gsgram Общий чат
+                                </h2>
+                                <p id="chat-header-subtitle" class="text-xs text-[#3898EC] truncate">
+                                    В сети • все участники
+                                </p>
+                            </div>
                         </div>
                     </div>
 
                     <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button type="button" id="btn-chat-peer-info" title="Профиль собеседника"
+                            class="hidden p-2 rounded-xl bg-[#F4F9FD] hover:bg-[#E8F3FC] text-[#2778C4] border border-[#D4E8F9] transition-colors cursor-pointer">
+                            <i data-lucide="info" class="w-4 h-4"></i>
+                        </button>
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E8F3FC] text-[#2778C4] text-xs font-medium">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                             <span class="hidden sm:inline">Реальное время</span>
@@ -304,7 +321,7 @@
 
                 <!-- Панель ввода сообщения -->
                 <footer class="p-3 sm:px-5 sm:py-3.5 bg-white border-t border-[#D4E8F9]">
-                    <form id="message-form" class="flex items-center gap-2 max-w-4xl mx-auto">
+                    <form id="message-form" onsubmit="return false;" class="flex items-center gap-2 max-w-4xl mx-auto">
                         <button type="button" id="btn-emoji-toggle" title="Эмодзи"
                             class="p-2.5 rounded-2xl text-slate-400 hover:text-[#3898EC] hover:bg-[#E8F3FC] transition-colors flex-shrink-0 cursor-pointer">
                             <i data-lucide="smile" class="w-5 h-5"></i>
@@ -321,6 +338,136 @@
                 </footer>
             </div>
         </main>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- МОДАЛЬНОЕ ОКНО 1: РЕДАКТИРОВАНИЕ СВОЕГО ПРОФИЛЯ                       -->
+    <!-- ===================================================================== -->
+    <div id="edit-profile-modal" class="hidden fixed inset-0 z-50 bg-slate-900/35 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-[#D4E8F9] p-5 sm:p-6 my-auto">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-[#E8F3FC]">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-xl bg-[#E8F3FC] text-[#3898EC] flex items-center justify-center">
+                        <i data-lucide="user-pen" class="w-4 h-4"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-base sm:text-lg">Мой профиль</h3>
+                </div>
+                <button type="button" id="btn-close-edit-profile" class="p-2 rounded-xl hover:bg-[#F4F9FD] text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="edit-profile-form" onsubmit="return false;" class="space-y-4">
+                <!-- Блок загрузки и предпросмотра аватарки -->
+                <div class="flex flex-col items-center">
+                    <div class="relative group">
+                        <div id="edit-avatar-preview" class="w-24 h-24 rounded-3xl bg-gradient-to-tr from-[#5BB2F2] to-[#3898EC] text-white font-bold text-2xl flex items-center justify-center shadow-md overflow-hidden border-4 border-[#EEF6FC]">
+                            GS
+                        </div>
+                        <label for="avatar-file-input" title="Загрузить фото"
+                            class="absolute -bottom-1.5 -right-1.5 w-9 h-9 rounded-2xl bg-[#3898EC] hover:bg-[#2778C4] text-white flex items-center justify-center shadow-md cursor-pointer transition-transform active:scale-95">
+                            <i data-lucide="camera" class="w-4 h-4"></i>
+                        </label>
+                        <input type="file" id="avatar-file-input" accept="image/*" class="hidden">
+                    </div>
+
+                    <div class="flex items-center gap-3 mt-2.5">
+                        <label for="avatar-file-input" class="text-xs font-semibold text-[#3898EC] hover:text-[#2778C4] cursor-pointer">
+                            Выбрать фото
+                        </label>
+                        <span class="text-slate-300">•</span>
+                        <button type="button" id="btn-remove-avatar" class="text-xs font-medium text-slate-400 hover:text-rose-500 cursor-pointer">
+                            Удалить фото
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Никнейм -->
+                <div>
+                    <label for="edit-nickname-input" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1 ml-1">
+                        Никнейм (отображаемое имя)
+                    </label>
+                    <input type="text" id="edit-nickname-input" required maxlength="28" placeholder="Ваш никнейм"
+                        class="w-full px-4 py-2.5 bg-[#F4F9FD] border border-[#D4E8F9] rounded-2xl text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-[#5BB2F2] focus:bg-white transition-all">
+                </div>
+
+                <!-- Юзернейм (только для чтения) -->
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1 ml-1">
+                        Юзернейм
+                    </label>
+                    <div id="edit-username-readonly" class="w-full px-4 py-2.5 bg-[#EEF6FC] border border-[#D4E8F9] rounded-2xl text-[#2778C4] font-semibold text-sm select-all">
+                        @username
+                    </div>
+                </div>
+
+                <!-- Описание профиля (О себе) -->
+                <div>
+                    <div class="flex items-center justify-between mb-1 ml-1 mr-1">
+                        <label for="edit-bio-input" class="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                            Описание (О себе)
+                        </label>
+                        <span id="edit-bio-counter" class="text-[11px] text-slate-400">0 / 140</span>
+                    </div>
+                    <textarea id="edit-bio-input" rows="3" maxlength="140" placeholder="Расскажите немного о себе, статусе или настроении..."
+                        class="w-full px-4 py-2.5 bg-[#F4F9FD] border border-[#D4E8F9] rounded-2xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#5BB2F2] focus:bg-white transition-all resize-none"></textarea>
+                </div>
+
+                <div class="flex items-center gap-2.5 pt-1">
+                    <button type="button" id="btn-cancel-edit-profile"
+                        class="flex-1 py-3 px-4 rounded-2xl bg-[#F4F9FD] hover:bg-[#E8F3FC] text-slate-600 font-semibold text-sm transition-colors cursor-pointer">
+                        Отмена
+                    </button>
+                    <button type="submit" id="btn-save-profile"
+                        class="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-[#5BB2F2] to-[#3898EC] hover:from-[#48A6EC] hover:to-[#2988DE] text-white font-semibold text-sm shadow-md shadow-[#5BB2F2]/25 transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                        <span>Сохранить</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- МОДАЛЬНОЕ ОКНО 2: ПРОСМОТР ПРОФИЛЯ ДРУГОГО ПОЛЬЗОВАТЕЛЯ               -->
+    <!-- ===================================================================== -->
+    <div id="view-user-modal" class="hidden fixed inset-0 z-50 bg-slate-900/35 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-[#D4E8F9] overflow-hidden my-auto">
+            <!-- Пастельная верхняя обложка карточки -->
+            <div class="h-24 bg-gradient-to-r from-[#7BC0F2] via-[#5BB2F2] to-[#3898EC] relative">
+                <button type="button" id="btn-close-view-user"
+                    class="absolute top-3 right-3 w-8 h-8 rounded-xl bg-white/25 hover:bg-white/40 text-white flex items-center justify-center backdrop-blur-xs transition-colors cursor-pointer">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="px-6 pb-6 text-center -mt-12 relative">
+                <div id="view-user-avatar" class="w-24 h-24 mx-auto rounded-3xl bg-gradient-to-tr from-[#5BB2F2] to-[#3898EC] text-white font-bold text-2xl flex items-center justify-center shadow-lg overflow-hidden border-4 border-white">
+                    GS
+                </div>
+
+                <h3 id="view-user-nickname" class="mt-3 font-bold text-xl text-slate-800">Имя пользователя</h3>
+                <div class="flex items-center justify-center gap-2 mt-0.5">
+                    <span id="view-user-username" class="text-sm font-semibold text-[#3898EC]">@username</span>
+                    <span class="text-slate-300">•</span>
+                    <span id="view-user-status" class="text-xs text-emerald-600 font-medium">в сети</span>
+                </div>
+
+                <!-- Блок описания «О себе» -->
+                <div class="mt-4 p-3.5 rounded-2xl bg-[#F4F9FD] border border-[#D4E8F9] text-left">
+                    <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">О себе</div>
+                    <p id="view-user-bio" class="text-sm text-slate-700 leading-relaxed break-words whitespace-pre-wrap">
+                        Пользователь пока не добавил описание.
+                    </p>
+                </div>
+
+                <button type="button" id="btn-view-user-message"
+                    class="w-full mt-5 py-3 px-5 rounded-2xl bg-gradient-to-r from-[#5BB2F2] to-[#3898EC] hover:from-[#48A6EC] hover:to-[#2988DE] text-white font-semibold text-sm shadow-md shadow-[#5BB2F2]/25 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>Написать сообщение</span>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- ===================================================================== -->
@@ -353,10 +500,10 @@
         const GLOBAL_CHAT_ID = 'global_chat';
 
         const LOCAL_KEYS = {
-            session: 'gsgram_session_v2',
-            users: 'gsgram_fallback_users_v2',
-            chats: 'gsgram_fallback_chats_v2',
-            messages: 'gsgram_fallback_messages_v2'
+            session: 'gsgram_session_v3',
+            users: 'gsgram_fallback_users_v3',
+            chats: 'gsgram_fallback_chats_v3',
+            messages: 'gsgram_fallback_messages_v3'
         };
 
         const AVATAR_GRADIENTS = [
@@ -386,7 +533,10 @@
             allMessages: [],
             activeChatId: null,
             searchQuery: '',
-            showAllUsersMode: false
+            showAllUsersMode: false,
+            // Временное состояние для модального окна редактирования профиля
+            pendingAvatarBase64: null,
+            viewingUsername: null
         };
 
         // Инициализация сервисов Firebase
@@ -400,7 +550,7 @@
         const messagesCol = collection(db, 'messages');
 
         // =====================================================================
-        // 2. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        // 2. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ И РЕНДЕР АВАТАРОК
         // =====================================================================
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
@@ -422,11 +572,9 @@
         function updateConnectionUI(isConnected, customReason = '') {
             state.cloudConnected = isConnected;
 
-            // Статус на экране входа
             const authDot = document.getElementById('auth-status-dot');
             const authText = document.getElementById('auth-status-text');
 
-            // Статус в шапке мессенджера
             const headerBadge = document.getElementById('header-cloud-badge');
             const headerDot = document.getElementById('header-cloud-dot');
             const headerText = document.getElementById('header-cloud-text');
@@ -488,6 +636,54 @@
             return AVATAR_GRADIENTS[Math.abs(hash) % AVATAR_GRADIENTS.length];
         }
 
+        /**
+         * Отрисовывает либо фото аватарки (avatarUrl), либо инициалы на градиенте
+         */
+        function renderAvatarInner(avatarUrl, nickname, username) {
+            if (avatarUrl && typeof avatarUrl === 'string' && avatarUrl.startsWith('data:image')) {
+                return `<img src="${avatarUrl}" alt="${escapeHtml(nickname || username)}" class="w-full h-full object-cover">`;
+            }
+            return escapeHtml(getInitials(nickname || username));
+        }
+
+        function applyAvatarToElement(el, avatarUrl, nickname, username, baseClasses) {
+            el.className = `${baseClasses} bg-gradient-to-tr ${getGradientByString(username)} overflow-hidden`;
+            el.innerHTML = renderAvatarInner(avatarUrl, nickname, username);
+        }
+
+        /**
+         * Сжимает выбранное фото в квадрат 200x200 JPEG (base64),
+         * чтобы аватарка весила ~15-25 КБ и легко сохранялась прямо в документ Firestore
+         */
+        function compressImageToAvatarBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const size = 200;
+                        const canvas = document.createElement('canvas');
+                        canvas.width = size;
+                        canvas.height = size;
+                        const ctx = canvas.getContext('2d');
+
+                        // Центрированная обрезка по квадрату (cover)
+                        const minSide = Math.min(img.width, img.height);
+                        const sx = (img.width - minSide) / 2;
+                        const sy = (img.height - minSide) / 2;
+
+                        ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                        resolve(compressedDataUrl);
+                    };
+                    img.onerror = () => reject(new Error('Не удалось прочитать изображение'));
+                    img.src = event.target.result;
+                };
+                reader.onerror = () => reject(new Error('Ошибка чтения файла'));
+                reader.readAsDataURL(file);
+            });
+        }
+
         function formatTime(timestamp) {
             if (!timestamp) return '';
             const date = new Date(timestamp);
@@ -510,6 +706,10 @@
             return `dm_${sorted[0]}__${sorted[1]}`;
         }
 
+        function getUserByUsername(username) {
+            return state.allUsers.find(u => u.username === username) || null;
+        }
+
         // =====================================================================
         // 3. ПОДКЛЮЧЕНИЕ К FIREBASE И РЕЗЕРВНОЕ ХРАНИЛИЩЕ
         // =====================================================================
@@ -518,19 +718,15 @@
             renderEmojiGrid();
             bindEvents();
 
-            // Загружаем локальный кэш сразу, чтобы интерфейс работал без задержек
             loadLocalCacheIntoState();
             restoreSavedSessionUI();
 
-            // Если файл открыт напрямую с телефона/ПК (file:// или content://),
-            // Firebase Auth запрещает авторизацию без http/https домена
             if (state.isLocalFileProtocol) {
                 updateConnectionUI(false, 'Локальный режим (для облака загрузите на GitHub)');
                 return;
             }
 
             try {
-                // Анонимная авторизация в Firebase
                 const authPromise = signInAnonymously(auth);
                 const timeoutPromise = new Promise((_, reject) =>
                     setTimeout(() => reject(new Error('Таймаут подключения к Firebase')), 6000)
@@ -539,10 +735,7 @@
                 const cred = await Promise.race([authPromise, timeoutPromise]);
                 state.firebaseUser = cred.user;
 
-                // Проверяем и создаем общий чат в Firestore
                 await ensureGlobalChatInFirestore();
-
-                // Подписываемся на коллекции Firestore в реальном времени
                 subscribeToFirestore();
                 updateConnectionUI(true);
 
@@ -613,7 +806,7 @@
         }
 
         function subscribeToFirestore() {
-            // 1. Подписка на пользователей в реальном времени
+            // 1. Подписка на пользователей в реальном времени (включая их аватарки и описания!)
             onSnapshot(usersCol, (snapshot) => {
                 const users = [];
                 snapshot.forEach((docSnap) => users.push(docSnap.data()));
@@ -621,8 +814,22 @@
                 writeLocal(LOCAL_KEYS.users, users);
 
                 if (state.currentProfile) {
+                    // Синхронизируем собственный профиль, если он обновился в базе
+                    const freshMe = users.find(u => u.username === state.currentProfile.username);
+                    if (freshMe) {
+                        state.currentProfile = { ...state.currentProfile, ...freshMe };
+                        updateMyHeaderUI();
+                    }
+
                     renderSidebarList();
                     updateActiveChatHeader();
+                    if (state.activeChatId) {
+                        renderMessagesFeed();
+                    }
+                    // Если открыта карточка другого пользователя — обновляем её в реальном времени
+                    if (state.viewingUsername && !document.getElementById('view-user-modal').classList.contains('hidden')) {
+                        openViewUserModal(state.viewingUsername);
+                    }
                 }
             }, (err) => {
                 console.error('Ошибка чтения users из Firestore:', err);
@@ -681,7 +888,7 @@
         // 4. РЕГИСТРАЦИЯ, ВХОД И ВЫХОД
         // =====================================================================
         async function handleAuthSubmit(e) {
-            e.preventDefault();
+            if (e) e.preventDefault();
 
             const nicknameInput = document.getElementById('input-nickname');
             const usernameInput = document.getElementById('input-username');
@@ -702,9 +909,11 @@
             submitBtn.disabled = true;
             submitBtn.classList.add('opacity-70');
 
-            const profileData = {
+            let finalProfile = {
                 username: username,
                 nickname: nickname,
+                bio: '',
+                avatarUrl: '',
                 online: true,
                 lastSeen: Date.now()
             };
@@ -715,6 +924,13 @@
                     const existingSnap = await getDoc(userRef);
 
                     if (existingSnap.exists()) {
+                        const existingData = existingSnap.data();
+                        finalProfile = {
+                            ...existingData,
+                            nickname: nickname,
+                            online: true,
+                            lastSeen: Date.now()
+                        };
                         await updateDoc(userRef, {
                             nickname: nickname,
                             online: true,
@@ -722,50 +938,58 @@
                         });
                         showToast(`С возвращением в gsgram, ${nickname}!`);
                     } else {
-                        await setDoc(userRef, {
-                            ...profileData,
-                            createdAt: Date.now()
-                        });
+                        finalProfile.createdAt = Date.now();
+                        await setDoc(userRef, finalProfile);
                         showToast(`Аккаунт @${username} создан!`);
                     }
                 } else {
-                    // Локальное сохранение профиля
                     const users = readLocal(LOCAL_KEYS.users, []);
                     const idx = users.findIndex(u => u.username === username);
                     if (idx !== -1) {
-                        users[idx] = { ...users[idx], ...profileData };
+                        finalProfile = { ...users[idx], nickname: nickname, online: true, lastSeen: Date.now() };
+                        users[idx] = finalProfile;
                     } else {
-                        users.push({ ...profileData, createdAt: Date.now() });
+                        finalProfile.createdAt = Date.now();
+                        users.push(finalProfile);
                     }
                     writeLocal(LOCAL_KEYS.users, users);
                     state.allUsers = users;
                     showToast(`Вход выполнен: ${nickname}`);
                 }
 
-                // Сохраняем сессию для автовхода при обновлении страницы
-                writeLocal(LOCAL_KEYS.session, { ...profileData, autoLogin: true });
-                enterMessenger(profileData);
+                writeLocal(LOCAL_KEYS.session, { ...finalProfile, autoLogin: true });
+                enterMessenger(finalProfile);
 
             } catch (err) {
                 console.error('Ошибка входа в профиль:', err);
                 showToast('Ошибка сохранения в облако, вход выполнен локально', 'error');
-                writeLocal(LOCAL_KEYS.session, { ...profileData, autoLogin: true });
-                enterMessenger(profileData);
+                writeLocal(LOCAL_KEYS.session, { ...finalProfile, autoLogin: true });
+                enterMessenger(finalProfile);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('opacity-70');
             }
         }
 
+        function updateMyHeaderUI() {
+            if (!state.currentProfile) return;
+            const p = state.currentProfile;
+            const avatarEl = document.getElementById('my-avatar');
+            applyAvatarToElement(
+                avatarEl,
+                p.avatarUrl,
+                p.nickname,
+                p.username,
+                'w-10 h-10 rounded-2xl text-white font-bold flex items-center justify-center text-sm shadow-sm'
+            );
+            document.getElementById('my-profile-label').textContent = `${p.nickname} • @${p.username}`;
+        }
+
         function enterMessenger(profile) {
             state.currentProfile = profile;
             state.savedSessionProfile = profile;
 
-            const avatarEl = document.getElementById('my-avatar');
-            avatarEl.textContent = getInitials(profile.nickname);
-            avatarEl.className = `w-10 h-10 rounded-2xl bg-gradient-to-tr ${getGradientByString(profile.username)} text-white font-bold flex items-center justify-center text-sm shadow-sm flex-shrink-0`;
-
-            document.getElementById('my-profile-label').textContent = `${profile.nickname} • @${profile.username}`;
+            updateMyHeaderUI();
 
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('app-screen').classList.remove('hidden');
@@ -808,7 +1032,166 @@
         }
 
         // =====================================================================
-        // 5. СПИСОК ЧАТОВ И ПОИСК ПОЛЬЗОВАТЕЛЕЙ
+        // 5. РЕДАКТИРОВАНИЕ СВОЕГО ПРОФИЛЯ И ПРОСМОТР ЧУЖИХ ПРОФИЛЕЙ
+        // =====================================================================
+        function openEditProfileModal() {
+            if (!state.currentProfile) return;
+            const p = state.currentProfile;
+
+            state.pendingAvatarBase64 = p.avatarUrl || '';
+
+            const previewEl = document.getElementById('edit-avatar-preview');
+            applyAvatarToElement(
+                previewEl,
+                state.pendingAvatarBase64,
+                p.nickname,
+                p.username,
+                'w-24 h-24 rounded-3xl text-white font-bold text-2xl flex items-center justify-center shadow-md border-4 border-[#EEF6FC]'
+            );
+
+            document.getElementById('edit-nickname-input').value = p.nickname || '';
+            document.getElementById('edit-username-readonly').textContent = `@${p.username}`;
+
+            const bioInput = document.getElementById('edit-bio-input');
+            bioInput.value = p.bio || '';
+            document.getElementById('edit-bio-counter').textContent = `${bioInput.value.length} / 140`;
+
+            document.getElementById('edit-profile-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeEditProfileModal() {
+            document.getElementById('edit-profile-modal').classList.add('hidden');
+            document.getElementById('avatar-file-input').value = '';
+        }
+
+        async function handleSaveProfile(e) {
+            if (e) e.preventDefault();
+            if (!state.currentProfile) return;
+
+            const newNickname = document.getElementById('edit-nickname-input').value.trim();
+            const newBio = document.getElementById('edit-bio-input').value.trim();
+            const newAvatar = state.pendingAvatarBase64 || '';
+
+            if (!newNickname) {
+                showToast('Никнейм не может быть пустым', 'error');
+                return;
+            }
+
+            const saveBtn = document.getElementById('btn-save-profile');
+            saveBtn.disabled = true;
+            saveBtn.classList.add('opacity-70');
+
+            const updatedFields = {
+                nickname: newNickname,
+                bio: newBio,
+                avatarUrl: newAvatar,
+                online: true,
+                lastSeen: Date.now()
+            };
+
+            try {
+                if (state.cloudConnected) {
+                    const userRef = doc(db, 'users', state.currentProfile.username);
+                    await setDoc(userRef, {
+                        username: state.currentProfile.username,
+                        ...updatedFields
+                    }, { merge: true });
+                } else {
+                    const users = readLocal(LOCAL_KEYS.users, []);
+                    const idx = users.findIndex(u => u.username === state.currentProfile.username);
+                    if (idx !== -1) {
+                        users[idx] = { ...users[idx], ...updatedFields };
+                    } else {
+                        users.push({ username: state.currentProfile.username, ...updatedFields });
+                    }
+                    writeLocal(LOCAL_KEYS.users, users);
+                    state.allUsers = users;
+                }
+
+                state.currentProfile = { ...state.currentProfile, ...updatedFields };
+                writeLocal(LOCAL_KEYS.session, { ...state.currentProfile, autoLogin: true });
+
+                updateMyHeaderUI();
+                renderSidebarList();
+                if (state.activeChatId) {
+                    renderMessagesFeed();
+                }
+
+                closeEditProfileModal();
+                showToast('Профиль успешно обновлён! ✨');
+            } catch (err) {
+                console.error('Ошибка сохранения профиля:', err);
+                showToast('Не удалось сохранить профиль в облако', 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.classList.remove('opacity-70');
+            }
+        }
+
+        /**
+         * Открывает модальное окно с информацией о выбранном пользователе (аватарка, ник, био)
+         */
+        function openViewUserModal(targetUsername) {
+            if (!targetUsername || targetUsername === 'gsgram_bot') return;
+            state.viewingUsername = targetUsername;
+
+            const user = getUserByUsername(targetUsername) || {
+                username: targetUsername,
+                nickname: `@${targetUsername}`,
+                bio: '',
+                avatarUrl: '',
+                online: false
+            };
+
+            const avatarEl = document.getElementById('view-user-avatar');
+            applyAvatarToElement(
+                avatarEl,
+                user.avatarUrl,
+                user.nickname,
+                user.username,
+                'w-24 h-24 mx-auto rounded-3xl text-white font-bold text-2xl flex items-center justify-center shadow-lg border-4 border-white'
+            );
+
+            document.getElementById('view-user-nickname').textContent = user.nickname || `@${user.username}`;
+            document.getElementById('view-user-username').textContent = `@${user.username}`;
+
+            const statusEl = document.getElementById('view-user-status');
+            if (user.online) {
+                statusEl.textContent = 'в сети';
+                statusEl.className = 'text-xs text-emerald-600 font-semibold';
+            } else {
+                statusEl.textContent = 'был(а) недавно';
+                statusEl.className = 'text-xs text-slate-400 font-medium';
+            }
+
+            const bioEl = document.getElementById('view-user-bio');
+            if (user.bio && user.bio.trim().length > 0) {
+                bioEl.textContent = user.bio;
+                bioEl.className = 'text-sm text-slate-700 leading-relaxed break-words whitespace-pre-wrap';
+            } else {
+                bioEl.textContent = 'Пользователь пока не добавил описание.';
+                bioEl.className = 'text-sm text-slate-400 italic';
+            }
+
+            const msgBtn = document.getElementById('btn-view-user-message');
+            if (state.currentProfile && user.username === state.currentProfile.username) {
+                msgBtn.innerHTML = '<i data-lucide="user-pen" class="w-4 h-4"></i><span>Редактировать мой профиль</span>';
+            } else {
+                msgBtn.innerHTML = '<i data-lucide="message-circle" class="w-4 h-4"></i><span>Написать сообщение</span>';
+            }
+
+            document.getElementById('view-user-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeViewUserModal() {
+            state.viewingUsername = null;
+            document.getElementById('view-user-modal').classList.add('hidden');
+        }
+
+        // =====================================================================
+        // 6. СПИСОК ЧАТОВ И ПОИСК ПОЛЬЗОВАТЕЛЕЙ
         // =====================================================================
         function renderSidebarList() {
             const listEl = document.getElementById('sidebar-list');
@@ -856,14 +1239,14 @@
                 `;
             }
 
-            // 2. Личные чаты пользователя (сортировка от новых к старым)
+            // 2. Личные чаты пользователя
             const myDmChats = state.allChats
                 .filter(c => c.type === 'dm' && Array.isArray(c.participants) && c.participants.includes(myUsername))
                 .sort((a, b) => (b.lastMessageTime || 0) - (a.lastMessageTime || 0));
 
             const filteredDmChats = myDmChats.filter(chat => {
                 const peerUsername = chat.participants.find(u => u !== myUsername) || myUsername;
-                const peerUser = state.allUsers.find(u => u.username === peerUsername);
+                const peerUser = getUserByUsername(peerUsername);
                 const peerName = peerUser ? peerUser.nickname : peerUsername;
                 if (!query) return true;
                 return peerName.toLowerCase().includes(query) || peerUsername.toLowerCase().includes(query);
@@ -878,17 +1261,18 @@
 
                 filteredDmChats.forEach(chat => {
                     const peerUsername = chat.participants.find(u => u !== myUsername) || myUsername;
-                    const peerUser = state.allUsers.find(u => u.username === peerUsername);
+                    const peerUser = getUserByUsername(peerUsername);
                     const peerNickname = peerUser ? peerUser.nickname : `@${peerUsername}`;
+                    const peerAvatar = peerUser ? peerUser.avatarUrl : '';
                     const isOnline = peerUser ? peerUser.online : false;
                     const isActive = state.activeChatId === chat.id;
 
                     html += `
                         <button type="button" data-chat-id="${chat.id}"
-                            class="chat-item-btn w-full p-3 rounded-2xl flex items-center gap-3 text-left transition-all cursor-pointer ${isActive ? 'bg-[#D4E8F9] shadow-xs' : 'bg-white/80 hover:bg-white'}">
+                            class="chat-item-btn w-full p-3 rounded-2xl flex items-center gap-3 text-left transition-all cursor-pointer ${isActive ? 'bg-[#D4E8F9] shadow-xs' : 'bg-white/85 hover:bg-white'}">
                             <div class="relative flex-shrink-0">
-                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${getGradientByString(peerUsername)} text-white font-bold flex items-center justify-center text-sm shadow-sm">
-                                    ${getInitials(peerNickname)}
+                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${getGradientByString(peerUsername)} text-white font-bold flex items-center justify-center text-sm shadow-sm overflow-hidden">
+                                    ${renderAvatarInner(peerAvatar, peerNickname, peerUsername)}
                                 </div>
                                 ${isOnline ? '<span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-white"></span>' : ''}
                             </div>
@@ -933,24 +1317,26 @@
                 } else {
                     matchingUsers.forEach(user => {
                         html += `
-                            <button type="button" data-start-dm-username="${escapeHtml(user.username)}"
-                                class="start-dm-btn w-full p-2.5 rounded-2xl bg-white hover:bg-[#E8F3FC] border border-[#D4E8F9]/70 flex items-center justify-between gap-3 text-left transition-all cursor-pointer">
-                                <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-full p-2.5 rounded-2xl bg-white hover:bg-[#E8F3FC]/70 border border-[#D4E8F9]/70 flex items-center justify-between gap-2 transition-all">
+                                <button type="button" data-view-user="${escapeHtml(user.username)}"
+                                    class="view-user-trigger flex items-center gap-3 min-w-0 flex-1 text-left cursor-pointer">
                                     <div class="relative flex-shrink-0">
-                                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr ${getGradientByString(user.username)} text-white font-bold flex items-center justify-center text-xs">
-                                            ${getInitials(user.nickname)}
+                                        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr ${getGradientByString(user.username)} text-white font-bold flex items-center justify-center text-xs overflow-hidden">
+                                            ${renderAvatarInner(user.avatarUrl, user.nickname, user.username)}
                                         </div>
                                         ${user.online ? '<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white"></span>' : ''}
                                     </div>
-                                    <div class="min-w-0">
+                                    <div class="min-w-0 flex-1">
                                         <div class="font-semibold text-sm text-slate-800 truncate">${escapeHtml(user.nickname)}</div>
                                         <div class="text-xs text-[#3898EC] truncate">@${escapeHtml(user.username)}</div>
+                                        ${user.bio ? `<div class="text-[11px] text-slate-400 truncate mt-0.5">${escapeHtml(user.bio)}</div>` : ''}
                                     </div>
-                                </div>
-                                <span class="px-2.5 py-1 rounded-xl bg-[#E8F3FC] text-[#2778C4] text-xs font-semibold flex-shrink-0">
-                                    Написать
-                                </span>
-                            </button>
+                                </button>
+                                <button type="button" data-start-dm-username="${escapeHtml(user.username)}"
+                                    class="start-dm-btn px-3 py-1.5 rounded-xl bg-[#E8F3FC] hover:bg-[#D4E8F9] text-[#2778C4] text-xs font-semibold flex-shrink-0 cursor-pointer transition-colors">
+                                    Чат
+                                </button>
+                            </div>
                         `;
                     });
                 }
@@ -969,7 +1355,7 @@
         }
 
         // =====================================================================
-        // 6. ОТКРЫТИЕ ЧАТА И ОТПРАВКА СООБЩЕНИЙ В РЕАЛЬНОМ ВРЕМЕНИ
+        // 7. ОТКРЫТИЕ ЧАТА И ОТПРАВКА СООБЩЕНИЙ В РЕАЛЬНОМ ВРЕМЕНИ
         // =====================================================================
         async function startDirectChatWith(targetUsername) {
             if (!state.currentProfile) return;
@@ -1058,42 +1444,60 @@
             renderSidebarList();
         }
 
+        function getActivePeerUsername() {
+            if (!state.activeChatId || state.activeChatId === GLOBAL_CHAT_ID || !state.currentProfile) return null;
+            const chat = state.allChats.find(c => c.id === state.activeChatId);
+            const myUsername = state.currentProfile.username;
+
+            if (chat && Array.isArray(chat.participants)) {
+                return chat.participants.find(u => u !== myUsername) || null;
+            } else if (state.activeChatId.startsWith('dm_')) {
+                const parts = state.activeChatId.replace('dm_', '').split('__');
+                return parts.find(u => u !== myUsername) || parts[0];
+            }
+            return null;
+        }
+
         function updateActiveChatHeader() {
             if (!state.activeChatId || !state.currentProfile) return;
 
             const avatarEl = document.getElementById('chat-header-avatar');
             const titleEl = document.getElementById('chat-header-title');
             const subtitleEl = document.getElementById('chat-header-subtitle');
+            const triggerEl = document.getElementById('chat-header-info-trigger');
+            const infoBtn = document.getElementById('btn-chat-peer-info');
 
             if (state.activeChatId === GLOBAL_CHAT_ID) {
                 avatarEl.innerHTML = '<i data-lucide="sparkles" class="w-5 h-5"></i>';
-                avatarEl.className = 'w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#5BB2F2] to-[#3898EC] text-white font-bold flex items-center justify-center text-sm flex-shrink-0 shadow-sm';
+                avatarEl.className = 'w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#5BB2F2] to-[#3898EC] text-white font-bold flex items-center justify-center text-sm flex-shrink-0 shadow-sm overflow-hidden';
                 titleEl.textContent = 'gsgram Общий чат';
                 const count = state.allUsers.length || 1;
                 subtitleEl.textContent = `Общий канал • участников: ${count}`;
+                triggerEl.classList.remove('hover:bg-[#F4F9FD]', 'cursor-pointer');
+                infoBtn.classList.add('hidden');
                 lucide.createIcons();
                 return;
             }
 
-            const chat = state.allChats.find(c => c.id === state.activeChatId);
-            const myUsername = state.currentProfile.username;
-            let peerUsername = '';
-
-            if (chat && Array.isArray(chat.participants)) {
-                peerUsername = chat.participants.find(u => u !== myUsername) || '';
-            } else if (state.activeChatId.startsWith('dm_')) {
-                const parts = state.activeChatId.replace('dm_', '').split('__');
-                peerUsername = parts.find(u => u !== myUsername) || parts[0];
-            }
-
-            const peerUser = state.allUsers.find(u => u.username === peerUsername);
+            const peerUsername = getActivePeerUsername();
+            const peerUser = getUserByUsername(peerUsername);
             const peerNickname = peerUser ? peerUser.nickname : `@${peerUsername}`;
+            const peerAvatar = peerUser ? peerUser.avatarUrl : '';
             const isOnline = peerUser ? peerUser.online : false;
 
-            avatarEl.textContent = getInitials(peerNickname);
-            avatarEl.className = `w-10 h-10 rounded-2xl bg-gradient-to-tr ${getGradientByString(peerUsername)} text-white font-bold flex items-center justify-center text-sm flex-shrink-0 shadow-sm`;
+            applyAvatarToElement(
+                avatarEl,
+                peerAvatar,
+                peerNickname,
+                peerUsername,
+                'w-10 h-10 rounded-2xl text-white font-bold flex items-center justify-center text-sm flex-shrink-0 shadow-sm'
+            );
             titleEl.textContent = peerNickname;
             subtitleEl.textContent = `@${peerUsername} • ${isOnline ? 'в сети' : 'был(а) недавно'}`;
+
+            triggerEl.classList.add('hover:bg-[#F4F9FD]', 'cursor-pointer');
+            infoBtn.classList.remove('hidden');
+            lucide.createIcons();
         }
 
         function renderMessagesFeed(forceScroll = false) {
@@ -1132,18 +1536,25 @@
                         </div>
                     `;
                 } else {
+                    const senderUser = getUserByUsername(msg.senderUsername);
+                    const displayNick = (senderUser && senderUser.nickname) || msg.senderNickname || msg.senderUsername;
+                    const senderAvatar = senderUser ? senderUser.avatarUrl : '';
                     const showAuthor = state.activeChatId === GLOBAL_CHAT_ID;
+                    const isClickableUser = msg.senderUsername && msg.senderUsername !== 'gsgram_bot';
+
                     html += `
                         <div class="flex justify-start items-end gap-2">
-                            <div class="w-7 h-7 rounded-xl bg-gradient-to-tr ${getGradientByString(msg.senderUsername)} text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mb-0.5 shadow-sm">
-                                ${getInitials(msg.senderNickname || msg.senderUsername)}
-                            </div>
+                            <button type="button" ${isClickableUser ? `data-view-user="${escapeHtml(msg.senderUsername)}"` : 'disabled'}
+                                class="view-user-trigger w-8 h-8 rounded-xl bg-gradient-to-tr ${getGradientByString(msg.senderUsername)} text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mb-0.5 shadow-sm overflow-hidden ${isClickableUser ? 'cursor-pointer hover:scale-105 transition-transform' : ''}">
+                                ${renderAvatarInner(senderAvatar, displayNick, msg.senderUsername)}
+                            </button>
                             <div class="max-w-[82%] sm:max-w-[68%] bg-white border border-[#D4E8F9] text-slate-700 px-4 py-2.5 rounded-2xl rounded-bl-sm shadow-xs">
                                 ${showAuthor ? `
-                                    <div class="flex items-center gap-1.5 mb-0.5">
-                                        <span class="text-xs font-bold text-[#3898EC]">${escapeHtml(msg.senderNickname || msg.senderUsername)}</span>
+                                    <button type="button" ${isClickableUser ? `data-view-user="${escapeHtml(msg.senderUsername)}"` : 'disabled'}
+                                        class="view-user-trigger flex items-center gap-1.5 mb-0.5 text-left ${isClickableUser ? 'cursor-pointer hover:underline' : ''}">
+                                        <span class="text-xs font-bold text-[#3898EC]">${escapeHtml(displayNick)}</span>
                                         <span class="text-[10px] text-slate-400">@${escapeHtml(msg.senderUsername)}</span>
-                                    </div>
+                                    </button>
                                 ` : ''}
                                 <p class="text-sm sm:text-[15px] leading-relaxed break-words whitespace-pre-wrap">${escapeHtml(msg.text)}</p>
                                 <div class="text-right mt-1 text-[10px] text-slate-400">
@@ -1164,7 +1575,7 @@
         }
 
         async function handleSendMessage(e) {
-            e.preventDefault();
+            if (e) e.preventDefault();
             if (!state.currentProfile || !state.activeChatId) return;
 
             const inputEl = document.getElementById('message-input');
@@ -1179,7 +1590,6 @@
 
             try {
                 if (state.cloudConnected) {
-                    // Сохраняем сообщение в коллекцию 'messages'
                     await addDoc(messagesCol, {
                         chatId: chatId,
                         senderUsername: state.currentProfile.username,
@@ -1188,7 +1598,6 @@
                         createdAt: now
                     });
 
-                    // Обновляем превью последнего сообщения в коллекции 'chats'
                     const chatRef = doc(db, 'chats', chatId);
                     await setDoc(chatRef, {
                         lastMessage: text,
@@ -1232,7 +1641,7 @@
         }
 
         // =====================================================================
-        // 7. ЭМОДЗИ И СОБЫТИЯ ИНТЕРФЕЙСА
+        // 8. ЭМОДЗИ И СОБЫТИЯ ИНТЕРФЕЙСА
         // =====================================================================
         function renderEmojiGrid() {
             const grid = document.getElementById('emoji-grid');
@@ -1269,6 +1678,88 @@
 
             document.getElementById('btn-logout').addEventListener('click', handleLogout);
 
+            // Открытие редактирования своего профиля
+            document.getElementById('btn-edit-profile').addEventListener('click', openEditProfileModal);
+            document.getElementById('btn-open-edit-profile-area').addEventListener('click', openEditProfileModal);
+            document.getElementById('btn-close-edit-profile').addEventListener('click', closeEditProfileModal);
+            document.getElementById('btn-cancel-edit-profile').addEventListener('click', closeEditProfileModal);
+            document.getElementById('edit-profile-form').addEventListener('submit', handleSaveProfile);
+
+            // Загрузка файла аватарки и её сжатие
+            document.getElementById('avatar-file-input').addEventListener('change', async (e) => {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+
+                try {
+                    const compressed = await compressImageToAvatarBase64(file);
+                    state.pendingAvatarBase64 = compressed;
+
+                    const previewEl = document.getElementById('edit-avatar-preview');
+                    const nick = document.getElementById('edit-nickname-input').value.trim() || state.currentProfile.nickname;
+                    applyAvatarToElement(
+                        previewEl,
+                        compressed,
+                        nick,
+                        state.currentProfile.username,
+                        'w-24 h-24 rounded-3xl text-white font-bold text-2xl flex items-center justify-center shadow-md border-4 border-[#EEF6FC]'
+                    );
+                } catch (err) {
+                    console.error(err);
+                    showToast('Не удалось загрузить фото', 'error');
+                }
+            });
+
+            // Удаление фото аватарки
+            document.getElementById('btn-remove-avatar').addEventListener('click', () => {
+                state.pendingAvatarBase64 = '';
+                document.getElementById('avatar-file-input').value = '';
+                const previewEl = document.getElementById('edit-avatar-preview');
+                const nick = document.getElementById('edit-nickname-input').value.trim() || state.currentProfile.nickname;
+                applyAvatarToElement(
+                    previewEl,
+                    '',
+                    nick,
+                    state.currentProfile.username,
+                    'w-24 h-24 rounded-3xl text-white font-bold text-2xl flex items-center justify-center shadow-md border-4 border-[#EEF6FC]'
+                );
+            });
+
+            // Счётчик символов в описании профиля
+            document.getElementById('edit-bio-input').addEventListener('input', (e) => {
+                document.getElementById('edit-bio-counter').textContent = `${e.target.value.length} / 140`;
+            });
+
+            // Закрытие модальных окон по клику на фон
+            document.getElementById('edit-profile-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'edit-profile-modal') closeEditProfileModal();
+            });
+            document.getElementById('view-user-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'view-user-modal') closeViewUserModal();
+            });
+            document.getElementById('btn-close-view-user').addEventListener('click', closeViewUserModal);
+
+            // Кнопка внутри карточки профиля пользователя («Написать сообщение» или «Редактировать»)
+            document.getElementById('btn-view-user-message').addEventListener('click', () => {
+                const target = state.viewingUsername;
+                closeViewUserModal();
+                if (!target) return;
+                if (state.currentProfile && target === state.currentProfile.username) {
+                    openEditProfileModal();
+                } else {
+                    startDirectChatWith(target);
+                }
+            });
+
+            // Открытие профиля собеседника из шапки личного чата
+            document.getElementById('chat-header-info-trigger').addEventListener('click', () => {
+                const peer = getActivePeerUsername();
+                if (peer) openViewUserModal(peer);
+            });
+            document.getElementById('btn-chat-peer-info').addEventListener('click', () => {
+                const peer = getActivePeerUsername();
+                if (peer) openViewUserModal(peer);
+            });
+
             document.getElementById('btn-new-chat').addEventListener('click', () => {
                 state.showAllUsersMode = !state.showAllUsersMode;
                 renderSidebarList();
@@ -1293,10 +1784,18 @@
                 renderSidebarList();
             });
 
+            // Делегирование кликов по списку чатов и участников
             document.getElementById('sidebar-list').addEventListener('click', (e) => {
                 if (e.target.closest('#close-users-mode')) {
                     state.showAllUsersMode = false;
                     renderSidebarList();
+                    return;
+                }
+
+                const viewUserBtn = e.target.closest('.view-user-trigger');
+                if (viewUserBtn) {
+                    const targetUser = viewUserBtn.getAttribute('data-view-user');
+                    if (targetUser) openViewUserModal(targetUser);
                     return;
                 }
 
@@ -1311,6 +1810,15 @@
                 if (dmBtn) {
                     const targetUser = dmBtn.getAttribute('data-start-dm-username');
                     if (targetUser) startDirectChatWith(targetUser);
+                }
+            });
+
+            // Делегирование кликов по аватаркам/именам в ленте сообщений
+            document.getElementById('messages-feed').addEventListener('click', (e) => {
+                const viewUserBtn = e.target.closest('.view-user-trigger');
+                if (viewUserBtn) {
+                    const targetUser = viewUserBtn.getAttribute('data-view-user');
+                    if (targetUser) openViewUserModal(targetUser);
                 }
             });
 
@@ -1360,4 +1868,3 @@
     </script>
 </body>
 </html>
-```
