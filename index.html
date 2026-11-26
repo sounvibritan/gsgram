@@ -595,32 +595,96 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА: ПРОСМОТР ПРОФИЛЯ СОБЕСЕДНИКА -->
-    <div id="user-view-modal" class="hidden fixed inset-0 z-50 bg-pastel-900/30 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl border border-pastel-200 overflow-hidden msg-pop">
-            <div class="px-4 py-3 bg-pastel-50 border-b border-pastel-100 flex items-center gap-2.5">
+    <!-- МОДАЛКА: ПРОФИЛЬ СОБЕСЕДНИКА В СТИЛЕ 1-ГО И 2-ГО ФОТО -->
+    <div id="user-view-modal" class="hidden fixed inset-0 z-50 bg-pastel-900/35 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-pastel-200 overflow-hidden msg-pop flex flex-col max-h-[90dvh]">
+            <div class="px-4 py-3 bg-pastel-50 border-b border-pastel-100 flex items-center justify-between shrink-0">
                 <button type="button" id="close-user-view-btn" class="w-8 h-8 rounded-xl bg-white hover:bg-pastel-100 text-pastel-700 border border-pastel-200/70 flex items-center justify-center">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i>
                 </button>
-                <h3 class="font-extrabold text-pastel-900 text-sm">Профиль участника</h3>
+                <span class="text-xs font-extrabold text-pastel-600">Профиль участника</span>
+                <div class="w-8"></div>
             </div>
 
-            <div class="p-6 flex flex-col items-center text-center">
-                <div id="view-user-avatar" class="w-24 h-24 rounded-3xl bg-gradient-to-br from-pastel-400 to-pastel-300 text-white font-extrabold text-3xl flex items-center justify-center shadow-md overflow-hidden mb-3">
-                    U
-                </div>
-                <h4 id="view-user-nick" class="text-lg font-extrabold text-pastel-900">Имя</h4>
-                <p id="view-user-tag" class="text-xs font-bold text-pastel-500 mb-3">@username</p>
-
-                <div class="w-full p-3.5 rounded-2xl bg-pastel-50 border border-pastel-100 text-left mb-4">
-                    <span class="block text-[10px] font-extrabold uppercase tracking-wider text-pastel-400 mb-1">О себе</span>
-                    <p id="view-user-bio" class="text-xs font-semibold text-pastel-800 leading-relaxed">Описание не указано</p>
+            <div class="p-4 overflow-y-auto flex-1 space-y-3.5">
+                <!-- Верхняя шапка профиля: аватар, ник, статус -->
+                <div class="flex flex-col items-center text-center">
+                    <div id="view-user-avatar" class="w-24 h-24 rounded-full bg-gradient-to-br from-pastel-400 to-pastel-300 text-white font-extrabold text-3xl flex items-center justify-center shadow-md overflow-hidden mb-2.5 border-2 border-pastel-200">
+                        U
+                    </div>
+                    <h4 id="view-user-nick" class="text-lg font-extrabold text-pastel-900">Имя</h4>
+                    <p id="view-user-status" class="text-xs font-semibold text-pastel-500 mt-0.5">был(а) недавно</p>
                 </div>
 
-                <button type="button" id="view-user-message-btn"
-                    class="w-full py-3 bg-gradient-to-r from-pastel-500 to-pastel-400 hover:from-pastel-600 hover:to-pastel-500 text-white font-extrabold text-sm rounded-2xl shadow-md flex items-center justify-center gap-2">
-                    <i data-lucide="message-circle" class="w-4 h-4"></i>
-                    <span>Написать сообщение</span>
+                <!-- 4 кнопки быстрых действий: Чат, Звук, Звонок, Видео -->
+                <div class="grid grid-cols-4 gap-2">
+                    <button type="button" id="view-user-message-btn" class="py-2.5 px-2 rounded-2xl bg-pastel-50 hover:bg-pastel-100 border border-pastel-200/80 flex flex-col items-center justify-center gap-1 text-pastel-900 transition-colors">
+                        <i data-lucide="message-circle" class="w-4 h-4 text-pastel-600"></i>
+                        <span class="text-[11px] font-bold">Чат</span>
+                    </button>
+                    <button type="button" id="view-user-mute-btn" class="py-2.5 px-2 rounded-2xl bg-pastel-50 hover:bg-pastel-100 border border-pastel-200/80 flex flex-col items-center justify-center gap-1 text-pastel-900 transition-colors">
+                        <i data-lucide="bell" class="w-4 h-4 text-pastel-600"></i>
+                        <span id="view-user-mute-label" class="text-[11px] font-bold">Звук</span>
+                    </button>
+                    <button type="button" id="view-user-call-btn" class="py-2.5 px-2 rounded-2xl bg-pastel-50 hover:bg-pastel-100 border border-pastel-200/80 flex flex-col items-center justify-center gap-1 text-pastel-900 transition-colors">
+                        <i data-lucide="phone" class="w-4 h-4 text-pastel-600"></i>
+                        <span class="text-[11px] font-bold">Звонок</span>
+                    </button>
+                    <button type="button" id="view-user-video-btn" class="py-2.5 px-2 rounded-2xl bg-pastel-50 hover:bg-pastel-100 border border-pastel-200/80 flex flex-col items-center justify-center gap-1 text-pastel-900 transition-colors">
+                        <i data-lucide="video" class="w-4 h-4 text-pastel-600"></i>
+                        <span class="text-[11px] font-bold">Видео</span>
+                    </button>
+                </div>
+
+                <!-- Блок информации: О себе, @юзернейм, День рождения -->
+                <div class="rounded-2xl bg-pastel-50/80 border border-pastel-200/80 p-3.5 space-y-3">
+                    <div>
+                        <p id="view-user-bio" class="text-xs font-bold text-pastel-900 leading-snug">Описание пока не добавлено</p>
+                        <span class="block text-[10px] font-semibold text-pastel-500 mt-0.5">О себе</span>
+                    </div>
+                    <div class="border-t border-pastel-200/60 pt-2.5 flex items-center justify-between">
+                        <div>
+                            <p id="view-user-tag" class="text-xs font-extrabold text-pastel-900">@username</p>
+                            <span class="block text-[10px] font-semibold text-pastel-500">Имя пользователя</span>
+                        </div>
+                    </div>
+                    <div class="border-t border-pastel-200/60 pt-2.5">
+                        <p id="view-user-birthday" class="text-xs font-bold text-pastel-900">17 авг. 2008</p>
+                        <span class="block text-[10px] font-semibold text-pastel-500">День рождения</span>
+                    </div>
+                </div>
+
+                <!-- Переключатель вкладок профиля: Подарки / Публикации / Медиа -->
+                <div class="grid grid-cols-3 gap-1 p-1 rounded-2xl bg-pastel-50 border border-pastel-200/80">
+                    <button type="button" id="profile-tab-gifts" class="py-1.5 px-2 rounded-xl text-[11px] font-extrabold bg-white text-pastel-900 shadow-2xs flex items-center justify-center gap-1 transition-all">
+                        <span>Подарки</span>
+                        <span>💝</span>
+                    </button>
+                    <button type="button" id="profile-tab-posts" class="py-1.5 px-2 rounded-xl text-[11px] font-bold text-pastel-600 hover:text-pastel-900 transition-all">
+                        Публикации
+                    </button>
+                    <button type="button" id="profile-tab-media" class="py-1.5 px-2 rounded-xl text-[11px] font-bold text-pastel-600 hover:text-pastel-900 transition-all">
+                        Медиа
+                    </button>
+                </div>
+
+                <!-- Сетка подарков в стиле 2-го фото (3 в ряд + мини-аватар отправителя в углу) -->
+                <div id="profile-gifts-grid" class="grid grid-cols-3 gap-2"></div>
+
+                <!-- Контент вкладок Публикации и Медиа -->
+                <div id="profile-posts-panel" class="hidden p-4 rounded-2xl bg-pastel-50/70 border border-pastel-200/70 text-center text-xs font-semibold text-pastel-500">
+                    Публикации пользователя появятся здесь
+                </div>
+                <div id="profile-media-panel" class="hidden p-4 rounded-2xl bg-pastel-50/70 border border-pastel-200/70 text-center text-xs font-semibold text-pastel-500">
+                    Общие фото и медиафайлы появятся здесь
+                </div>
+            </div>
+
+            <!-- Нижняя плашка "Отправить подарок [Имя]" как на 2-м фото -->
+            <div class="p-3 bg-pastel-50 border-t border-pastel-200/80 shrink-0">
+                <button type="button" id="profile-send-gift-cta" class="w-full py-2.5 px-4 rounded-2xl bg-gradient-to-r from-pastel-500 to-pastel-400 hover:from-pastel-600 hover:to-pastel-500 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+                    <i data-lucide="gift" class="w-4 h-4"></i>
+                    <span id="profile-send-gift-label">Отправить подарок</span>
                 </button>
             </div>
         </div>
@@ -806,6 +870,33 @@
                     <input type="text" id="gift-recipient-input" placeholder="@username или оставьте пустым для себя"
                         class="w-full px-3 py-2 bg-white border border-pastel-200 rounded-xl text-xs font-bold text-pastel-900 focus:outline-none focus:border-pastel-500">
                     <p id="gift-status-banner" class="text-[11px] font-bold text-pastel-600 min-h-[15px]"></p>
+                </div>
+
+                <!-- Карточка-окно отправки подарка в стиле 3-го фото -->
+                <div id="gift-compose-preview" class="hidden rounded-2xl bg-gradient-to-br from-pastel-100/90 via-white to-amber-50/70 border border-pastel-200 p-3.5 space-y-3 shadow-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-extrabold text-pastel-900">Отправить подарок</span>
+                        <button type="button" id="gift-cancel-preview-btn" class="text-[11px] font-bold text-pastel-500 hover:text-rose-500">Отмена</button>
+                    </div>
+
+                    <div class="rounded-xl bg-white/90 border border-pastel-200/80 p-3 text-center space-y-2">
+                        <p id="gift-preview-header" class="text-[11px] font-bold text-pastel-700"></p>
+                        <div id="gift-preview-emoji" class="text-5xl leading-none py-1">💝</div>
+                        <p id="gift-preview-from" class="text-xs font-extrabold text-pastel-900"></p>
+                        <p class="text-[11px] text-pastel-500">Вы можете добавить этот подарок в профиль.</p>
+                    </div>
+
+                    <input type="text" id="gift-custom-note-input" maxlength="100" placeholder="Ваше сообщение..."
+                        class="w-full px-3 py-2 bg-white border border-pastel-200 rounded-xl text-xs font-semibold text-pastel-900 focus:outline-none focus:border-pastel-500">
+
+                    <label class="flex items-center justify-between px-1 py-0.5 cursor-pointer">
+                        <span class="text-xs font-bold text-pastel-800">Скрыть моё имя</span>
+                        <input type="checkbox" id="gift-hide-sender-toggle" class="w-4 h-4 accent-pastel-500 rounded">
+                    </label>
+
+                    <button type="button" id="gift-confirm-send-btn" class="w-full py-2.5 px-4 rounded-2xl bg-gradient-to-r from-pastel-500 to-pastel-400 hover:from-pastel-600 hover:to-pastel-500 text-white font-extrabold text-xs shadow-sm transition-all active:scale-[0.98]">
+                        Отправить подарок за 😊 <span id="gift-confirm-price">15</span>
+                    </button>
                 </div>
 
                 <div id="gifts-shop-grid" class="grid grid-cols-3 gap-2.5"></div>
@@ -1733,14 +1824,19 @@
         let viewedUsername = null;
 
         function openUserViewModal(username) {
-            const key = (username || '').toLowerCase();
-            const u = allUsersMap[key] || { username: key, nickname: username, bio: '', avatar: '' };
-            viewedUsername = key;
+            const u = getEnrichedUserProfile(username);
+            viewedUsername = u.username;
             document.getElementById('view-user-avatar').innerHTML = renderAvatarHTML(u.avatar, u.nickname);
             document.getElementById('view-user-nick').textContent = u.nickname;
+            document.getElementById('view-user-status').textContent = u.statusText || 'был(а) недавно';
             document.getElementById('view-user-tag').textContent = '@' + u.username;
-            document.getElementById('view-user-bio').textContent = u.bio || 'Описание пока не добавлено';
+            document.getElementById('view-user-bio').textContent = u.bio;
+            document.getElementById('view-user-birthday').textContent = u.birthday || '17 авг. 2008';
+            document.getElementById('profile-send-gift-label').textContent = `Отправить подарок ${u.nickname}`;
+            setProfileSubTab('gifts');
+            renderProfileGiftsGrid(u.username);
             userViewModal.classList.remove('hidden');
+            lucide.createIcons();
         }
 
         document.getElementById('close-user-view-btn').addEventListener('click', () => userViewModal.classList.add('hidden'));
@@ -2431,10 +2527,136 @@
             });
         }
 
-        async function purchaseGift(giftId) {
+        // Профили по умолчанию для других пользователей (без каналов, в стиле 1-го фото)
+        const DEFAULT_OTHER_PROFILES = {
+            soun: {
+                username: 'soun',
+                nickname: 'soun vi britannia',
+                bio: 'cute boy ♡ @mikamisoun',
+                birthday: '17 авг. 2008',
+                statusText: 'был(а) недавно',
+                avatar: ''
+            },
+            kelly: {
+                username: 'kelly',
+                nickname: 'kellys1nsh1ne',
+                bio: 'в облаке gsgram • всегда на связи ✨',
+                birthday: '17 авг. 2008',
+                statusText: 'в сети',
+                avatar: ''
+            },
+            mika: {
+                username: 'mika',
+                nickname: 'mikamisoun',
+                bio: 'люблю подарки и тёплые беседы 💝',
+                birthday: '04 мая 2007',
+                statusText: 'был(а) недавно',
+                avatar: ''
+            }
+        };
+
+        let selectedGiftForCompose = null;
+
+        function getEnrichedUserProfile(username) {
+            const key = (username || '').toLowerCase().replace(/^@+/, '');
+            const base = DEFAULT_OTHER_PROFILES[key] || {
+                username: key || 'user',
+                nickname: key || 'Пользователь',
+                bio: 'Участник gsgram • профиль открыт для всех',
+                birthday: 'Не указан',
+                statusText: 'был(а) недавно',
+                avatar: ''
+            };
+            const live = allUsersMap[key] || {};
+            return {
+                ...base,
+                ...live,
+                username: key || base.username,
+                nickname: live.nickname || base.nickname,
+                bio: (live.bio && live.bio.trim()) ? live.bio.trim() : base.bio,
+                birthday: live.birthday || base.birthday,
+                statusText: live.statusText || base.statusText,
+                avatar: live.avatar || base.avatar
+            };
+        }
+
+        function renderProfileGiftsGrid(targetUsername) {
+            const grid = document.getElementById('profile-gifts-grid');
+            if (!grid) return;
+            const key = (targetUsername || '').toLowerCase();
+            const userGifts = cloudGiftsList.filter(g => (g.toUsername || '').toLowerCase() === key);
+
+            if (userGifts.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-3 py-6 px-3 rounded-2xl bg-pastel-50/80 border border-pastel-200/70 text-center text-xs font-semibold text-pastel-500">
+                        Подарков пока нет — отправьте первый через кнопку ниже 🎁
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = userGifts.map(g => {
+                const senderTag = (g.fromUsername || '').toLowerCase();
+                const senderObj = getEnrichedUserProfile(senderTag);
+                const senderLabel = g.hideSender ? 'Аноним' : `@${senderTag}`;
+                return `
+                    <div class="relative rounded-2xl bg-pastel-50/90 hover:bg-pastel-100/80 border border-pastel-200/80 p-3 flex flex-col items-center justify-center aspect-square shadow-2xs transition-colors" title="От ${escapeHtml(senderLabel)}${g.note ? ': ' + escapeHtml(g.note) : ''}">
+                        <div class="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-pastel-400 text-white text-[9px] font-extrabold flex items-center justify-center overflow-hidden border border-white shadow-2xs">
+                            ${g.hideSender ? '?' : renderAvatarHTML(senderObj.avatar, senderObj.nickname)}
+                        </div>
+                        <div class="text-3xl sm:text-4xl leading-none">${g.emoji || '💝'}</div>
+                        <span class="mt-1.5 text-[10px] font-extrabold text-pastel-700 truncate max-w-full">${escapeHtml(senderLabel)}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function setProfileSubTab(tab) {
+            const giftsTab = document.getElementById('profile-tab-gifts');
+            const postsTab = document.getElementById('profile-tab-posts');
+            const mediaTab = document.getElementById('profile-tab-media');
+            const giftsGrid = document.getElementById('profile-gifts-grid');
+            const postsPanel = document.getElementById('profile-posts-panel');
+            const mediaPanel = document.getElementById('profile-media-panel');
+
+            const activeCls = "py-1.5 px-2 rounded-xl text-[11px] font-extrabold bg-white text-pastel-900 shadow-2xs flex items-center justify-center gap-1 transition-all";
+            const idleCls = "py-1.5 px-2 rounded-xl text-[11px] font-bold text-pastel-600 hover:text-pastel-900 transition-all";
+
+            giftsTab.className = tab === 'gifts' ? activeCls : idleCls;
+            postsTab.className = tab === 'posts' ? activeCls : idleCls;
+            mediaTab.className = tab === 'media' ? activeCls : idleCls;
+
+            giftsGrid.classList.toggle('hidden', tab !== 'gifts');
+            postsPanel.classList.toggle('hidden', tab !== 'posts');
+            mediaPanel.classList.toggle('hidden', tab !== 'media');
+        }
+
+        function openGiftComposePreview(giftId) {
             if (!currentUser) return;
             const catalogItem = TELEGRAM_GIFTS_CATALOG.find(x => x.id === giftId);
             if (!catalogItem) return;
+
+            selectedGiftForCompose = catalogItem;
+            const rawRecipient = document.getElementById('gift-recipient-input').value.trim().toLowerCase().replace(/^@+/, '');
+            const toUsername = rawRecipient || currentUser.username;
+            const hideSender = document.getElementById('gift-hide-sender-toggle').checked;
+            const senderDisplay = hideSender ? 'Аноним' : (currentUser.nickname || currentUser.username);
+
+            document.getElementById('gift-preview-header').textContent = `${senderDisplay} отправил(а) подарок для @${toUsername} стоимостью ${catalogItem.price} верити 😊`;
+            document.getElementById('gift-preview-emoji').textContent = catalogItem.emoji;
+            document.getElementById('gift-preview-from').textContent = `Подарок от ${senderDisplay}`;
+            document.getElementById('gift-confirm-price').textContent = String(catalogItem.price);
+            document.getElementById('gift-custom-note-input').value = '';
+            document.getElementById('gift-compose-preview').classList.remove('hidden');
+        }
+
+        async function purchaseGift(giftId) {
+            openGiftComposePreview(giftId);
+        }
+
+        async function finalizeGiftPurchase() {
+            if (!currentUser || !selectedGiftForCompose) return;
+            const catalogItem = selectedGiftForCompose;
 
             const currentBal = getVerityBalance();
             if (currentBal < catalogItem.price) {
@@ -2444,6 +2666,8 @@
 
             const rawRecipient = document.getElementById('gift-recipient-input').value.trim().toLowerCase().replace(/^@+/, '');
             const toUsername = rawRecipient || currentUser.username;
+            const note = document.getElementById('gift-custom-note-input').value.trim();
+            const hideSender = document.getElementById('gift-hide-sender-toggle').checked;
 
             await setVerityBalance(currentBal - catalogItem.price);
             syncGiftsCounters();
@@ -2455,6 +2679,8 @@
                 price: catalogItem.price,
                 rare: catalogItem.rare,
                 collectible: false,
+                hideSender,
+                note,
                 fromUsername: currentUser.username,
                 fromNickname: currentUser.nickname,
                 toUsername,
@@ -2478,24 +2704,27 @@
                             updatedAt: serverTimestamp()
                         });
                     }
+                    const senderLabel = hideSender ? 'Аноним' : `@${currentUser.username}`;
                     const giftMsgText = toUsername === currentUser.username
-                        ? `Добавил(а) в профиль подарок ${catalogItem.emoji} «${catalogItem.name}»`
-                        : `Подарил(а) @${toUsername} подарок ${catalogItem.emoji} «${catalogItem.name}»`;
+                        ? `${senderLabel} добавил(а) в профиль подарок ${catalogItem.emoji} «${catalogItem.name}»${note ? ` — «${note}»` : ''}`
+                        : `${senderLabel} подарил(а) @${toUsername} подарок ${catalogItem.emoji} «${catalogItem.name}»${note ? ` — «${note}»` : ''}`;
 
                     await addDoc(collection(db, 'chats', targetChatId, 'messages'), {
                         text: giftMsgText,
                         senderUsername: currentUser.username,
-                        senderNickname: currentUser.nickname,
+                        senderNickname: hideSender ? 'Аноним' : currentUser.nickname,
                         createdAt: serverTimestamp(),
                         reactions: {}
                     });
                     await setDoc(chatRef, {
-                        lastMessage: `${currentUser.nickname}: ${giftMsgText}`,
+                        lastMessage: `${hideSender ? 'Аноним' : currentUser.nickname}: ${giftMsgText}`,
                         updatedAt: serverTimestamp()
                     }, { merge: true });
                 }
             }
 
+            document.getElementById('gift-compose-preview').classList.add('hidden');
+            selectedGiftForCompose = null;
             giftStatusBanner.textContent = `Подарок ${catalogItem.emoji} отправлен для @${toUsername} и сохранён для всех!`;
         }
 
@@ -2574,6 +2803,47 @@
             origSyncVerityUI();
             syncGiftsCounters();
         };
+
+
+        document.getElementById('profile-tab-gifts').addEventListener('click', () => {
+            setProfileSubTab('gifts');
+            if (viewedUsername) renderProfileGiftsGrid(viewedUsername);
+        });
+        document.getElementById('profile-tab-posts').addEventListener('click', () => setProfileSubTab('posts'));
+        document.getElementById('profile-tab-media').addEventListener('click', () => setProfileSubTab('media'));
+
+        document.getElementById('profile-send-gift-cta').addEventListener('click', () => {
+            const target = viewedUsername || '';
+            userViewModal.classList.add('hidden');
+            openGiftsModal(target);
+        });
+
+        let isUserMutedLocal = false;
+        document.getElementById('view-user-mute-btn').addEventListener('click', () => {
+            isUserMutedLocal = !isUserMutedLocal;
+            document.getElementById('view-user-mute-label').textContent = isUserMutedLocal ? 'Без звука' : 'Звук';
+        });
+        document.getElementById('view-user-call-btn').addEventListener('click', () => {
+            if (!viewedUsername) return;
+            const dmId = getDmChatId(currentUser.username, viewedUsername);
+            userViewModal.classList.add('hidden');
+            openChat(dmId, { type: 'dm', participants: [currentUser.username, viewedUsername] });
+        });
+        document.getElementById('view-user-video-btn').addEventListener('click', () => {
+            if (!viewedUsername) return;
+            const dmId = getDmChatId(currentUser.username, viewedUsername);
+            userViewModal.classList.add('hidden');
+            openChat(dmId, { type: 'dm', participants: [currentUser.username, viewedUsername] });
+        });
+
+        document.getElementById('gift-cancel-preview-btn').addEventListener('click', () => {
+            selectedGiftForCompose = null;
+            document.getElementById('gift-compose-preview').classList.add('hidden');
+        });
+        document.getElementById('gift-confirm-send-btn').addEventListener('click', finalizeGiftPurchase);
+        document.getElementById('gift-hide-sender-toggle').addEventListener('change', () => {
+            if (selectedGiftForCompose) openGiftComposePreview(selectedGiftForCompose.id);
+        });
 
         initFirebase();
     </script>
