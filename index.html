@@ -42,6 +42,9 @@
             color-scheme: light only;
         }
         html, body {
+            height: 100dvh;
+            min-height: 100dvh;
+            max-height: 100dvh;
             background-color: #EBF5FD !important;
             color: #1B3A5C !important;
             font-family: 'Nunito', sans-serif;
@@ -81,7 +84,7 @@
         }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex items-center justify-center p-0 sm:p-4 select-none">
+<body class="w-screen overflow-hidden flex items-center justify-center p-0 sm:p-4 select-none">
 
     <!-- Индикатор статуса облака -->
     <div id="status-banner" class="fixed top-2.5 left-1/2 -translate-x-1/2 z-[70] px-3.5 py-1 rounded-full text-xs font-bold shadow-sm border border-pastel-200 bg-white/95 text-pastel-700 flex items-center gap-1.5 transition-all duration-300">
@@ -133,12 +136,12 @@
     </div>
 
     <!-- ОСНОВНОЙ ИНТЕРФЕЙС МЕССЕНДЖЕРА -->
-    <div id="app-screen" class="hidden w-full h-full max-w-5xl sm:h-[90vh] sm:max-h-[820px] bg-white sm:rounded-3xl shadow-xl shadow-pastel-900/10 border border-pastel-200/80 overflow-hidden flex relative">
+    <div id="app-screen" class="hidden w-full h-full max-w-5xl sm:h-[90dvh] sm:max-h-[820px] bg-white sm:rounded-3xl shadow-xl shadow-pastel-900/10 border border-pastel-200/80 overflow-hidden flex relative">
 
         <!-- ЛЕВАЯ КОЛОНКА: СПИСОК ЧАТОВ -->
-        <aside id="sidebar-panel" class="w-full md:w-[350px] lg:w-[375px] h-full bg-pastel-50/70 border-r border-pastel-200/80 flex flex-col shrink-0 z-10">
+        <aside id="sidebar-panel" class="w-full md:w-[350px] lg:w-[375px] h-full min-h-0 bg-pastel-50/70 border-r border-pastel-200/80 flex flex-col shrink-0 z-10">
             <!-- Шапка профиля -->
-            <div class="px-4 pt-9 sm:pt-4 pb-3 bg-white/95 border-b border-pastel-100 flex items-center justify-between gap-2">
+            <div class="px-4 pt-9 sm:pt-4 pb-3 bg-white/95 border-b border-pastel-100 flex items-center justify-between gap-2 shrink-0">
                 <button type="button" id="open-profile-edit-btn" title="Редактировать профиль" class="flex items-center gap-2.5 min-w-0 text-left group p-1 -ml-1 rounded-2xl hover:bg-pastel-50 transition-colors">
                     <div id="current-user-avatar" class="w-11 h-11 rounded-2xl bg-gradient-to-br from-pastel-400 to-pastel-300 text-white font-extrabold text-sm flex items-center justify-center shadow-sm shrink-0 overflow-hidden relative">
                         GS
@@ -165,7 +168,7 @@
             </div>
 
             <!-- Поиск -->
-            <div class="px-3.5 py-2.5 bg-white/60 border-b border-pastel-100">
+            <div class="px-3.5 py-2.5 bg-white/60 border-b border-pastel-100 shrink-0">
                 <div class="relative">
                     <i data-lucide="search" class="w-4 h-4 text-pastel-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
                     <input type="text" id="search-input" placeholder="Поиск чатов или @username..."
@@ -177,19 +180,19 @@
             </div>
 
             <!-- Результаты поиска пользователей -->
-            <div id="search-results-box" class="hidden px-3 py-2 bg-pastel-100/60 border-b border-pastel-200 max-h-56 overflow-y-auto">
+            <div id="search-results-box" class="hidden px-3 py-2 bg-pastel-100/60 border-b border-pastel-200 max-h-56 overflow-y-auto shrink-0">
                 <div class="text-[10px] font-extrabold uppercase tracking-wider text-pastel-600 px-1.5 mb-1.5">Найденные люди</div>
                 <div id="search-results-list" class="space-y-1"></div>
             </div>
 
             <!-- Список чатов -->
-            <div id="chat-list-container" class="flex-1 overflow-y-auto px-2.5 py-2.5 space-y-1.5">
+            <div id="chat-list-container" class="flex-1 min-h-0 overflow-y-auto px-2.5 py-2.5 space-y-1.5">
                 <!-- Генерируется динамически -->
             </div>
         </aside>
 
         <!-- ПРАВАЯ КОЛОНКА: ОКНО АКТИВНОГО ЧАТА -->
-        <main id="chat-panel" class="hidden md:flex flex-1 h-full flex-col bg-white relative z-20">
+        <main id="chat-panel" class="hidden md:flex flex-1 h-full min-h-0 flex-col bg-white relative z-20 overflow-hidden">
             <!-- Заглушка для ПК, если чат ещё не выбран -->
             <div id="empty-chat-placeholder" class="hidden md:flex flex-1 flex-col items-center justify-center p-8 text-center bg-pastel-50/40">
                 <div class="w-16 h-16 rounded-3xl bg-pastel-100 text-pastel-500 flex items-center justify-center mb-3 shadow-inner">
@@ -202,9 +205,9 @@
             </div>
 
             <!-- Активный диалог -->
-            <div id="active-chat-container" class="hidden flex-1 flex flex-col h-full relative">
+            <div id="active-chat-container" class="hidden flex-1 min-h-0 flex flex-col h-full w-full relative overflow-hidden">
                 <!-- Шапка чата -->
-                <header class="px-3 sm:px-4 pt-9 sm:pt-3 pb-2.5 bg-white/95 backdrop-blur-md border-b border-pastel-100 flex items-center justify-between gap-2 shrink-0 z-20">
+                <header class="px-3 sm:px-4 pt-3 pb-2.5 bg-white/95 backdrop-blur-md border-b border-pastel-100 flex items-center justify-between gap-2 shrink-0 z-20">
                     <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                         <!-- Кнопка Назад -->
                         <button type="button" id="back-to-chats-btn" title="Назад к списку чатов"
@@ -259,7 +262,7 @@
                 </header>
 
                 <!-- Плашка закреплённого сообщения (как в ТГ) -->
-                <div id="pinned-message-bar" class="hidden px-3.5 py-2 bg-white/95 backdrop-blur-md border-b border-pastel-200/80 flex items-center justify-between gap-2.5 z-10 cursor-pointer hover:bg-pastel-50 transition-colors">
+                <div id="pinned-message-bar" class="hidden px-3.5 py-2 bg-white/95 backdrop-blur-md border-b border-pastel-200/80 flex items-center justify-between gap-2.5 z-10 cursor-pointer hover:bg-pastel-50 transition-colors shrink-0">
                     <div class="flex items-center gap-2.5 min-w-0 flex-1">
                         <div class="w-1 h-8 rounded-full bg-pastel-500 shrink-0"></div>
                         <div class="min-w-0 flex-1">
@@ -276,7 +279,7 @@
                 </div>
 
                 <!-- Лента сообщений с поддержкой обоев -->
-                <div id="messages-area" class="flex-1 overflow-y-auto px-3.5 sm:px-5 py-4 space-y-2.5 chat-wallpaper-layer default-dots relative">
+                <div id="messages-area" class="flex-1 min-h-0 overflow-y-auto px-3.5 sm:px-5 py-4 space-y-2.5 chat-wallpaper-layer default-dots relative">
                     <!-- Сообщения рендерятся сюда -->
                 </div>
 
@@ -311,13 +314,13 @@
                     <button type="button" class="emoji-btn text-lg hover:scale-125 transition-transform p-1">😭</button>
                 </div>
 
-                <!-- Поле ввода сообщения -->
-                <form id="message-form" onsubmit="return false;" class="p-2.5 sm:p-3 bg-white border-t border-pastel-100 flex items-center gap-2 shrink-0">
+                <!-- Поле ввода сообщения (всегда закреплено внизу) -->
+                <form id="message-form" onsubmit="return false;" class="p-2.5 sm:p-3 bg-white border-t border-pastel-200/80 flex items-center gap-2 shrink-0 z-20">
                     <button type="button" id="toggle-emoji-btn" class="w-10 h-10 rounded-xl bg-pastel-50 hover:bg-pastel-100 text-pastel-500 flex items-center justify-center shrink-0 transition-colors">
                         <i data-lucide="smile" class="w-5 h-5"></i>
                     </button>
                     <input type="text" id="message-input" autocomplete="off" placeholder="Напишите сообщение..."
-                        class="flex-1 px-4 py-2.5 bg-pastel-50 border border-pastel-200/80 rounded-2xl text-sm font-medium text-pastel-900 placeholder-pastel-400 focus:outline-none focus:border-pastel-400 focus:bg-white transition-all">
+                        class="flex-1 min-w-0 px-4 py-2.5 bg-pastel-50 border border-pastel-200 rounded-2xl text-sm font-medium text-pastel-900 placeholder-pastel-400 focus:outline-none focus:border-pastel-400 focus:bg-white transition-all">
                     <button type="button" id="send-msg-btn"
                         class="w-10 h-10 rounded-2xl bg-gradient-to-r from-pastel-500 to-pastel-400 hover:from-pastel-600 hover:to-pastel-500 text-white flex items-center justify-center shrink-0 shadow-sm active:scale-95 transition-all">
                         <i data-lucide="send" class="w-4 h-4 -ml-0.5"></i>
@@ -380,7 +383,6 @@
             </div>
 
             <div class="p-5 space-y-4">
-                <!-- Переключатель области действия -->
                 <div>
                     <label class="block text-[11px] font-extrabold uppercase tracking-wider text-pastel-600 mb-2">Для кого установить обои?</label>
                     <div class="grid grid-cols-2 gap-2 p-1 bg-pastel-50 rounded-2xl border border-pastel-200/80">
@@ -394,7 +396,6 @@
                     <p id="wp-scope-hint" class="text-[11px] text-pastel-500 mt-1.5 ml-1">Фон изменится только на вашем устройстве.</p>
                 </div>
 
-                <!-- Загрузка своей картинки -->
                 <div>
                     <label class="block text-[11px] font-extrabold uppercase tracking-wider text-pastel-600 mb-1.5">Своё фото из галереи</label>
                     <label class="w-full py-3 px-4 rounded-2xl border-2 border-dashed border-pastel-300 hover:border-pastel-500 bg-pastel-50/70 hover:bg-pastel-100/60 text-pastel-700 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all">
@@ -404,7 +405,6 @@
                     </label>
                 </div>
 
-                <!-- Готовые пастельные темы -->
                 <div>
                     <label class="block text-[11px] font-extrabold uppercase tracking-wider text-pastel-600 mb-2">Пастельные фоны</label>
                     <div class="grid grid-cols-4 gap-2">
@@ -497,7 +497,7 @@
 
     <!-- МОДАЛКА: РЕДАКТИРОВАНИЕ ИЛИ СОЗДАНИЕ ГРУППЫ -->
     <div id="group-modal" class="hidden fixed inset-0 z-50 bg-pastel-900/30 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-pastel-200 overflow-hidden msg-pop flex flex-col max-h-[88vh]">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-pastel-200 overflow-hidden msg-pop flex flex-col max-h-[88dvh]">
             <div class="px-4 py-3.5 bg-pastel-50 border-b border-pastel-100 flex items-center gap-2.5 shrink-0">
                 <button type="button" id="close-group-modal" class="w-8 h-8 rounded-xl bg-white hover:bg-pastel-100 text-pastel-700 border border-pastel-200/70 flex items-center justify-center">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i>
@@ -547,7 +547,7 @@
 
     <!-- МОДАЛКА: СПИСОК УЧАСТНИКОВ / НОВЫЙ ЧАТ / ПЕРЕСЫЛКА -->
     <div id="users-modal" class="hidden fixed inset-0 z-50 bg-pastel-900/30 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-pastel-200 overflow-hidden flex flex-col max-h-[82vh] msg-pop">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-pastel-200 overflow-hidden flex flex-col max-h-[82dvh] msg-pop">
             <div class="px-4 py-3.5 bg-pastel-50 border-b border-pastel-100 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                     <button type="button" id="close-users-modal" class="w-8 h-8 rounded-xl bg-white hover:bg-pastel-100 text-pastel-700 border border-pastel-200/70 flex items-center justify-center">
@@ -575,7 +575,7 @@
     <!-- FIREBASE SDK И ЛОГИКА ПРИЛОЖЕНИЯ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import {
             getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc,
             collection, query, orderBy, limit, onSnapshot, addDoc, serverTimestamp
@@ -593,26 +593,23 @@
 
         const GLOBAL_CHAT_ID = "global_gsgram_lobby";
 
-        // Состояние приложения
         let db = null;
         let auth = null;
         let isCloudReady = false;
-        let currentUser = null; // { username, nickname, bio, avatar, pinnedChats: [] }
-        let allUsersMap = {}; // username -> userObj
-        let allChatsMap = {}; // chatId -> chatDoc
+        let currentUser = null;
+        let allUsersMap = {};
+        let allChatsMap = {};
         let activeChatId = null;
-        let activeChatMeta = null; // { id, type: 'global'|'group'|'dm', title, subtitle, avatar, partnerUsername }
+        let activeChatMeta = null;
         let activeMessages = [];
         let unsubscribeMessages = null;
         let replyToMsg = null;
         let contextTargetMsg = null;
-        let wpScope = 'self'; // 'self' | 'both'
-        let groupModalMode = 'create'; // 'create' | 'edit'
+        let wpScope = 'self';
+        let groupModalMode = 'create';
         let tempGroupAvatar = null;
         let tempUserAvatar = null;
-        let usersModalMode = 'new_chat'; // 'new_chat' | 'forward'
 
-        // UI элементы
         const statusBanner = document.getElementById('status-banner');
         const statusDot = document.getElementById('status-dot');
         const statusText = document.getElementById('status-text');
@@ -639,7 +636,6 @@
             }
         }
 
-        // Утилита сжатия картинок в Base64 для быстрой синхронизации в Firestore
         function compressImageFile(file, maxSize = 360, quality = 0.78) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -671,7 +667,7 @@
         }
 
         function renderAvatarHTML(avatarData, fallbackText, isGroup = false) {
-            if (avatarData) {
+            if (avatarData && typeof avatarData === 'string' && avatarData.startsWith('data:image')) {
                 return `<img src="${avatarData}" alt="" class="w-full h-full object-cover">`;
             }
             if (isGroup) {
@@ -691,7 +687,6 @@
             return d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
         }
 
-        // Инициализация Firebase
         async function initFirebase() {
             const isLocalFile = window.location.protocol === 'file:' || window.location.protocol === 'content:';
             if (isLocalFile) {
@@ -709,7 +704,6 @@
                 isCloudReady = true;
                 setStatus('cloud', 'Облако подключено');
 
-                // Убедимся, что общий чат существует в базе
                 const globalRef = doc(db, 'chats', GLOBAL_CHAT_ID);
                 const globalSnap = await getDoc(globalRef);
                 if (!globalSnap.exists()) {
@@ -735,10 +729,13 @@
         function startCloudListeners() {
             if (!isCloudReady) return;
 
-            // Слушаем всех пользователей
             onSnapshot(collection(db, 'users'), (snap) => {
                 snap.forEach((d) => {
-                    allUsersMap[d.id] = d.data();
+                    const data = d.data();
+                    const key = (data.username || d.id || '').toLowerCase();
+                    if (key) {
+                        allUsersMap[key] = { ...data, username: key };
+                    }
                 });
                 if (currentUser && allUsersMap[currentUser.username]) {
                     currentUser = { ...currentUser, ...allUsersMap[currentUser.username] };
@@ -749,7 +746,6 @@
                 refreshActiveChatHeader();
             });
 
-            // Слушаем все чаты (общий, группы, личные)
             onSnapshot(collection(db, 'chats'), (snap) => {
                 snap.forEach((d) => {
                     allChatsMap[d.id] = { id: d.id, ...d.data() };
@@ -763,7 +759,6 @@
             });
         }
 
-        // Авторизация / Регистрация
         async function handleAuthSubmit() {
             const nickInput = document.getElementById('input-nickname');
             const userInput = document.getElementById('input-username');
@@ -799,6 +794,7 @@
                     const existing = snap.data();
                     userProfile = {
                         ...existing,
+                        username,
                         nickname,
                         pinnedChats: existing.pinnedChats || [GLOBAL_CHAT_ID]
                     };
@@ -820,6 +816,7 @@
                 try {
                     currentUser = JSON.parse(saved);
                     if (currentUser && currentUser.username) {
+                        currentUser.username = currentUser.username.toLowerCase();
                         allUsersMap[currentUser.username] = currentUser;
                         enterMessenger();
                     }
@@ -856,12 +853,10 @@
             authScreen.classList.remove('hidden');
         });
 
-        // Построение списка чатов слева
         function getUserRelevantChats() {
             if (!currentUser) return [];
             const list = [];
 
-            // 1. Общий чат всегда есть
             const globalDoc = allChatsMap[GLOBAL_CHAT_ID] || {
                 id: GLOBAL_CHAT_ID,
                 type: 'global',
@@ -877,7 +872,6 @@
                 lastTime: globalDoc.updatedAt || null
             });
 
-            // 2. Группы и личные чаты из Firestore
             Object.values(allChatsMap).forEach((c) => {
                 if (c.id === GLOBAL_CHAT_ID) return;
                 if (c.type === 'group') {
@@ -892,7 +886,7 @@
                         });
                     }
                 } else if (c.type === 'dm' && Array.isArray(c.participants) && c.participants.includes(currentUser.username)) {
-                    const partnerTag = c.participants.find(p => p !== currentUser.username) || currentUser.username;
+                    const partnerTag = (c.participants.find(p => p !== currentUser.username) || currentUser.username).toLowerCase();
                     const partner = allUsersMap[partnerTag] || { username: partnerTag, nickname: partnerTag };
                     list.push({
                         id: c.id,
@@ -906,7 +900,6 @@
                 }
             });
 
-            // Сортировка: закреплённые сверху, затем по времени обновления
             const pinnedSet = new Set(currentUser.pinnedChats || [GLOBAL_CHAT_ID]);
             list.sort((a, b) => {
                 const aPin = pinnedSet.has(a.id) ? 1 : 0;
@@ -958,14 +951,12 @@
             lucide.createIcons();
         }
 
-        // Открытие чата
         async function openChat(chatId, explicitMeta = null) {
             activeChatId = chatId;
             replyToMsg = null;
             document.getElementById('reply-preview-bar').classList.add('hidden');
             document.getElementById('chat-more-menu').classList.add('hidden');
 
-            // На мобильных скрываем сайдбар, показываем чат
             sidebarPanel.classList.add('hidden', 'md:flex');
             chatPanel.classList.remove('hidden');
             chatPanel.classList.add('flex');
@@ -1015,7 +1006,7 @@
                 subtitle = cDoc.description || `${count} участн.`;
             } else {
                 const parts = cDoc.participants || activeChatId.replace(/^dm_/, '').split('__');
-                partnerUsername = parts.find(p => p !== currentUser.username) || currentUser.username;
+                partnerUsername = (parts.find(p => p !== currentUser.username) || currentUser.username).toLowerCase();
                 const partner = allUsersMap[partnerUsername] || { username: partnerUsername, nickname: partnerUsername };
                 title = partner.nickname;
                 avatar = partner.avatar || '';
@@ -1029,7 +1020,6 @@
             document.getElementById('chat-header-avatar').innerHTML = renderAvatarHTML(avatar, title, type === 'global' || type === 'group');
             document.getElementById('chat-header-pin-badge').classList.toggle('hidden', !isPinned);
 
-            // Пункты меню Трёх точек
             document.getElementById('menu-pin-chat-label').textContent = isPinned ? 'Открепить чат' : 'Закрепить чат';
             const isGroupOrGlobal = (type === 'global' || type === 'group');
             document.getElementById('menu-group-edit-btn').classList.toggle('hidden', !isGroupOrGlobal);
@@ -1037,7 +1027,6 @@
             lucide.createIcons();
         }
 
-        // Кнопка НАЗАД из чата
         document.getElementById('back-to-chats-btn').addEventListener('click', () => {
             activeChatId = null;
             if (unsubscribeMessages) {
@@ -1052,7 +1041,6 @@
             renderChatList();
         });
 
-        // Подписка на сообщения чата в реальном времени
         function subscribeToMessages(chatId) {
             if (unsubscribeMessages) unsubscribeMessages();
             const area = document.getElementById('messages-area');
@@ -1095,7 +1083,8 @@
 
             area.innerHTML = activeMessages.map(m => {
                 const isMine = m.senderUsername === currentUser.username;
-                const senderObj = allUsersMap[m.senderUsername] || { nickname: m.senderNickname || m.senderUsername, avatar: '' };
+                const senderKey = (m.senderUsername || '').toLowerCase();
+                const senderObj = allUsersMap[senderKey] || { nickname: m.senderNickname || m.senderUsername, avatar: '' };
                 const reactions = m.reactions || {};
                 const reactionEntries = Object.entries(reactions).filter(([, users]) => Array.isArray(users) && users.length > 0);
 
@@ -1131,7 +1120,7 @@
                 return `
                     <div class="flex items-end gap-2 ${isMine ? 'justify-end' : 'justify-start'} msg-pop">
                         ${!isMine ? `
-                            <button type="button" data-profile-user="${m.senderUsername}" class="msg-author-avatar w-8 h-8 rounded-xl bg-gradient-to-br from-pastel-400 to-pastel-300 text-white font-extrabold text-xs flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+                            <button type="button" data-profile-user="${senderKey}" class="msg-author-avatar w-8 h-8 rounded-xl bg-gradient-to-br from-pastel-400 to-pastel-300 text-white font-extrabold text-xs flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
                                 ${renderAvatarHTML(senderObj.avatar, senderObj.nickname)}
                             </button>
                         ` : ''}
@@ -1150,7 +1139,6 @@
                 `;
             }).join('');
 
-            // Клики по пузырькам сообщений -> контекстное меню как в ТГ
             area.querySelectorAll('.msg-bubble').forEach(bubble => {
                 bubble.addEventListener('click', (e) => {
                     if (e.target.closest('.inline-reaction-btn')) return;
@@ -1159,7 +1147,6 @@
                 });
             });
 
-            // Быстрый клик по уже поставленной реакции
             area.querySelectorAll('.inline-reaction-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1167,7 +1154,6 @@
                 });
             });
 
-            // Клик по аватарке автора в чате -> просмотр профиля
             area.querySelectorAll('.msg-author-avatar').forEach(av => {
                 av.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1179,7 +1165,6 @@
             area.scrollTop = area.scrollHeight;
         }
 
-        // Отправка сообщения
         async function sendMessage() {
             const input = document.getElementById('message-input');
             const text = input.value.trim();
@@ -1222,7 +1207,6 @@
             }
         });
 
-        // Эмодзи пикер
         document.getElementById('toggle-emoji-btn').addEventListener('click', () => {
             document.getElementById('emoji-picker').classList.toggle('hidden');
         });
@@ -1234,9 +1218,6 @@
             });
         });
 
-        // ==========================================
-        // КОНТЕКСТНОЕ МЕНЮ СООБЩЕНИЯ (РЕАКЦИИ + ДЕЙСТВИЯ)
-        // ==========================================
         const ctxOverlay = document.getElementById('msg-context-overlay');
 
         function openMessageContextMenu(msg) {
@@ -1253,7 +1234,6 @@
             contextTargetMsg = null;
         });
 
-        // Реакции (видны всем в реальном времени)
         async function toggleReactionOnMessage(msgId, emoji) {
             if (!isCloudReady || !activeChatId || !currentUser) return;
             const msg = activeMessages.find(m => m.id === msgId);
@@ -1281,7 +1261,6 @@
             });
         });
 
-        // Ответить (Reply)
         document.getElementById('ctx-reply-btn').addEventListener('click', () => {
             if (!contextTargetMsg) return;
             replyToMsg = contextTargetMsg;
@@ -1297,7 +1276,6 @@
             document.getElementById('reply-preview-bar').classList.add('hidden');
         });
 
-        // Копировать
         document.getElementById('ctx-copy-btn').addEventListener('click', async () => {
             if (contextTargetMsg && navigator.clipboard) {
                 await navigator.clipboard.writeText(contextTargetMsg.text);
@@ -1305,7 +1283,6 @@
             ctxOverlay.classList.add('hidden');
         });
 
-        // Переслать
         document.getElementById('ctx-forward-btn').addEventListener('click', () => {
             if (!contextTargetMsg) return;
             const msgToForward = contextTargetMsg;
@@ -1313,7 +1290,6 @@
             openForwardModal(msgToForward);
         });
 
-        // Закрепить сообщение (видно всем в чате)
         document.getElementById('ctx-pin-btn').addEventListener('click', async () => {
             if (!contextTargetMsg || !isCloudReady || !activeChatId) return;
             const cDoc = allChatsMap[activeChatId] || {};
@@ -1330,14 +1306,12 @@
             ctxOverlay.classList.add('hidden');
         });
 
-        // Удалить сообщение
         document.getElementById('ctx-delete-btn').addEventListener('click', async () => {
             if (!contextTargetMsg || !isCloudReady || !activeChatId) return;
             await deleteDoc(doc(db, 'chats', activeChatId, 'messages', contextTargetMsg.id));
             ctxOverlay.classList.add('hidden');
         });
 
-        // Плашка закреплённого сообщения
         function renderPinnedBar() {
             const bar = document.getElementById('pinned-message-bar');
             const cDoc = allChatsMap[activeChatId] || {};
@@ -1355,9 +1329,6 @@
             await setDoc(doc(db, 'chats', activeChatId), { pinnedMessage: null }, { merge: true });
         });
 
-        // ==========================================
-        // МЕНЮ ТРИ ТОЧКИ В ШАПКЕ ЧАТА + ОБОИ + ЗАКРЕПЛЕНИЕ ЧАТА
-        // ==========================================
         const moreMenu = document.getElementById('chat-more-menu');
         document.getElementById('chat-more-btn').addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1365,7 +1336,6 @@
         });
         document.addEventListener('click', () => moreMenu.classList.add('hidden'));
 
-        // Закрепить / открепить сам чат в списке
         document.getElementById('menu-pin-chat-btn').addEventListener('click', async () => {
             if (!activeChatId || !currentUser) return;
             const list = new Set(currentUser.pinnedChats || [GLOBAL_CHAT_ID]);
@@ -1384,7 +1354,6 @@
             renderChatList();
         });
 
-        // Обои чата (для себя или для двоих / всех)
         const wpModal = document.getElementById('wallpaper-modal');
         const wpScopeSelfBtn = document.getElementById('wp-scope-self');
         const wpScopeBothBtn = document.getElementById('wp-scope-both');
@@ -1419,7 +1388,6 @@
                 localWps[activeChatId] = val;
                 localStorage.setItem('gsgram_local_wps', JSON.stringify(localWps));
             } else {
-                // Удаляем локальный переопределяющий фон, чтобы видеть общий
                 const localWps = JSON.parse(localStorage.getItem('gsgram_local_wps') || '{}');
                 delete localWps[activeChatId];
                 localStorage.setItem('gsgram_local_wps', JSON.stringify(localWps));
@@ -1467,9 +1435,6 @@
             }
         }
 
-        // ==========================================
-        // РЕДАКТИРОВАНИЕ СВОЕГО ПРОФИЛЯ И ПРОСМОТР ДРУГИХ
-        // ==========================================
         const profileEditModal = document.getElementById('profile-edit-modal');
         document.getElementById('open-profile-edit-btn').addEventListener('click', () => {
             if (!currentUser) return;
@@ -1506,6 +1471,7 @@
 
             if (isCloudReady) {
                 await setDoc(doc(db, 'users', currentUser.username), {
+                    username: currentUser.username,
                     nickname: newNick,
                     bio: newBio,
                     avatar: tempUserAvatar
@@ -1517,13 +1483,13 @@
             profileEditModal.classList.add('hidden');
         });
 
-        // Просмотр карточки любого участника
         const userViewModal = document.getElementById('user-view-modal');
         let viewedUsername = null;
 
         function openUserViewModal(username) {
-            const u = allUsersMap[username] || { username, nickname: username, bio: '', avatar: '' };
-            viewedUsername = username;
+            const key = (username || '').toLowerCase();
+            const u = allUsersMap[key] || { username: key, nickname: username, bio: '', avatar: '' };
+            viewedUsername = key;
             document.getElementById('view-user-avatar').innerHTML = renderAvatarHTML(u.avatar, u.nickname);
             document.getElementById('view-user-nick').textContent = u.nickname;
             document.getElementById('view-user-tag').textContent = '@' + u.username;
@@ -1542,7 +1508,6 @@
             });
         });
 
-        // Клик по шапке чата или «О собеседнике»
         function handleHeaderInfoClick() {
             if (!activeChatMeta) return;
             if (activeChatMeta.type === 'dm' && activeChatMeta.partnerUsername) {
@@ -1555,9 +1520,6 @@
         document.getElementById('menu-view-profile-btn').addEventListener('click', handleHeaderInfoClick);
         document.getElementById('menu-group-edit-btn').addEventListener('click', () => openGroupModal('edit'));
 
-        // ==========================================
-        // СОЗДАНИЕ И РЕДАКТИРОВАНИЕ ГРУПП
-        // ==========================================
         const groupModal = document.getElementById('group-modal');
 
         function openGroupModal(mode) {
@@ -1644,13 +1606,9 @@
             }
         });
 
-        // ==========================================
-        // НОВЫЙ ЧАТ (+) И ПЕРЕСЫЛКА СООБЩЕНИЙ
-        // ==========================================
         const usersModal = document.getElementById('users-modal');
 
         document.getElementById('new-chat-btn').addEventListener('click', () => {
-            usersModalMode = 'new_chat';
             document.getElementById('users-modal-title').textContent = 'Новый чат или группа';
             document.getElementById('create-group-trigger-box').classList.remove('hidden');
             renderUsersModalList();
@@ -1663,7 +1621,6 @@
         });
 
         function openForwardModal(msgToForward) {
-            usersModalMode = 'forward';
             document.getElementById('users-modal-title').textContent = 'Переслать сообщение в...';
             document.getElementById('create-group-trigger-box').classList.add('hidden');
 
@@ -1735,7 +1692,6 @@
 
         document.getElementById('close-users-modal').addEventListener('click', () => usersModal.classList.add('hidden'));
 
-        // Поиск в сайдбаре
         const searchInput = document.getElementById('search-input');
         const clearSearchBtn = document.getElementById('clear-search-btn');
         const searchResultsBox = document.getElementById('search-results-box');
@@ -1791,8 +1747,7 @@
             renderChatList();
         });
 
-        // Запуск
         initFirebase();
     </script>
 </body>
-</html>
+                                </html>
